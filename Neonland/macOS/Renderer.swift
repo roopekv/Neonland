@@ -6,41 +6,52 @@ class Renderer : NSObject, MTKViewDelegate {
     
     static let maxFramesInFlight = 3
     
+    let mtkView: MTKView
+    
     let device: MTLDevice
     let commandQueue: MTLCommandQueue
     
-    let vertexBuffer: MTLBuffer
+    let mesh: MTKMesh
     let uniformBuffer: MTLBuffer
     
     let renderPipelineState: MTLRenderPipelineState
+    let depthStencilState: MTLDepthStencilState
     
     let frameSemaphore = DispatchSemaphore(value: maxFramesInFlight)
     
     var frameIndex = 0
     
-    let uniformSize = MemoryLayout<Float>.size * 2
-    let uniformStride = max(MemoryLayout<Float>.size * 2, 256)
+    static let uniformSize = MemoryLayout<VertexUniforms>.size
+    static let uniformStride = max(uniformSize, 256)
     
-    var position: SIMD2<Float> = .zero
+    var uniforms = VertexUniforms(offset: .init(0, 0, 0), projection: .init(1))
     
-    init(device: MTLDevice, mtkView: MTKView) {
-        self.device = device
+    init(mtkView: MTKView) {
+        self.mtkView = mtkView
+        device = MTLCreateSystemDefaultDevice()!
+        mtkView.device = device
+        mtkView.colorPixelFormat = .bgra8Unorm_srgb
+        mtkView.depthStencilPixelFormat = .depth32Float
+        mtkView.clearColor = .init(red: 0, green: 0, blue: 0.2, alpha: 1)
+    
+        commandQueue = device.makeCommandQueue()!
         
-        let commandQueue = device.makeCommandQueue()!
+        let allocator = MTKMeshBufferAllocator(device: device)
+        let mdlMesh = MDLMesh(sphereWithExtent: .init(1, 1, 1),
+                              segments: .init(24, 24),
+                              inwardNormals: false,
+                              geometryType: .triangles,
+                              allocator: allocator)
         
-        self.commandQueue = commandQueue
+//        let mdlMesh = MDLMesh(boxWithExtent: .one,
+//                              segments: .one,
+//                              inwardNormals: false,
+//                              geometryType: .triangles,
+//                              allocator: allocator)
         
-        let vertices: [Float] = [
-            -1, -1, 1, 0, 0, 1,
-             1, -1, 0, 1, 0, 1,
-             0,  1, 0, 0, 1, 1
-        ]
+        mesh = try! MTKMesh(mesh: mdlMesh, device: device)
         
-        vertexBuffer = device.makeBuffer(bytes: vertices,
-                                         length: MemoryLayout<Float>.stride * vertices.count,
-                                         options: .storageModeShared)!
-        
-        uniformBuffer = device.makeBuffer(length: uniformStride * 3,
+        uniformBuffer = device.makeBuffer(length: Renderer.uniformStride * 3,
                                           options: .storageModeShared)!
         
         let library = device.makeDefaultLibrary()!
@@ -49,21 +60,18 @@ class Renderer : NSObject, MTKViewDelegate {
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "vertexFunc")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "fragmentFunc")
         renderPipelineDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat
+        renderPipelineDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat
         
-        let vertexDescriptor = MTLVertexDescriptor()
-        vertexDescriptor.attributes[0].format = .float2
-        vertexDescriptor.attributes[0].offset = 0
-        vertexDescriptor.attributes[0].bufferIndex = 0
-        
-        vertexDescriptor.attributes[1].format = .float4
-        vertexDescriptor.attributes[1].offset = MemoryLayout<Float>.stride * 2
-        vertexDescriptor.attributes[1].bufferIndex = 0
-        
-        vertexDescriptor.layouts[0].stride = MemoryLayout<Float>.stride * 6
-        
+        let vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(mesh.vertexDescriptor)
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
         
         renderPipelineState = try! device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
+        
+        let depthStencilDescriptor = MTLDepthStencilDescriptor()
+        depthStencilDescriptor.isDepthWriteEnabled = true
+        depthStencilDescriptor.depthCompareFunction = .less
+        
+        depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)!
     }
     
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -76,11 +84,19 @@ class Renderer : NSObject, MTKViewDelegate {
         Update()
         
         frameIndex = (frameIndex + 1) % Renderer.maxFramesInFlight
-        position.x += 0.01
+        uniforms.offset.x += 0.001
+        
+        let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
+        uniforms.projection = float4x4(verticalFoVInDegrees: 60,
+                                       aspectRatio: aspectRatio,
+                                       near: 0.1,
+                                       far: 100)
+        
+        uniforms.projection *= float4x4(translation: -.init(0, 0, 10))
         
         uniformBuffer.contents()
-            .advanced(by: frameIndex * uniformStride)
-            .copyMemory(from: &position, byteCount: uniformSize)
+            .advanced(by: frameIndex * Renderer.uniformStride)
+            .copyMemory(from: &uniforms, byteCount: Renderer.uniformSize)
         
         let renderPassDescriptor = view.currentRenderPassDescriptor!
         
@@ -88,8 +104,28 @@ class Renderer : NSObject, MTKViewDelegate {
         let renderCommandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         
         renderCommandEncoder.setRenderPipelineState(renderPipelineState)
-        renderCommandEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-        renderCommandEncoder.setVertexBuffer(uniformBuffer, offset: frameIndex * uniformStride, index: 1)
+        renderCommandEncoder.setDepthStencilState(depthStencilState)
+        renderCommandEncoder.setFrontFacing(.counterClockwise)
+        renderCommandEncoder.setCullMode(.back)
+        
+        for (i, vertexBuffer) in mesh.vertexBuffers.enumerated() {
+            renderCommandEncoder.setVertexBuffer(vertexBuffer.buffer,
+                                                 offset: vertexBuffer.offset,
+                                                 index: i)
+        }
+        
+        renderCommandEncoder.setVertexBuffer(uniformBuffer,
+                                             offset: frameIndex * Renderer.uniformStride,
+                                             index: 1)
+        
+        for submesh in mesh.submeshes {
+            let indexBuffer = submesh.indexBuffer
+            renderCommandEncoder.drawIndexedPrimitives(type: submesh.primitiveType,
+                                                       indexCount: submesh.indexCount,
+                                                       indexType: submesh.indexType,
+                                                       indexBuffer: indexBuffer.buffer,
+                                                       indexBufferOffset: indexBuffer.offset)
+        }
         renderCommandEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
         
         renderCommandEncoder.endEncoding()

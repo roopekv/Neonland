@@ -10,19 +10,19 @@ class MenuBar : NSMenu {
         super.init(title: title)
         
         let appItem = NSMenuItem()
-        appItem.submenu = createAppMenu()
+        appItem.submenu = makeAppMenu()
         
         let fileItem = NSMenuItem()
-        fileItem.submenu = createFileMenu()
+        fileItem.submenu = makeFileMenu()
         
         let viewItem = NSMenuItem()
-        viewItem.submenu = createViewMenu()
+        viewItem.submenu = makeViewMenu()
         
         let windowItem = NSMenuItem()
-        windowItem.submenu = createWindowMenu()
+        windowItem.submenu = makeWindowMenu()
         
         let helpItem = NSMenuItem()
-        helpItem.submenu = createHelpMenu()
+        helpItem.submenu = makeHelpMenu()
         
         self.items = [
             appItem,
@@ -37,7 +37,7 @@ class MenuBar : NSMenu {
         super.init(coder: coder)
     }
     
-    private func createAppMenu() -> NSMenu {
+    private func makeAppMenu() -> NSMenu {
         let name = NSRunningApplication.current.localizedName ?? "App"
         
         // About
@@ -91,7 +91,7 @@ class MenuBar : NSMenu {
         return appMenu
     }
     
-    private func createFileMenu() -> NSMenu {
+    private func makeFileMenu() -> NSMenu {
         // Close
         let closeItem = NSMenuItem(title: "Close",
                                    action: #selector(NSWindow.performClose(_:)),
@@ -107,7 +107,7 @@ class MenuBar : NSMenu {
         return fileMenu
     }
     
-    private func createViewMenu() -> NSMenu {
+    private func makeViewMenu() -> NSMenu {
         // Enter Full Screen
         let fullScreenItem = NSMenuItem(title: "Enter Full Screen",
                                         action: #selector(NSWindow.toggleFullScreen(_:)),
@@ -123,7 +123,7 @@ class MenuBar : NSMenu {
         return viewMenu
     }
     
-    private func createWindowMenu() -> NSMenu {
+    private func makeWindowMenu() -> NSMenu {
         // Minimize
         let minimizeItem = NSMenuItem(title: "Minimize",
                                       action: #selector(NSWindow.miniaturize(_:)),
@@ -146,7 +146,7 @@ class MenuBar : NSMenu {
         return windowMenu
     }
     
-    private func createHelpMenu() -> NSMenu {
+    private func makeHelpMenu() -> NSMenu {
         let name = NSRunningApplication.current.localizedName ?? "App"
         
         // App Help

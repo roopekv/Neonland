@@ -10,6 +10,7 @@
 		7A0F89482952223D00A999F2 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F89472952223D00A999F2 /* MenuBar.swift */; };
 		7A445EF02951EFBE007A3A38 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A445EEF2951EFBE007A3A38 /* main.swift */; };
 		7A7323D42952757C0008C92E /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A7323D32952757C0008C92E /* Renderer.swift */; };
+		7A7F7286295B9C130034F0F4 /* float4x4+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A7F7285295B9C130034F0F4 /* float4x4+Transform.swift */; };
 		7A82E5042952857300BDB064 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7A82E5032952857300BDB064 /* Shaders.metal */; };
 		7A94520C29548B8D004CFF4D /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 7A94520B29548B8D004CFF4D /* TODO */; };
 		7A94521029548BCD004CFF4D /* Neonland.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A94520E29548BCD004CFF4D /* Neonland.cpp */; };
@@ -22,11 +23,13 @@
 		7A0F89472952223D00A999F2 /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
 		7A445EEF2951EFBE007A3A38 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		7A7323D32952757C0008C92E /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		7A7F7285295B9C130034F0F4 /* float4x4+Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "float4x4+Transform.swift"; sourceTree = "<group>"; };
 		7A82E5032952857300BDB064 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		7A94520B29548B8D004CFF4D /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		7A94520D29548BCD004CFF4D /* Neonland-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Neonland-Bridging-Header.h"; sourceTree = "<group>"; };
 		7A94520E29548BCD004CFF4D /* Neonland.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Neonland.cpp; sourceTree = "<group>"; };
 		7A94520F29548BCD004CFF4D /* Neonland.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Neonland.h; sourceTree = "<group>"; };
+		7ABA10F9295A559B00B2BD98 /* ShaderUniforms.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderUniforms.h; sourceTree = "<group>"; };
 		7AE607EE2950F1B300C66EA5 /* Neonland.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neonland.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AE607F12950F1B300C66EA5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7AE607F32950F1B300C66EA5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -53,6 +56,7 @@
 				7A0F89472952223D00A999F2 /* MenuBar.swift */,
 				7AE607F32950F1B300C66EA5 /* ViewController.swift */,
 				7A7323D32952757C0008C92E /* Renderer.swift */,
+				7A7F7285295B9C130034F0F4 /* float4x4+Transform.swift */,
 				7A82E5032952857300BDB064 /* Shaders.metal */,
 				7AE607F52950F1B400C66EA5 /* Assets.xcassets */,
 				7AE607FA2950F1B400C66EA5 /* Neonland.entitlements */,
@@ -68,6 +72,7 @@
 				7A945207295487F8004CFF4D /* macOS */,
 				7A94520F29548BCD004CFF4D /* Neonland.h */,
 				7A94520E29548BCD004CFF4D /* Neonland.cpp */,
+				7ABA10F9295A559B00B2BD98 /* ShaderUniforms.h */,
 			);
 			path = Neonland;
 			sourceTree = "<group>";
@@ -173,6 +178,7 @@
 				7AE607F22950F1B300C66EA5 /* AppDelegate.swift in Sources */,
 				7A0F89482952223D00A999F2 /* MenuBar.swift in Sources */,
 				7A7323D42952757C0008C92E /* Renderer.swift in Sources */,
+				7A7F7286295B9C130034F0F4 /* float4x4+Transform.swift in Sources */,
 				7A445EF02951EFBE007A3A38 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
