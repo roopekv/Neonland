@@ -1,5 +1,5 @@
 #include <metal_stdlib>
-#include "../ShaderUniforms.h"
+#include "../ShaderTypes.h"
 using namespace metal;
 
 struct VertexIn {
@@ -13,10 +13,12 @@ struct VertexOut {
 };
 
 vertex auto vertexFunc(VertexIn in [[stage_in]],
-                       constant VertexUniforms& uniforms [[buffer(1)]]) -> VertexOut {
+                       constant Instance& instance [[buffer(1)]],
+                       constant GlobalUniforms& globalUniforms [[buffer(2)]]) -> VertexOut {
     VertexOut out;
-    out.position = uniforms.projection * float4(in.position + uniforms.offset, 1);
+    out.position = globalUniforms.projMatrix * globalUniforms.viewMatrix * instance.transform * float4(in.position, 1);
     out.normal = in.normal;
+    
     return out;
 }
 

@@ -13,6 +13,7 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         renderer = .init(mtkView: mtkView)
         mtkView.delegate = renderer
+        
         super.viewDidLoad()
     }
     
