@@ -10,20 +10,20 @@ public:
     vector_float3 vel;
     float angularVel;
     
-    int32_t meshIdx;
+    uint32_t meshIdx;
     
     Entity(vector_float3 pos, float rot, vector_float3 vel, float angularVel, int32_t meshIdx);
     
     void Update(double timestep);
     
-    vector_float3& Position();
-    float& Rotation();
+    void SetPosition(vector_float3& pos);
+    void SetRotation(float rot);
     
-    const vector_float3& Position() const;
-    const float& Rotation() const;
+    const vector_float3& GetPosition() const;
+    const float& GetRotation() const;
     
-    matrix_float4x4 Transform(double timeSinceUpdate) const;
-    Instance Instance(double timeSinceUpdate) const;
+    matrix_float4x4 GetTransform(double timeSinceUpdate) const;
+    Instance GetInstance(double timeSinceUpdate) const;
 protected:
     vector_float3 _position;
     float _rotation;

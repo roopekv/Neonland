@@ -11,30 +11,37 @@ Entity::Entity(vector_float3 pos, float rot, vector_float3 vel, float angularVel
 
 void Entity::Update(double timestep) {
     _position += vel * timestep;
+    _rotation += angularVel * timestep;
     _movedOutsideUpdate = false;
     _rotatedOutsideUpdate = false;
 }
 
-vector_float3& Entity::Position() {
+void Entity::SetPosition(vector_float3& pos) {
     _movedOutsideUpdate = true;
-    return _position;
+    _position = pos;
 }
 
-float& Entity::Rotation() {
+void Entity::SetRotation(float rot) {
     _rotatedOutsideUpdate = true;
-    return _rotation;
+    _rotation = rot;
 }
 
-const vector_float3& Entity::Position() const { return _position; };
-const float& Entity::Rotation() const { return _rotation; };
+const vector_float3& Entity::GetPosition() const { return _position; };
+const float& Entity::GetRotation() const { return _rotation; };
 
-matrix_float4x4 Entity::Transform(double timeSinceUpdate) const {
+matrix_float4x4 Entity::GetTransform(double timeSinceUpdate) const {
+    constexpr static auto zAxis = vector_float3{0, 0, 1};
+    
     if (_movedOutsideUpdate) {
-        return TranslationMatrix(_position);
+        return matrix_multiply(TranslationMatrix(_position),
+                               RotationMatrix(zAxis, _rotation));
     }
-    return TranslationMatrix(_position + vel * timeSinceUpdate);
+    return matrix_multiply(TranslationMatrix(_position + vel * timeSinceUpdate),
+                           RotationMatrix(zAxis, _rotation + angularVel * timeSinceUpdate));
 }
 
-Instance Entity::Instance(double timeSinceUpdate) const {
-    return {Transform(timeSinceUpdate), meshIdx};;
+Instance Entity::GetInstance(double timeSinceUpdate) const {
+    Instance instance;
+    instance.transform = GetTransform(timeSinceUpdate);
+    return instance;
 }

@@ -19,20 +19,26 @@ void Update() {
 }
 
 void OnStart() {
-    scene.player.vel.x = 1;
-    scene.camPos = {0, 0, 50};
+    Player player;
+    player.vel.x = 1;
+    scene.AddEntity(player);
+    
+    Enemy enemy;
+    enemy.vel = {0, 0, 1};
+    enemy.angularVel = 30;
+    scene.AddEntity(enemy);
+    
+    scene.camPos = {0, 0, -20};
+    
+//    Enemy enemy;
+//    scene.enemies.push_back(enemy);
 }
 
 FrameData OnRender(float aspectRatio) {
-    Update();
     scene.Update();
+    Update();
     
-    FrameData frameData;
-    frameData.globalUniforms.viewMatrix = TranslationMatrix(-scene.camPos);
-    frameData.globalUniforms.projMatrix = ProjectionMatrix(60, aspectRatio, 0.1, 100);
-    frameData.instanceCount = scene.enemies.size() + 1;
-    frameData.instances = scene.instanceBuffer;
-    return frameData;
+    return scene.GetFrameData(aspectRatio);
 }
 
 

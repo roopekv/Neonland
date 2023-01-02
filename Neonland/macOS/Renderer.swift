@@ -32,25 +32,6 @@ class Renderer : NSObject, MTKViewDelegate {
         commandQueue = device.makeCommandQueue()!
         commandQueue.label = "Command Queue"
         
-        let allocator = MTKMeshBufferAllocator(device: device)
-        
-        let playerMDLMesh = MDLMesh(sphereWithExtent: .init(1, 1, 1),
-                                    segments: .init(4, 4),
-                                    inwardNormals: false,
-                                    geometryType: .triangles,
-                                    allocator: allocator)
-        
-        let enemyMDLMesh = MDLMesh(boxWithExtent: .one,
-                                   segments: .one,
-                                   inwardNormals: false,
-                                   geometryType: .triangles,
-                                   allocator: allocator)
-        
-        var meshes = [MTKMesh]()
-        meshes.append(try! MTKMesh(mesh: playerMDLMesh, device: device))
-        meshes.append(try! MTKMesh(mesh: enemyMDLMesh, device: device))
-        self.meshes = meshes
-        
         var globalUniformBuffers = [MTLBuffer]()
         var instanceBuffers = [MTLBuffer]()
         
@@ -60,13 +41,54 @@ class Renderer : NSObject, MTKViewDelegate {
             globalUniformBuffers.append(globalUniformsBuffer)
             
             let instanceBuffer = device.makeBuffer(length: MemoryLayout<Instance>.size * MAX_ENTITY_COUNT, options: .storageModeShared)!
-            instanceBuffer.label = "Instance Uniforms \(i)"
+            instanceBuffer.label = "Instances \(i)"
             instanceBuffers.append(instanceBuffer)
             
         }
         
         self.globalUniformBuffers = globalUniformBuffers
         self.instanceBuffers = instanceBuffers
+        
+        let vertexDescriptor = MTLVertexDescriptor()
+        
+        // Position
+        vertexDescriptor.attributes[0].format = .float3
+        vertexDescriptor.attributes[0].offset = 0
+        vertexDescriptor.attributes[0].bufferIndex = 0
+        
+        // Normal
+        vertexDescriptor.attributes[1].format = .float3
+        vertexDescriptor.attributes[1].offset = 12
+        vertexDescriptor.attributes[1].bufferIndex = 0
+        
+        vertexDescriptor.layouts[0].stride = 24
+        
+        let mdlVertexDescriptor = MTKModelIOVertexDescriptorFromMetal(vertexDescriptor)
+        (mdlVertexDescriptor.attributes as! [MDLVertexAttribute])[0].name = MDLVertexAttributePosition;
+        (mdlVertexDescriptor.attributes as! [MDLVertexAttribute])[1].name = MDLVertexAttributeNormal;
+        
+        let allocator = MTKMeshBufferAllocator(device: device)
+        
+        let playerMDLMesh = MDLMesh(sphereWithExtent: .init(1, 1, 1),
+                                    segments: .init(4, 4),
+                                    inwardNormals: false,
+                                    geometryType: .triangles,
+                                    allocator: allocator)
+        
+        playerMDLMesh.vertexDescriptor = mdlVertexDescriptor
+        
+        let enemyMDLMesh = MDLMesh(boxWithExtent: .one,
+                                   segments: .one,
+                                   inwardNormals: false,
+                                   geometryType: .triangles,
+                                   allocator: allocator)
+        
+        enemyMDLMesh.vertexDescriptor = mdlVertexDescriptor
+        
+        self.meshes = [
+            try! MTKMesh(mesh: playerMDLMesh, device: device),
+            try! MTKMesh(mesh: enemyMDLMesh, device: device)
+        ]
         
         let library = device.makeDefaultLibrary()!
         library.label = "Default Library"
@@ -78,7 +100,6 @@ class Renderer : NSObject, MTKViewDelegate {
         renderPipelineDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat
         renderPipelineDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat
         
-        let vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(meshes[0].vertexDescriptor)!
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
         
         renderPipelineState = try! device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
@@ -100,7 +121,9 @@ class Renderer : NSObject, MTKViewDelegate {
     func draw(in view: MTKView) {
         frameSemaphore.wait()
         
-        updateUniforms(view: view)
+        let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
+        var frameData = OnRender(aspectRatio)
+        updateUniforms(frameData: &frameData)
         
         let renderPassDescriptor = view.currentRenderPassDescriptor!
         let commandBuffer = commandQueue.makeCommandBuffer()!
@@ -111,31 +134,42 @@ class Renderer : NSObject, MTKViewDelegate {
         
         renderCommandEncoder.setRenderPipelineState(renderPipelineState)
         renderCommandEncoder.setDepthStencilState(depthStencilState)
-        renderCommandEncoder.setFrontFacing(.counterClockwise)
-        renderCommandEncoder.setCullMode(.back)
-        
-        renderCommandEncoder.setVertexBuffer(globalUniformBuffers[bufferIndex],
-                                             offset: 0,
-                                             index: 2)
+        renderCommandEncoder.setFrontFacing(.clockwise)
+        renderCommandEncoder.setCullMode(.front)
         
         renderCommandEncoder.setVertexBuffer(instanceBuffers[bufferIndex],
                                              offset: 0,
                                              index: 1)
         
-        for (i, vertexBuffer) in meshes[0].vertexBuffers.enumerated() {
-            renderCommandEncoder.setVertexBuffer(vertexBuffer.buffer,
-                                                 offset: vertexBuffer.offset,
-                                                 index: i)
+        renderCommandEncoder.setVertexBuffer(globalUniformBuffers[bufferIndex],
+                                             offset: 0,
+                                             index: 2)
+        
+        var startOffset = 0
+        for (meshIndex, mesh) in meshes.enumerated() {
+            let instanceCount = frameData.groupSizes.advanced(by: meshIndex).pointee
+            guard instanceCount > 0 else { continue; }
+            
+            for (i, vertexBuffer) in mesh.vertexBuffers.enumerated() {
+                renderCommandEncoder.setVertexBuffer(vertexBuffer.buffer,
+                                                     offset: vertexBuffer.offset,
+                                                     index: i)
+            }
+            
+            for submesh in mesh.submeshes {
+                renderCommandEncoder.drawIndexedPrimitives(type: submesh.primitiveType,
+                                                           indexCount: submesh.indexCount,
+                                                           indexType: submesh.indexType,
+                                                           indexBuffer: submesh.indexBuffer.buffer,
+                                                           indexBufferOffset: submesh.indexBuffer.offset,
+                                                           instanceCount: instanceCount,
+                                                           baseVertex: 0,
+                                                           baseInstance: startOffset)
+            }
+            
+            startOffset += instanceCount
         }
         
-        for submesh in meshes[0].submeshes {
-            let indexBuffer = submesh.indexBuffer
-            renderCommandEncoder.drawIndexedPrimitives(type: submesh.primitiveType,
-                                                       indexCount: submesh.indexCount,
-                                                       indexType: submesh.indexType,
-                                                       indexBuffer: indexBuffer.buffer,
-                                                       indexBufferOffset: indexBuffer.offset)
-        }
         
         renderCommandEncoder.endEncoding()
         commandBuffer.present(view.currentDrawable!)
@@ -147,17 +181,15 @@ class Renderer : NSObject, MTKViewDelegate {
         commandBuffer.commit()
     }
     
-    func updateUniforms(view: MTKView) {
-        let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
-        var frameData = OnRender(aspectRatio)
-        
+    func updateUniforms(frameData: inout FrameData) {
         bufferIndex = (bufferIndex + 1) % Renderer.maxFramesInFlight
+        
+        instanceBuffers[bufferIndex].contents()
+            .copyMemory(from: frameData.instances, byteCount: MemoryLayout<Instance>.size * frameData.instanceCount)
         
         globalUniformBuffers[bufferIndex].contents()
             .copyMemory(from: &frameData.globalUniforms, byteCount: MemoryLayout<GlobalUniforms>.size)
         
-        instanceBuffers[bufferIndex].contents()
-            .copyMemory(from: frameData.instances, byteCount: MemoryLayout<Instance>.size * frameData.instanceCount)
     }
     
 }

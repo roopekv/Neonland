@@ -2,27 +2,29 @@
 #include "../ShaderTypes.h"
 using namespace metal;
 
-struct VertexIn {
+struct Vertex {
     float3 position [[attribute(0)]];
     float3 normal   [[attribute(1)]];
 };
 
-struct VertexOut {
+struct FragmentData {
     float4 position [[position]];
     float3 normal;
 };
 
-vertex auto vertexFunc(VertexIn in [[stage_in]],
-                       constant Instance& instance [[buffer(1)]],
-                       constant GlobalUniforms& globalUniforms [[buffer(2)]]) -> VertexOut {
-    VertexOut out;
-    out.position = globalUniforms.projMatrix * globalUniforms.viewMatrix * instance.transform * float4(in.position, 1);
+vertex auto vertexFunc(Vertex in [[stage_in]],
+                       uint instanceId [[instance_id]],
+                       constant Instance* instances [[buffer(1)]],
+                       constant GlobalUniforms& sceneData [[buffer(2)]]) -> FragmentData {
+    Instance instance = instances[instanceId];
+    FragmentData out;
+    out.position = sceneData.projMatrix * sceneData.viewMatrix * instance.transform * float4(in.position, 1);
     out.normal = in.normal;
     
     return out;
 }
 
-fragment auto fragmentFunc(VertexOut in [[stage_in]]) -> float4 {
+fragment auto fragmentFunc(FragmentData in [[stage_in]]) -> float4 {
     float3 normal = normalize(in.normal);
     float3 color = normal * float3(0.5) + float3(0.5);
     return float4(color, 1);
