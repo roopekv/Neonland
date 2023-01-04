@@ -15,6 +15,8 @@ matrix_float4x4 TranslationMatrix(vector_float3 t);
 
 matrix_float4x4 RotationMatrix(vector_float3 axis, float degrees);
 
+matrix_float4x4 ScaleMatrix(vector_float3 s);
+
 #ifdef __cplusplus
 }
 #endif

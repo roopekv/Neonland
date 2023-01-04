@@ -7,11 +7,11 @@
 #include "FrameData.h"
 #include "MathUtils.h"
 
-const double TIMESTEP = 1.0 / 1;
+extern const double TIMESTEP;
 
-const size_t MAX_ENEMY_COUNT = 100;
-const size_t MAX_PROJECTILE_COUNT = 0;
-const size_t MAX_ENTITY_COUNT = MAX_ENEMY_COUNT + MAX_PROJECTILE_COUNT + 1;
+extern const size_t MAX_ENEMY_COUNT;
+extern const size_t MAX_PROJECTILE_COUNT;
+extern const size_t MAX_ENTITY_COUNT;
 
 #ifdef __cplusplus
 extern "C" {

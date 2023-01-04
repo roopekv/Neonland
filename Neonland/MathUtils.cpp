@@ -40,20 +40,20 @@ matrix_float4x4 RotationMatrix(vector_float3 axis, float degrees) {
     float x = axis.x;
     float y = axis.y;
     float z = axis.z;
-    
+
     float angle = degrees * degToRad;
-    float s = sin(angle);
-    float c = cos(angle);
-    
+    float s = std::sin(angle);
+    float c = std::cos(angle);
+
     matrix_float4x4 m;
-    
+
     m.columns[0] = {
         c + x * x * (1 - c),
         y * x * (1 - c) + z * s,
         z * x * (1 - c) - y * s,
         0
     };
-    
+
     m.columns[1] = {
         x * y * (1 - c) - z * s,
         c + y * y * (1 - c),
@@ -67,6 +67,10 @@ matrix_float4x4 RotationMatrix(vector_float3 axis, float degrees) {
         0
     };
     m.columns[3] = {0, 0, 0,  1};
-    
+
     return m;
+}
+
+matrix_float4x4 ScaleMatrix(vector_float3 s) {
+    return simd::float4x4(vector_float4{s.x, s.y, s.z, 1});
 }

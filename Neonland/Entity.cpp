@@ -1,8 +1,9 @@
 #include "Entity.hpp"
 
-Entity::Entity(vector_float3 pos, float rot, vector_float3 vel, float angularVel, int32_t meshIdx)
+Entity::Entity(vector_float3 pos, float rot, vector_float3 scale, vector_float3 vel, float angularVel, int32_t meshIdx)
 : _position(pos)
 , _rotation(rot)
+, scale(scale)
 , vel(vel)
 , angularVel(angularVel)
 , meshIdx(meshIdx)
@@ -16,7 +17,7 @@ void Entity::Update(double timestep) {
     _rotatedOutsideUpdate = false;
 }
 
-void Entity::SetPosition(vector_float3& pos) {
+void Entity::SetPosition(vector_float3 pos) {
     _movedOutsideUpdate = true;
     _position = pos;
 }
@@ -32,12 +33,20 @@ const float& Entity::GetRotation() const { return _rotation; };
 matrix_float4x4 Entity::GetTransform(double timeSinceUpdate) const {
     constexpr static auto zAxis = vector_float3{0, 0, 1};
     
+    simd::float4x4 T, R, S;
+    
+    S = ScaleMatrix(scale);
+    
     if (_movedOutsideUpdate) {
-        return matrix_multiply(TranslationMatrix(_position),
-                               RotationMatrix(zAxis, _rotation));
+        T = TranslationMatrix(_position);
+        R = RotationMatrix(zAxis, _rotation);
     }
-    return matrix_multiply(TranslationMatrix(_position + vel * timeSinceUpdate),
-                           RotationMatrix(zAxis, _rotation + angularVel * timeSinceUpdate));
+    else {
+        T = TranslationMatrix(_position + vel * timeSinceUpdate);
+        R = RotationMatrix(zAxis, _rotation + angularVel * timeSinceUpdate);
+    }
+    
+    return T * R * S;
 }
 
 Instance Entity::GetInstance(double timeSinceUpdate) const {

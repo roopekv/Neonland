@@ -22,6 +22,8 @@
 		7AE607F22950F1B300C66EA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE607F12950F1B300C66EA5 /* AppDelegate.swift */; };
 		7AE607F42950F1B300C66EA5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE607F32950F1B300C66EA5 /* ViewController.swift */; };
 		7AE607F62950F1B400C66EA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7AE607F52950F1B400C66EA5 /* Assets.xcassets */; };
+		7AFA6033296268EA004823C6 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AFA6032296268EA004823C6 /* Camera.cpp */; };
+		7AFA60362962701E004823C6 /* ThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AFA60342962701E004823C6 /* ThreadPool.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +54,10 @@
 		7AE607F32950F1B300C66EA5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		7AE607F52950F1B400C66EA5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7AE607FA2950F1B400C66EA5 /* Neonland.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Neonland.entitlements; sourceTree = "<group>"; };
+		7AFA603029626598004823C6 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
+		7AFA6032296268EA004823C6 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		7AFA60342962701E004823C6 /* ThreadPool.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ThreadPool.cpp; sourceTree = "<group>"; };
+		7AFA60352962701E004823C6 /* ThreadPool.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ThreadPool.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +108,10 @@
 				7A62FC5E295FAF05001742A3 /* Enemies.cpp */,
 				7A62FC62295FBA32001742A3 /* Scene.hpp */,
 				7A62FC61295FBA32001742A3 /* Scene.cpp */,
+				7AFA603029626598004823C6 /* Camera.hpp */,
+				7AFA6032296268EA004823C6 /* Camera.cpp */,
+				7AFA60352962701E004823C6 /* ThreadPool.hpp */,
+				7AFA60342962701E004823C6 /* ThreadPool.cpp */,
 			);
 			path = Neonland;
 			sourceTree = "<group>";
@@ -203,7 +213,9 @@
 			files = (
 				7A82E5042952857300BDB064 /* Shaders.metal in Sources */,
 				7A62FC63295FBA32001742A3 /* Scene.cpp in Sources */,
+				7AFA6033296268EA004823C6 /* Camera.cpp in Sources */,
 				7A62FC52295F56D9001742A3 /* MathUtils.cpp in Sources */,
+				7AFA60362962701E004823C6 /* ThreadPool.cpp in Sources */,
 				7A62FC60295FAF05001742A3 /* Enemies.cpp in Sources */,
 				7A94521029548BCD004CFF4D /* Neonland.cpp in Sources */,
 				7AE607F42950F1B300C66EA5 /* ViewController.swift in Sources */,

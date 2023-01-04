@@ -10,13 +10,15 @@ public:
     vector_float3 vel;
     float angularVel;
     
+    vector_float3 scale;
+    
     uint32_t meshIdx;
     
-    Entity(vector_float3 pos, float rot, vector_float3 vel, float angularVel, int32_t meshIdx);
+    Entity(vector_float3 pos, float rot, vector_float3 scale, vector_float3 vel, float angularVel, int32_t meshIdx);
     
     void Update(double timestep);
     
-    void SetPosition(vector_float3& pos);
+    void SetPosition(vector_float3 pos);
     void SetRotation(float rot);
     
     const vector_float3& GetPosition() const;
