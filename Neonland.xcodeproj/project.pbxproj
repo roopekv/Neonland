@@ -12,8 +12,6 @@
 		7A62FC52295F56D9001742A3 /* MathUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A62FC50295F56D9001742A3 /* MathUtils.cpp */; };
 		7A62FC57295FACB6001742A3 /* GameClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A62FC56295FACB6001742A3 /* GameClock.cpp */; };
 		7A62FC5A295FAE72001742A3 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A62FC58295FAE72001742A3 /* Entity.cpp */; };
-		7A62FC5D295FAEC7001742A3 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A62FC5B295FAEC7001742A3 /* Player.cpp */; };
-		7A62FC60295FAF05001742A3 /* Enemies.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A62FC5E295FAF05001742A3 /* Enemies.cpp */; };
 		7A62FC63295FBA32001742A3 /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A62FC61295FBA32001742A3 /* Scene.cpp */; };
 		7A7323D42952757C0008C92E /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A7323D32952757C0008C92E /* Renderer.swift */; };
 		7A82E5042952857300BDB064 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7A82E5032952857300BDB064 /* Shaders.metal */; };
@@ -35,10 +33,6 @@
 		7A62FC56295FACB6001742A3 /* GameClock.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameClock.cpp; sourceTree = "<group>"; };
 		7A62FC58295FAE72001742A3 /* Entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
 		7A62FC59295FAE72001742A3 /* Entity.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Entity.hpp; sourceTree = "<group>"; };
-		7A62FC5B295FAEC7001742A3 /* Player.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cpp; sourceTree = "<group>"; };
-		7A62FC5C295FAEC7001742A3 /* Player.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Player.hpp; sourceTree = "<group>"; };
-		7A62FC5E295FAF05001742A3 /* Enemies.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Enemies.cpp; sourceTree = "<group>"; };
-		7A62FC5F295FAF05001742A3 /* Enemies.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Enemies.hpp; sourceTree = "<group>"; };
 		7A62FC61295FBA32001742A3 /* Scene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
 		7A62FC62295FBA32001742A3 /* Scene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Scene.hpp; sourceTree = "<group>"; };
 		7A62FC64295FC12F001742A3 /* FrameData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FrameData.h; sourceTree = "<group>"; };
@@ -102,10 +96,6 @@
 				7A62FC56295FACB6001742A3 /* GameClock.cpp */,
 				7A62FC59295FAE72001742A3 /* Entity.hpp */,
 				7A62FC58295FAE72001742A3 /* Entity.cpp */,
-				7A62FC5C295FAEC7001742A3 /* Player.hpp */,
-				7A62FC5B295FAEC7001742A3 /* Player.cpp */,
-				7A62FC5F295FAF05001742A3 /* Enemies.hpp */,
-				7A62FC5E295FAF05001742A3 /* Enemies.cpp */,
 				7A62FC62295FBA32001742A3 /* Scene.hpp */,
 				7A62FC61295FBA32001742A3 /* Scene.cpp */,
 				7AFA603029626598004823C6 /* Camera.hpp */,
@@ -216,11 +206,9 @@
 				7AFA6033296268EA004823C6 /* Camera.cpp in Sources */,
 				7A62FC52295F56D9001742A3 /* MathUtils.cpp in Sources */,
 				7AFA60362962701E004823C6 /* ThreadPool.cpp in Sources */,
-				7A62FC60295FAF05001742A3 /* Enemies.cpp in Sources */,
 				7A94521029548BCD004CFF4D /* Neonland.cpp in Sources */,
 				7AE607F42950F1B300C66EA5 /* ViewController.swift in Sources */,
 				7AE607F22950F1B300C66EA5 /* AppDelegate.swift in Sources */,
-				7A62FC5D295FAEC7001742A3 /* Player.cpp in Sources */,
 				7A0F89482952223D00A999F2 /* MenuBar.swift in Sources */,
 				7A7323D42952757C0008C92E /* Renderer.swift in Sources */,
 				7A62FC57295FACB6001742A3 /* GameClock.cpp in Sources */,

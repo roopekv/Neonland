@@ -5,30 +5,32 @@
 #include "MathUtils.h"
 #include "ShaderTypes.h"
 
+using float3 = simd::float3;
+
 class Entity {
 public:
-    vector_float3 vel;
-    float angularVel;
+    float3 velocity;
+    float3 angularVelocity;
     
-    vector_float3 scale;
+    float3 scale;
     
-    uint32_t meshIdx;
+    const uint32_t meshIdx;
     
-    Entity(vector_float3 pos, float rot, vector_float3 scale, vector_float3 vel, float angularVel, int32_t meshIdx);
+    Entity(uint32_t meshIdx, float3 pos = {0, 0, 0}, float3 rot = {0, 0, 0}, float3 scale = {1, 1, 1});
     
     void Update(double timestep);
     
-    void SetPosition(vector_float3 pos);
-    void SetRotation(float rot);
+    void SetPosition(float3 pos);
+    void SetRotation(float3 rot);
     
-    const vector_float3& GetPosition() const;
-    const float& GetRotation() const;
+    const float3& GetPosition() const;
+    const float3& GetRotation() const;
     
-    matrix_float4x4 GetTransform(double timeSinceUpdate) const;
+    simd::float4x4 GetTransform(double timeSinceUpdate) const;
     Instance GetInstance(double timeSinceUpdate) const;
 protected:
-    vector_float3 _position;
-    float _rotation;
+    float3 _position;
+    float3 _rotation;
     
     bool _movedOutsideUpdate;
     bool _rotatedOutsideUpdate;

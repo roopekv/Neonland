@@ -17,8 +17,11 @@ extern const size_t MAX_ENTITY_COUNT;
 extern "C" {
 #endif
 
-void OnStart();
-FrameData OnRender(float aspectRatio);
+void Neonland_Start();
+void Neonland_UpdateCursorPosition(vector_float2 newPos);
+void Neonland_UpdateMoveDirection(vector_float2 newDir);
+
+FrameData Neonland_Render(float aspectRatio);
 
 #ifdef __cplusplus
 }

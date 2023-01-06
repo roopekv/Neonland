@@ -9,32 +9,32 @@ namespace {
 template<typename Func>
 void UpdateInParallel(std::vector<std::vector<Entity>>& groups, size_t totalCount, Func updateFunc) {
     auto& threadPool = ThreadPool::GetInstance();
-    const size_t entitiesPerThread = totalCount / ThreadPool::ThreadCount;
+    const size_t entitiesPerBatch = totalCount / ThreadPool::ThreadCount;
     std::vector<std::future<void>> jobs;
     
-    std::vector<std::span<Entity>> ranges;
-    int rangesEntityCount = 0;
+    std::vector<std::span<Entity>> batch;
+    int batchSize = 0;
     
     size_t idx = 0;
     for (auto& group : groups) {
         for (size_t idxInGroup = 0; idxInGroup < group.size();) {
-            size_t rangeSize = std::min(group.size() - idxInGroup, entitiesPerThread - rangesEntityCount);
-            ranges.emplace_back(group.data() + idxInGroup, rangeSize);
-            rangesEntityCount += rangeSize;
+            size_t subbatchSize = std::min(group.size() - idxInGroup, entitiesPerBatch - batchSize);
+            batch.emplace_back(group.data() + idxInGroup, subbatchSize);
+            batchSize += subbatchSize;
             
-            if (rangesEntityCount == entitiesPerThread) {
-                jobs.push_back(threadPool.SubmitJob(std::bind(updateFunc, ranges, idx)));
-                ranges.clear();
-                rangesEntityCount = 0;
+            if (batchSize == entitiesPerBatch) {
+                jobs.push_back(threadPool.SubmitJob(std::bind(updateFunc, batch, idx)));
+                idx += batchSize;
+                batch.clear();
+                batchSize = 0;
             }
             
-            idx += rangeSize;
-            idxInGroup += rangeSize;
+            idxInGroup += subbatchSize;
         }
     }
     
-    if (rangesEntityCount > 0) {
-        updateFunc(ranges, idx);
+    if (batchSize > 0) {
+        updateFunc(batch, idx);
     }
     
     for (auto& job : jobs) {
@@ -43,8 +43,8 @@ void UpdateInParallel(std::vector<std::vector<Entity>>& groups, size_t totalCoun
 }
 
 void UpdateEntitiesInParallel(std::vector<std::vector<Entity>>& groups, size_t totalCount, double timestep) {
-    using Ranges = std::vector<std::span<Entity>>;
-    UpdateInParallel(groups, totalCount, [ts = timestep](Ranges ranges, size_t idx) {
+    using Batch = std::vector<std::span<Entity>>;
+    UpdateInParallel(groups, totalCount, [ts = timestep](Batch ranges, size_t idx) {
         for (auto& range : ranges) {
             for (auto& entity : range) {
                 entity.Update(ts);
@@ -57,9 +57,9 @@ void UpdateInstancesInParallel(std::vector<std::vector<Entity>>& groups,
                                size_t totalCount,
                                std::vector<Instance>& instances,
                                double timeSinceUpdate) {
-    using Ranges = std::vector<std::span<Entity>>;
+    using Batch = std::vector<std::span<Entity>>;
     UpdateInParallel(groups, totalCount, [t = timeSinceUpdate,
-                                          instances = instances.data()](Ranges ranges, size_t idx) {
+                                          instances = instances.data()](Batch ranges, size_t idx) {
         for (auto& range : ranges) {
             for (auto& entity : range) {
                 instances[idx] = entity.GetInstance(t);
@@ -98,7 +98,7 @@ Scene::Scene(size_t maxEntityCount, double timestep, Camera cam)
 , _nextTickTime{_gameClock.Time()}
 , camera(cam) { }
 
-Entity& Scene::AddEntity(Entity entity) {
+Entity& Scene::AddEntity(Entity&& entity) {
     auto idx = entity.meshIdx;
     _entityGroups.resize(idx + 1);
     _entityGroups[idx].push_back(entity);
@@ -108,6 +108,10 @@ Entity& Scene::AddEntity(Entity entity) {
     _instanceCount++;
     
     return _entityGroups[idx].back();
+}
+
+std::vector<Entity>& Scene::GetEntityGroup(uint32_t idx) {
+    return _entityGroups[idx];
 }
 
 void Scene::Update() {
@@ -137,10 +141,10 @@ void Scene::Update() {
     }
 }
 
-FrameData Scene::GetFrameData(float aspectRatio) {
+FrameData Scene::GetFrameData() {
     GlobalUniforms uniforms;
-    uniforms.projMatrix = ProjectionMatrix(camera.verticalFoV, aspectRatio, camera.nearPlane, camera.farPlane);
-    uniforms.viewMatrix = TranslationMatrix(-camera.position);
+    uniforms.projMatrix = camera.GetProjectionMatrix();
+    uniforms.viewMatrix = camera.GetViewMatrix();
     
     FrameData frameData;
     frameData.globalUniforms = uniforms;

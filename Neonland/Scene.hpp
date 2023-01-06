@@ -5,8 +5,7 @@
 
 #include "GameClock.hpp"
 #include "Camera.hpp"
-#include "Enemies.hpp"
-#include "Player.hpp"
+#include "Entity.hpp"
 #include "ShaderTypes.h"
 #include "FrameData.h"
 
@@ -14,14 +13,15 @@ class Scene {
 public:
     Camera camera;
     
-    Scene(size_t maxEntityCount, double timestep, Camera cam = Camera());
+    Scene(size_t maxEntityCount, double timestep, Camera cam);
     
-    Entity& AddEntity(Entity entity);
-    Entity& AddEntity();
+    Entity& AddEntity(Entity&& entity);
+    
+    std::vector<Entity>& GetEntityGroup(uint32_t idx);
     
     void Update();
     
-    FrameData GetFrameData(float aspectRatio);
+    FrameData GetFrameData();
     
     size_t InstanceCount() const;
     size_t MaxInstanceCount() const;

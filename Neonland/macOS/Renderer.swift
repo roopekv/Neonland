@@ -2,8 +2,11 @@ import MetalKit
 import Metal
 import Dispatch
 import simd
+import Carbon.HIToolbox.Events
 
 class Renderer : NSObject, MTKViewDelegate {
+    
+    var keysDown = [Bool](repeating: false, count: Int(UInt16.max))
     
     static let maxFramesInFlight = 3
     
@@ -111,7 +114,7 @@ class Renderer : NSObject, MTKViewDelegate {
         
         depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)!
         
-        OnStart()
+        Neonland_Start()
     }
     
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -121,8 +124,10 @@ class Renderer : NSObject, MTKViewDelegate {
     func draw(in view: MTKView) {
         frameSemaphore.wait()
         
+        pollInput(view: view)
+        
         let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
-        var frameData = OnRender(aspectRatio)
+        var frameData = Neonland_Render(aspectRatio)
         updateUniforms(frameData: &frameData)
         
         let renderPassDescriptor = view.currentRenderPassDescriptor!
@@ -135,7 +140,7 @@ class Renderer : NSObject, MTKViewDelegate {
         renderCommandEncoder.setRenderPipelineState(renderPipelineState)
         renderCommandEncoder.setDepthStencilState(depthStencilState)
         renderCommandEncoder.setFrontFacing(.clockwise)
-        renderCommandEncoder.setCullMode(.front)
+        renderCommandEncoder.setCullMode(.back)
         
         renderCommandEncoder.setVertexBuffer(instanceBuffers[bufferIndex],
                                              offset: 0,
@@ -179,6 +184,22 @@ class Renderer : NSObject, MTKViewDelegate {
         }
         
         commandBuffer.commit()
+    }
+    
+    func pollInput(view: MTKView) {
+        if let window = view.window, window.isKeyWindow {
+            var pos = view.convert(window.mouseLocationOutsideOfEventStream, to: nil)
+            pos.x = (pos.x / view.bounds.width) * 2 - 1;
+            pos.y = (pos.y / view.bounds.height) * 2 - 1;
+            
+            Neonland_UpdateCursorPosition(SIMD2<Float>(Float(pos.x), Float(pos.y)))
+        }
+        
+        var dir = SIMD2<Float>.zero
+        if keysDown[kVK_ANSI_W] {
+            dir.y = 1
+        }
+        Neonland_UpdateMoveDirection(dir)
     }
     
     func updateUniforms(frameData: inout FrameData) {
