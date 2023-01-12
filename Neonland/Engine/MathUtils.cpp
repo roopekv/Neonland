@@ -1,4 +1,4 @@
-#include "MathUtils.h"
+#include "MathUtils.hpp"
 #include <numbers>
 #include <cmath>
 
@@ -6,10 +6,10 @@ namespace {
 constexpr float degToRad = std::numbers::pi_v<float> / 180;
 }
 
-matrix_float4x4 ProjectionMatrix(float verticalFoVInDegrees,
-                                 float aspectRatio,
-                                 float near,
-                                 float far) {
+float4x4 ProjectionMatrix(float verticalFoVInDegrees,
+                          float aspectRatio,
+                          float near,
+                          float far) {
     float fov = verticalFoVInDegrees * degToRad;
     
     float scale = 1 / std::tan(fov / 2);
@@ -19,7 +19,7 @@ matrix_float4x4 ProjectionMatrix(float verticalFoVInDegrees,
     float z = far / (far - near);
     float w = -near * far / (far - near);
     
-    matrix_float4x4 m;
+    float4x4 m;
     
     m.columns[0] = {x, 0, 0,  0};
     m.columns[1] = {0, y, 0,  0};
@@ -29,31 +29,31 @@ matrix_float4x4 ProjectionMatrix(float verticalFoVInDegrees,
     return m;
 }
 
-matrix_float4x4 TranslationMatrix(vector_float3 t) {
-    matrix_float4x4 result = matrix_identity_float4x4;
+float4x4 TranslationMatrix(float3 t) {
+    float4x4 result = matrix_identity_float4x4;
     result.columns[3] = {t.x, t.y, t.z,  1};
     
     return result;
 }
 
-matrix_float4x4 RotationMatrix(vector_float3 axis, float degrees) {
+float4x4 RotationMatrix(float3 axis, float degrees) {
     float x = axis.x;
     float y = axis.y;
     float z = axis.z;
-
+    
     float angle = degrees * degToRad;
     float s = std::sin(angle);
     float c = std::cos(angle);
-
-    matrix_float4x4 m;
-
+    
+    float4x4 m;
+    
     m.columns[0] = {
         c + x * x * (1 - c),
         y * x * (1 - c) + z * s,
         z * x * (1 - c) - y * s,
         0
     };
-
+    
     m.columns[1] = {
         x * y * (1 - c) - z * s,
         c + y * y * (1 - c),
@@ -67,10 +67,10 @@ matrix_float4x4 RotationMatrix(vector_float3 axis, float degrees) {
         0
     };
     m.columns[3] = {0, 0, 0,  1};
-
+    
     return m;
 }
 
-matrix_float4x4 ScaleMatrix(vector_float3 s) {
-    return simd::float4x4(vector_float4{s.x, s.y, s.z, 1});
+float4x4 ScaleMatrix(float3 s) {
+    return float4x4(float4{s.x, s.y, s.z, 1});
 }

@@ -1,27 +1,26 @@
 #pragma once
 
-#include <stddef.h>
-#include <stdint.h>
-
 #include "ShaderTypes.h"
 #include "FrameData.h"
-#include "MathUtils.h"
 
-extern const double TIMESTEP;
+#include "NeonConstants.h"
 
-extern const size_t MAX_ENEMY_COUNT;
-extern const size_t MAX_PROJECTILE_COUNT;
-extern const size_t MAX_ENTITY_COUNT;
+enum MeshType {
+    PLAYER_MESH = 0,
+    ENEMY_MESH = 1
+};
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void Neonland_Start();
-void Neonland_UpdateCursorPosition(vector_float2 newPos);
-void Neonland_UpdateMoveDirection(vector_float2 newDir);
+uint32_t Neon_MeshForGroup(uint32_t groupIdx);
 
-FrameData Neonland_Render(float aspectRatio);
+void Neon_Start();
+void Neon_UpdateCursorPosition(vector_float2 newPos);
+void Neon_UpdateMoveDirection(vector_float2 newDir);
+
+FrameData Neon_Render(float aspectRatio);
 
 #ifdef __cplusplus
 }

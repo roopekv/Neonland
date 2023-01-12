@@ -9,7 +9,12 @@ double SteadyTime() {
 
 }
 
-GameClock::GameClock() : _startTime{SteadyTime()} {}
+GameClock::GameClock(bool paused)
+: _startTime{SteadyTime()}
+, _time{0} {
+    paused = false;
+    Paused(paused);
+}
 
 void GameClock::Reset() {
     _time = 0;

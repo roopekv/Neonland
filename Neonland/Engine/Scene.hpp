@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <simd/simd.h>
 
 #include "GameClock.hpp"
 #include "Camera.hpp"
@@ -12,24 +11,28 @@
 class Scene {
 public:
     Camera camera;
+    GameClock clock;
     
-    Scene(size_t maxEntityCount, double timestep, Camera cam);
+    Scene(size_t maxEntityCount, double timestep, Camera cam, GameClock clock);
     
     Entity& AddEntity(Entity&& entity);
     
-    std::vector<Entity>& GetEntityGroup(uint32_t idx);
+    std::vector<Entity>& GetEntitiesOfType(uint32_t type);
     
     void Update();
     
     FrameData GetFrameData();
     
+    double Timestep() const;
+    
     size_t InstanceCount() const;
     size_t MaxInstanceCount() const;
+protected:
+    virtual void OnRender(double dt) = 0;
+    virtual void OnUpdate() = 0;
 private:
     std::vector<std::vector<Entity>> _entityGroups;
     std::vector<size_t> _groupSizes;
-    
-    GameClock _gameClock;
     
     size_t _instanceCount = 0;
     std::vector<Instance> _instances;
@@ -38,4 +41,5 @@ private:
     
     double _timestep;    
     double _nextTickTime;
+    double _prevRenderTime;
 };

@@ -91,35 +91,46 @@ void UpdateInstancesInSeries(std::vector<std::vector<Entity>>& groups,
 
 }
 
-Scene::Scene(size_t maxEntityCount, double timestep, Camera cam)
+Scene::Scene(size_t maxEntityCount, double timestep, Camera cam, GameClock clock)
 : _maxInstanceCount{maxEntityCount}
 , _timestep{timestep}
 , _instances(maxEntityCount)
-, _nextTickTime{_gameClock.Time()}
+, clock(clock)
+, _nextTickTime{clock.Time()}
+, _prevRenderTime{clock.Time()}
 , camera(cam) { }
 
 Entity& Scene::AddEntity(Entity&& entity) {
-    auto idx = entity.meshIdx;
-    _entityGroups.resize(idx + 1);
-    _entityGroups[idx].push_back(entity);
+    uint32_t idx = entity.type;
     
-    _groupSizes.resize(idx + 1, 0);
+    if (idx + 1 > _entityGroups.size()) {
+        _entityGroups.resize(idx + 1);
+        _groupSizes.resize(idx + 1, 0);
+    }
+    
+    _entityGroups[idx].push_back(entity);
     _groupSizes[idx]++;
     _instanceCount++;
+    
+    if (_instanceCount > _maxInstanceCount) {
+        throw std::length_error("Instance count exceeded the maximum value set.");
+    }
     
     return _entityGroups[idx].back();
 }
 
-std::vector<Entity>& Scene::GetEntityGroup(uint32_t idx) {
-    return _entityGroups[idx];
+std::vector<Entity>& Scene::GetEntitiesOfType(uint32_t type) {
+    return _entityGroups[type];
 }
 
 void Scene::Update() {
-    auto time = _gameClock.Time();
+    auto time = clock.Time();
     
-    bool useMultithreading = ThreadPool::ThreadCount > 0 && _instanceCount > 100;
+    bool useMultithreading = ThreadPool::ThreadCount > 0 && _instanceCount > ThreadPool::ThreadCount;
     
     while (time >= _nextTickTime) {
+        
+        OnUpdate();
         
         if (useMultithreading) {
             UpdateEntitiesInParallel(_entityGroups, _instanceCount, _timestep);
@@ -132,6 +143,9 @@ void Scene::Update() {
     }
     
     double timeSinceUpdate = _timestep - (_nextTickTime - time);
+    
+    OnRender(time - _prevRenderTime);
+    _prevRenderTime = time;
     
     if (useMultithreading) {
         UpdateInstancesInParallel(_entityGroups, _instanceCount, _instances, timeSinceUpdate);
@@ -152,10 +166,14 @@ FrameData Scene::GetFrameData() {
     frameData.instanceCount = _instanceCount;
     frameData.instances = _instances.data();
     
-    frameData.groupCount = _groupSizes.size();
+    frameData.groupCount = static_cast<uint32_t>(_groupSizes.size());
     frameData.groupSizes = _groupSizes.data();
     
     return frameData;
+}
+
+double Scene::Timestep() const {
+    return _timestep;
 }
 
 size_t Scene::InstanceCount() const {

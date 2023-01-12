@@ -1,9 +1,8 @@
 #include "Camera.hpp"
-#include "MathUtils.h"
 
 #include <iostream>
 
-Camera::Camera(vector_float3 pos, vector_float3 color, float near, float far, float fov, float aspectRatio)
+Camera::Camera(float3 pos, float3 color, float near, float far, float fov, float aspectRatio)
 : _position{pos}
 , clearColor{color}
 , _nearClipPlane{near}
@@ -13,28 +12,28 @@ Camera::Camera(vector_float3 pos, vector_float3 color, float near, float far, fl
 , _projChanged{true}
 , _viewChanged{true}{}
 
-vector_float3 Camera::ScreenPointToWorld(vector_float2 screenPoint, float depth) {
-    simd::float4x4 proj = ProjectionMatrix(_verticalFoV, _aspectRatio, _nearClipPlane, _farClipPlane);
-    simd::float4x4 view = TranslationMatrix(-_position);
+vector_float3 Camera::ScreenPointToWorld(float2 screenPoint, float depth) {
+    float4x4 proj = ProjectionMatrix(_verticalFoV, _aspectRatio, _nearClipPlane, _farClipPlane);
+    float4x4 view = TranslationMatrix(-_position);
     
-    simd::float4 worldSpaceDepth = {0, 0, depth, 1};
+    float4 worldSpaceDepth = {0, 0, depth, 1};
     
-    simd::float4 screenSpaceDepth = proj * view * worldSpaceDepth;
+    float4 screenSpaceDepth = proj * view * worldSpaceDepth;
     screenSpaceDepth /= screenSpaceDepth.w;
     
-    simd::float4x4 inverse = simd::inverse(proj * view);
+    float4x4 inverse = simd::inverse(proj * view);
     
-    vector_float4 worldPoint = inverse * simd::float4{screenPoint.x, screenPoint.y, screenSpaceDepth.z, 1};
+    float4 worldPoint = inverse * float4{screenPoint.x, screenPoint.y, screenSpaceDepth.z, 1};
     worldPoint /= worldPoint.w;
     return {worldPoint.x, worldPoint.y, worldPoint.z};
 }
 
-void Camera::SetPosition(vector_float3 pos) {
+void Camera::SetPosition(float3 pos) {
     _viewChanged = true;
     _position = pos;
 }
 
-const vector_float3& Camera::GetPosition() const {
+const float3& Camera::GetPosition() const {
     return _position;
 }
 
@@ -74,7 +73,7 @@ float Camera::GetAspectRatio() const {
     return _aspectRatio;
 }
 
-const matrix_float4x4& Camera::GetProjectionMatrix() {
+const float4x4& Camera::GetProjectionMatrix() {
     if (_projChanged) {
         _projMat = ProjectionMatrix(_verticalFoV, _aspectRatio, _nearClipPlane, _farClipPlane);
         _projChanged = false;
@@ -83,7 +82,7 @@ const matrix_float4x4& Camera::GetProjectionMatrix() {
     return _projMat;
 }
 
-const matrix_float4x4& Camera::GetViewMatrix() {
+const float4x4& Camera::GetViewMatrix() {
     if (_viewChanged) {
         _viewMat = TranslationMatrix(-_position);
         _viewChanged = false;

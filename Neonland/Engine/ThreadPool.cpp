@@ -12,7 +12,6 @@ ThreadPool::ThreadPool()
             threads.push_back(std::thread(&ThreadPool::ThreadLoop, this));
         }
     }
-    
 }
 
 ThreadPool::~ThreadPool() {

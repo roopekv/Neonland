@@ -1,9 +1,13 @@
 #include "Entity.hpp"
 
-Entity::Entity(uint32_t meshIdx, float3 pos, float3 rot, float3 scale)
-: meshIdx{meshIdx}
+#include "NeonConstants.h"
+
+Entity::Entity(uint32_t type, float3 pos, float3 rot, float3 scale)
+: type(type)
 , _position{pos}
+, _prevRotation(pos)
 , _rotation{rot}
+, _prevPosition(pos)
 , scale{scale}
 , velocity{0, 0}
 , angularVelocity{0}
@@ -11,6 +15,7 @@ Entity::Entity(uint32_t meshIdx, float3 pos, float3 rot, float3 scale)
 , _rotatedOutsideUpdate{false} {}
 
 void Entity::Update(double timestep) {
+    _prevPosition = _position;
     _position += velocity * timestep;
     _rotation += angularVelocity * timestep;
     _movedOutsideUpdate = false;
@@ -30,18 +35,18 @@ void Entity::SetRotation(float3 rot) {
 const float3& Entity::GetPosition() const { return _position; };
 const float3& Entity::GetRotation() const { return _rotation; };
 
-simd::float4x4 Entity::GetTransform(double timeSinceUpdate) const {
+float4x4 Entity::GetTransform(double timeSinceUpdate) const {
     constexpr static auto xAxis = float3{1, 0, 0};
     constexpr static auto yAxis = float3{0, 1, 0};
     constexpr static auto zAxis = float3{0, 0, 1};
     
-    simd::float4x4 T, R, S;
+    float4x4 T, R, S;
 
     S = ScaleMatrix(scale);
     
-    simd::float4x4 rX;
-    simd::float4x4 rY;
-    simd::float4x4 rZ;
+    float4x4 rX;
+    float4x4 rY;
+    float4x4 rZ;
     
     if (_movedOutsideUpdate) {
         T = TranslationMatrix(_position);
@@ -51,7 +56,8 @@ simd::float4x4 Entity::GetTransform(double timeSinceUpdate) const {
         rZ = RotationMatrix(zAxis, _rotation.z);
     }
     else {
-        T = TranslationMatrix(_position + velocity * timeSinceUpdate);
+        
+        T = TranslationMatrix(_prevPosition + (_position - _prevPosition) * (timeSinceUpdate / TIMESTEP));
         
         float3 r = _rotation + angularVelocity * timeSinceUpdate;
         rX = RotationMatrix(xAxis, r.x);

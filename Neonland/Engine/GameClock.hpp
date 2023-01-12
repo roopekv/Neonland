@@ -2,7 +2,7 @@
 
 class GameClock {
 public:
-    GameClock();
+    GameClock(bool paused = false);
     
     double Time() const;
     
@@ -13,6 +13,6 @@ public:
     
 private:
     double _startTime;
-    double _time = 0;
+    double _time;
     bool _paused;
 };

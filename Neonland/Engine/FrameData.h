@@ -8,6 +8,6 @@ typedef struct FrameData {
     size_t instanceCount;
     Instance* instances;
     
-    size_t groupCount;
+    uint32_t groupCount;
     size_t* groupSizes;
 } FrameData;

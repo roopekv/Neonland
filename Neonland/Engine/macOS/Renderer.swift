@@ -114,7 +114,7 @@ class Renderer : NSObject, MTKViewDelegate {
         
         depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)!
         
-        Neonland_Start()
+        Neon_Start()
     }
     
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -127,7 +127,7 @@ class Renderer : NSObject, MTKViewDelegate {
         pollInput(view: view)
         
         let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
-        var frameData = Neonland_Render(aspectRatio)
+        var frameData = Neon_Render(aspectRatio)
         updateUniforms(frameData: &frameData)
         
         let renderPassDescriptor = view.currentRenderPassDescriptor!
@@ -151,8 +151,12 @@ class Renderer : NSObject, MTKViewDelegate {
                                              index: 2)
         
         var startOffset = 0
-        for (meshIndex, mesh) in meshes.enumerated() {
-            let instanceCount = frameData.groupSizes.advanced(by: meshIndex).pointee
+        
+        for groupIdx in 0..<frameData.groupCount {
+            let meshIndex = Int(Neon_MeshForGroup(groupIdx))
+            let mesh = meshes[meshIndex]
+            
+            let instanceCount = frameData.groupSizes.advanced(by: Int(groupIdx)).pointee
             guard instanceCount > 0 else { continue; }
             
             for (i, vertexBuffer) in mesh.vertexBuffers.enumerated() {
@@ -192,14 +196,28 @@ class Renderer : NSObject, MTKViewDelegate {
             pos.x = (pos.x / view.bounds.width) * 2 - 1;
             pos.y = (pos.y / view.bounds.height) * 2 - 1;
             
-            Neonland_UpdateCursorPosition(SIMD2<Float>(Float(pos.x), Float(pos.y)))
+            Neon_UpdateCursorPosition(SIMD2<Float>(Float(pos.x), Float(pos.y)))
         }
         
         var dir = SIMD2<Float>.zero
+        
         if keysDown[kVK_ANSI_W] {
-            dir.y = 1
+            dir.y += 1
         }
-        Neonland_UpdateMoveDirection(dir)
+        
+        if keysDown[kVK_ANSI_S] {
+            dir.y -= 1
+        }
+        
+        if keysDown[kVK_ANSI_D] {
+            dir.x += 1
+        }
+        
+        if keysDown[kVK_ANSI_A] {
+            dir.x -= 1
+        }
+        
+        Neon_UpdateMoveDirection(dir)
     }
     
     func updateUniforms(frameData: inout FrameData) {

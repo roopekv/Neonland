@@ -1,25 +1,25 @@
 #pragma once
 
-#include <simd/simd.h>
+#include "MathUtils.hpp"
 
 class Camera {
 public:
-    vector_float3 clearColor;
+    float3 clearColor;
     
-    Camera(vector_float3 pos = {0, 0, 0},
-           vector_float3 color = {0, 0, 0},
+    Camera(float3 pos = {0, 0, 0},
+           float3 color = {0, 0, 0},
            float near = 0.1f,
            float far = 100,
            float fov = 60,
            float aspectRatio = 1.0f);
     
-    vector_float3 ScreenPointToWorld(vector_float2 screenPoint, float depth);
+    float3 ScreenPointToWorld(float2 screenPoint, float depth);
     
-    void SetPosition(vector_float3 pos);
-    const vector_float3& GetPosition() const;
+    void SetPosition(float3 pos);
+    const float3& GetPosition() const;
     
-    void SetClearColor(vector_float3 color);
-    const vector_float3& GetClearColor() const;
+    void SetClearColor(float3 color);
+    const float3& GetClearColor() const;
     
     void SetFarClipPlane(float far);
     float GetFarClipPlane() const;
@@ -33,10 +33,10 @@ public:
     void SetAspectRatio(float ratio);
     float GetAspectRatio() const;
     
-    const matrix_float4x4& GetProjectionMatrix();
-    const matrix_float4x4& GetViewMatrix();
+    const float4x4& GetProjectionMatrix();
+    const float4x4& GetViewMatrix();
 private:
-    vector_float3 _position;
+    float3 _position;
     float _farClipPlane;
     float _nearClipPlane;
     float _verticalFoV;
@@ -45,6 +45,6 @@ private:
     bool _projChanged;
     bool _viewChanged;
     
-    matrix_float4x4 _projMat;
-    matrix_float4x4 _viewMat;
+    float4x4 _projMat;
+    float4x4 _viewMat;
 };
