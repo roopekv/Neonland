@@ -7,21 +7,7 @@
 namespace {
 
 auto scene = NeonScene(MAX_ENTITY_COUNT, TIMESTEP, GameClock(true));
-
-constexpr MeshType MeshForGroup(uint32_t groupIdx) {
-    MeshType meshesForGroups[NeonScene::EntityGroupCount];
     
-    meshesForGroups[NeonScene::PLAYER] = PLAYER_MESH;
-    meshesForGroups[NeonScene::CROSSHAIR] = PLAYER_MESH;
-    meshesForGroups[NeonScene::ENEMY] = ENEMY_MESH;
-    
-    return meshesForGroups[groupIdx];
-}
-    
-}
-
-uint32_t Neon_MeshForGroup(uint32_t groupIdx) {
-    return MeshForGroup(groupIdx);
 }
 
 void Neon_Start() {
@@ -29,11 +15,7 @@ void Neon_Start() {
 }
 
 FrameData Neon_Render(float aspectRatio) {
-    if (aspectRatio != scene.camera.GetAspectRatio()) {
-        scene.camera.SetAspectRatio(aspectRatio);
-    }
-    
-    scene.Update();
+    scene.Update(aspectRatio);
     
     return scene.GetFrameData();
 }

@@ -9,14 +9,18 @@
 /* Begin PBXBuildFile section */
 		7A0F89482952223D00A999F2 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F89472952223D00A999F2 /* MenuBar.swift */; };
 		7A445EF02951EFBE007A3A38 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A445EEF2951EFBE007A3A38 /* main.swift */; };
+		7A5259482970A1CE00B5152B /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A5259452970A1CE00B5152B /* Scene.cpp */; };
+		7A5259492970A1CE00B5152B /* IGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A5259462970A1CE00B5152B /* IGroup.cpp */; };
+		7A52594A2970A1CE00B5152B /* IPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A5259472970A1CE00B5152B /* IPool.cpp */; };
 		7A62FC52295F56D9001742A3 /* MathUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A62FC50295F56D9001742A3 /* MathUtils.cpp */; };
 		7A62FC57295FACB6001742A3 /* GameClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A62FC56295FACB6001742A3 /* GameClock.cpp */; };
-		7A62FC5A295FAE72001742A3 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A62FC58295FAE72001742A3 /* Entity.cpp */; };
-		7A62FC63295FBA32001742A3 /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A62FC61295FBA32001742A3 /* Scene.cpp */; };
 		7A7323D42952757C0008C92E /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A7323D32952757C0008C92E /* Renderer.swift */; };
+		7A75B1EA2970B1B00087202E /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A75B1E82970B1B00087202E /* Transform.cpp */; };
+		7A75B1ED2970B4090087202E /* Physics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A75B1EB2970B4090087202E /* Physics.cpp */; };
 		7A82E5042952857300BDB064 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 7A82E5032952857300BDB064 /* Shaders.metal */; };
 		7A94520C29548B8D004CFF4D /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 7A94520B29548B8D004CFF4D /* TODO */; };
 		7A94521029548BCD004CFF4D /* Neonland.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A94520E29548BCD004CFF4D /* Neonland.cpp */; };
+		7AA078682970F3E500B31EAC /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA078662970F3E500B31EAC /* Mesh.cpp */; };
 		7AD68D6F296872F6003821A3 /* NeonScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AD68D6D296872F6003821A3 /* NeonScene.cpp */; };
 		7AD68D7229687C01003821A3 /* NeonConstants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AD68D7129687C01003821A3 /* NeonConstants.cpp */; };
 		7AE607F22950F1B300C66EA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE607F12950F1B300C66EA5 /* AppDelegate.swift */; };
@@ -29,21 +33,35 @@
 /* Begin PBXFileReference section */
 		7A0F89472952223D00A999F2 /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
 		7A445EEF2951EFBE007A3A38 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		7A5259372970A16000B5152B /* IGroup.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = IGroup.hpp; sourceTree = "<group>"; };
+		7A5259382970A16000B5152B /* Group.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Group.hpp; sourceTree = "<group>"; };
+		7A5259392970A16000B5152B /* ComponentType.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ComponentType.hpp; sourceTree = "<group>"; };
+		7A52593B2970A16000B5152B /* Pool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Pool.hpp; sourceTree = "<group>"; };
+		7A52593C2970A16000B5152B /* ComponentMask.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ComponentMask.hpp; sourceTree = "<group>"; };
+		7A52593D2970A16000B5152B /* Component.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Component.hpp; sourceTree = "<group>"; };
+		7A52593E2970A16000B5152B /* IPool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = IPool.hpp; sourceTree = "<group>"; };
+		7A5259412970A16000B5152B /* Entity.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Entity.hpp; sourceTree = "<group>"; };
+		7A5259452970A1CE00B5152B /* Scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
+		7A5259462970A1CE00B5152B /* IGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IGroup.cpp; sourceTree = "<group>"; };
+		7A5259472970A1CE00B5152B /* IPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IPool.cpp; sourceTree = "<group>"; };
 		7A62FC50295F56D9001742A3 /* MathUtils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MathUtils.cpp; sourceTree = "<group>"; };
 		7A62FC51295F56D9001742A3 /* MathUtils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MathUtils.hpp; sourceTree = "<group>"; };
 		7A62FC54295FAB97001742A3 /* GameClock.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GameClock.hpp; sourceTree = "<group>"; };
 		7A62FC56295FACB6001742A3 /* GameClock.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameClock.cpp; sourceTree = "<group>"; };
-		7A62FC58295FAE72001742A3 /* Entity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
-		7A62FC59295FAE72001742A3 /* Entity.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Entity.hpp; sourceTree = "<group>"; };
-		7A62FC61295FBA32001742A3 /* Scene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
-		7A62FC62295FBA32001742A3 /* Scene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Scene.hpp; sourceTree = "<group>"; };
 		7A62FC64295FC12F001742A3 /* FrameData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FrameData.h; sourceTree = "<group>"; };
 		7A7323D32952757C0008C92E /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		7A75B1E82970B1B00087202E /* Transform.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Transform.cpp; sourceTree = "<group>"; };
+		7A75B1E92970B1B00087202E /* Transform.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Transform.hpp; sourceTree = "<group>"; };
+		7A75B1EB2970B4090087202E /* Physics.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Physics.cpp; sourceTree = "<group>"; };
+		7A75B1EC2970B4090087202E /* Physics.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Physics.hpp; sourceTree = "<group>"; };
 		7A82E5032952857300BDB064 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		7A94520B29548B8D004CFF4D /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		7A94520D29548BCD004CFF4D /* Neonland-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Neonland-Bridging-Header.h"; sourceTree = "<group>"; };
 		7A94520E29548BCD004CFF4D /* Neonland.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Neonland.cpp; sourceTree = "<group>"; };
 		7A94520F29548BCD004CFF4D /* Neonland.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Neonland.h; sourceTree = "<group>"; };
+		7AA078662970F3E500B31EAC /* Mesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mesh.cpp; sourceTree = "<group>"; };
+		7AA078672970F3E500B31EAC /* Mesh.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Mesh.hpp; sourceTree = "<group>"; };
+		7AA0786929712E3E00B31EAC /* Scene.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Scene.hpp; sourceTree = "<group>"; };
 		7ABA10F9295A559B00B2BD98 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
 		7AD68D6D296872F6003821A3 /* NeonScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NeonScene.cpp; sourceTree = "<group>"; };
 		7AD68D6E296872F6003821A3 /* NeonScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = NeonScene.hpp; sourceTree = "<group>"; };
@@ -82,14 +100,28 @@
 				7A62FC50295F56D9001742A3 /* MathUtils.cpp */,
 				7A62FC54295FAB97001742A3 /* GameClock.hpp */,
 				7A62FC56295FACB6001742A3 /* GameClock.cpp */,
-				7A62FC59295FAE72001742A3 /* Entity.hpp */,
-				7A62FC58295FAE72001742A3 /* Entity.cpp */,
-				7A62FC62295FBA32001742A3 /* Scene.hpp */,
-				7A62FC61295FBA32001742A3 /* Scene.cpp */,
-				7AFA603029626598004823C6 /* Camera.hpp */,
-				7AFA6032296268EA004823C6 /* Camera.cpp */,
+				7AA0786929712E3E00B31EAC /* Scene.hpp */,
+				7A5259462970A1CE00B5152B /* IGroup.cpp */,
+				7A5259472970A1CE00B5152B /* IPool.cpp */,
+				7A5259452970A1CE00B5152B /* Scene.cpp */,
+				7A5259372970A16000B5152B /* IGroup.hpp */,
+				7A5259382970A16000B5152B /* Group.hpp */,
+				7A5259392970A16000B5152B /* ComponentType.hpp */,
+				7A52593B2970A16000B5152B /* Pool.hpp */,
+				7A52593C2970A16000B5152B /* ComponentMask.hpp */,
+				7A52593D2970A16000B5152B /* Component.hpp */,
+				7A52593E2970A16000B5152B /* IPool.hpp */,
+				7A5259412970A16000B5152B /* Entity.hpp */,
 				7AFA60352962701E004823C6 /* ThreadPool.hpp */,
 				7AFA60342962701E004823C6 /* ThreadPool.cpp */,
+				7AFA603029626598004823C6 /* Camera.hpp */,
+				7AFA6032296268EA004823C6 /* Camera.cpp */,
+				7A75B1E92970B1B00087202E /* Transform.hpp */,
+				7A75B1E82970B1B00087202E /* Transform.cpp */,
+				7A75B1EC2970B4090087202E /* Physics.hpp */,
+				7A75B1EB2970B4090087202E /* Physics.cpp */,
+				7AA078672970F3E500B31EAC /* Mesh.hpp */,
+				7AA078662970F3E500B31EAC /* Mesh.cpp */,
 			);
 			path = Engine;
 			sourceTree = "<group>";
@@ -219,20 +251,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A52594A2970A1CE00B5152B /* IPool.cpp in Sources */,
 				7A82E5042952857300BDB064 /* Shaders.metal in Sources */,
-				7A62FC63295FBA32001742A3 /* Scene.cpp in Sources */,
 				7AD68D7229687C01003821A3 /* NeonConstants.cpp in Sources */,
+				7A5259482970A1CE00B5152B /* Scene.cpp in Sources */,
 				7AFA6033296268EA004823C6 /* Camera.cpp in Sources */,
+				7A5259492970A1CE00B5152B /* IGroup.cpp in Sources */,
 				7A62FC52295F56D9001742A3 /* MathUtils.cpp in Sources */,
+				7AA078682970F3E500B31EAC /* Mesh.cpp in Sources */,
 				7AFA60362962701E004823C6 /* ThreadPool.cpp in Sources */,
 				7A94521029548BCD004CFF4D /* Neonland.cpp in Sources */,
+				7A75B1EA2970B1B00087202E /* Transform.cpp in Sources */,
+				7A75B1ED2970B4090087202E /* Physics.cpp in Sources */,
 				7AE607F42950F1B300C66EA5 /* ViewController.swift in Sources */,
 				7AD68D6F296872F6003821A3 /* NeonScene.cpp in Sources */,
 				7AE607F22950F1B300C66EA5 /* AppDelegate.swift in Sources */,
 				7A0F89482952223D00A999F2 /* MenuBar.swift in Sources */,
 				7A7323D42952757C0008C92E /* Renderer.swift in Sources */,
 				7A62FC57295FACB6001742A3 /* GameClock.cpp in Sources */,
-				7A62FC5A295FAE72001742A3 /* Entity.cpp in Sources */,
 				7A445EF02951EFBE007A3A38 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

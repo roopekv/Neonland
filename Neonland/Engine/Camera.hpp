@@ -1,9 +1,23 @@
 #pragma once
 
 #include "MathUtils.hpp"
+#include "ComponentType.hpp"
 
 class Camera {
 public:
+    static constexpr ComponentType componentType = ComponentType::camera;
+    bool operator<(const Camera& rhs) const {
+        return false;
+    }
+    
+    bool operator>(const Camera& rhs) const {
+        return false;
+    }
+    
+    bool operator==(const Camera& rhs) const {
+        return true;
+    }
+    
     float3 clearColor;
     
     Camera(float3 pos = {0, 0, 0},

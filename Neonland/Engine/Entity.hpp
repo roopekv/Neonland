@@ -1,36 +1,22 @@
 #pragma once
 
-#include "MathUtils.hpp"
-#include "ShaderTypes.h"
+#include <cstdint>
+#include <limits>
 
-class Entity {
-public:
-    float3 velocity;
-    float3 angularVelocity;
+struct Entity {
+    using Id = std::uint32_t;
+    using Version = std::uint32_t;
     
-    float3 scale;
+    static constexpr auto MAX_COUNT = std::numeric_limits<Id>::max();
     
-    const uint32_t type;
+    static constexpr Id NULL_ID = std::numeric_limits<Id>::max();
+    static constexpr Id LAST_VALID_ID = MAX_COUNT - 1;
     
-    Entity(uint32_t type, float3 pos = {0, 0, 0}, float3 rot = {0, 0, 0}, float3 scale = {1, 1, 1});
+    static constexpr Version NULL_VERSION = std::numeric_limits<Version>::max();
+    static constexpr Version LAST_VALID_VERSION = NULL_VERSION - 1;
     
-    void Update(double timestep);
+    Id id;
+    Version version;
     
-    void SetPosition(float3 pos);
-    void SetRotation(float3 rot);
-    
-    const float3& GetPosition() const;
-    const float3& GetRotation() const;
-    
-    float4x4 GetTransform(double timeSinceUpdate) const;
-    Instance GetInstance(double timeSinceUpdate) const;
-protected:
-    float3 _position;
-    float3 _rotation;
-    
-    float3 _prevPosition;
-    float3 _prevRotation;
-    
-    bool _movedOutsideUpdate;
-    bool _rotatedOutsideUpdate;
+    auto operator==(const Entity& rhs) const -> bool = default;
 };

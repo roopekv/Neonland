@@ -1,185 +1,260 @@
 #include "Scene.hpp"
-#include "ThreadPool.hpp"
-#include <span>
 
-#include <iostream>
+Scene::Scene()
+: nextEntityId{0}
+, releasedEntityCount{0}
+, pools(COMPONENT_COUNT, nullptr) {}
 
-namespace {
-
-template<typename Func>
-void UpdateInParallel(std::vector<std::vector<Entity>>& groups, size_t totalCount, Func updateFunc) {
-    auto& threadPool = ThreadPool::GetInstance();
-    const size_t entitiesPerBatch = totalCount / ThreadPool::ThreadCount;
-    std::vector<std::future<void>> jobs;
+void Scene::DestroyEntity(Entity entity) {
+    auto mask = entityIdToMask[entity.id];
     
-    std::vector<std::span<Entity>> batch;
-    int batchSize = 0;
+    size_t n = 0;
+    for (size_t i = 0; n < mask.count(); i++) {
+        if (mask[i]) {
+            pools[i]->RemoveComponent(entity.id);
+            n++;
+        }
+    }
     
-    size_t idx = 0;
-    for (auto& group : groups) {
-        for (size_t idxInGroup = 0; idxInGroup < group.size();) {
-            size_t subbatchSize = std::min(group.size() - idxInGroup, entitiesPerBatch - batchSize);
-            batch.emplace_back(group.data() + idxInGroup, subbatchSize);
-            batchSize += subbatchSize;
-            
-            if (batchSize == entitiesPerBatch) {
-                jobs.push_back(threadPool.SubmitJob(std::bind(updateFunc, batch, idx)));
-                idx += batchSize;
-                batch.clear();
-                batchSize = 0;
+    UpdateGroups(entity, {});
+    ReleaseEntity(entity);
+}
+
+void Scene::DestroyEntities(std::vector<Entity>& entities) {
+    SortByMask(entities);
+    
+    auto prevMask = entityIdToMask[entities.front().id];
+    size_t startIndex = 0;
+    
+    for (size_t i = 1; i < entities.size(); i++) {
+        auto mask = entityIdToMask[entities[i].id];
+        if (mask != prevMask) {
+            auto sortedEntityIds= GetSortedEntityIds(entities.begin() + startIndex, entities.begin() + i);
+            size_t removedCount = 0;
+            for (size_t componentIndex = 0; removedCount < prevMask.count(); componentIndex++) {
+                if (prevMask[componentIndex]) {
+                    pools[componentIndex]->RemoveComponents(sortedEntityIds);
+                    removedCount++;
+                }
             }
             
-            idxInGroup += subbatchSize;
+            prevMask = mask;
         }
     }
     
-    if (batchSize > 0) {
-        updateFunc(batch, idx);
+    auto sortedEntityIds= GetSortedEntityIds(entities.begin() + startIndex, entities.end());
+    size_t removedCount = 0;
+    for (size_t componentIndex = 0; removedCount < prevMask.count(); componentIndex++) {
+        if (prevMask[componentIndex]) {
+            pools[componentIndex]->RemoveComponents(sortedEntityIds);
+            removedCount++;
+        }
     }
     
-    for (auto& job : jobs) {
-        job.wait();
+    UpdateGroups(entities, {});
+    ReleaseEntities(entities);
+    entities.clear();
+}
+
+auto Scene::HasComponent(Entity entity, ComponentType type) -> bool {
+    auto pool = pools[to_underlying(type)];
+    return pool != nullptr && pool->HasComponentFor(entity.id);
+}
+
+auto Scene::IsAlive(Entity entity) const -> bool {
+    assert(entity.id < sceneEntities.size() && "Entity must be valid");
+    return entity == sceneEntities[entity.id];
+}
+
+auto Scene::IsActive(Entity entity) const -> bool {
+    assert(IsAlive(entity) && "Entity must be alive");
+    return isActive[entity.id];
+}
+
+void Scene::SetActive(Entity entity, bool active) {
+    assert(IsAlive(entity) && "Entity must be alive");
+    isActive[entity.id] = active;
+}
+
+void Scene::SetActive(const std::vector<Entity>& entities, bool active) {
+    for (auto entity : entities) {
+        SetActive(entity, active);
     }
 }
 
-void UpdateEntitiesInParallel(std::vector<std::vector<Entity>>& groups, size_t totalCount, double timestep) {
-    using Batch = std::vector<std::span<Entity>>;
-    UpdateInParallel(groups, totalCount, [ts = timestep](Batch ranges, size_t idx) {
-        for (auto& range : ranges) {
-            for (auto& entity : range) {
-                entity.Update(ts);
+auto Scene::GetMask(const Entity entity) const -> ComponentMask {
+    assert(IsAlive(entity) && "Entity must be alive");
+    return entityIdToMask[entity.id];
+}
+
+auto Scene::ReserveEntity() -> Entity {
+    if (releasedEntityCount == 0) {
+        assert(sceneEntities.size() < Entity::MAX_COUNT && "Number of entities must be less than Entity::MAX_COUNT");
+        auto entity = Entity{static_cast<Entity::Id>(sceneEntities.size()), 0};
+        sceneEntities.push_back(entity);
+        
+        entityIdToMask.push_back({});
+        isActive.push_back(true);
+        
+        return entity;
+    }
+    
+    Entity entity{nextEntityId, sceneEntities[nextEntityId].version};
+    nextEntityId = sceneEntities[nextEntityId].id;
+    releasedEntityCount--;
+    
+    isActive[entity.id] = true;
+    
+    return entity;
+}
+
+auto Scene::ReserveEntities(size_t count) -> std::vector<Entity> {
+    std::vector<Entity> entities;
+    entities.reserve(count);
+    
+    auto recycleCount = releasedEntityCount > count ? count : releasedEntityCount;
+    count -= recycleCount;
+    releasedEntityCount -= recycleCount;
+    
+    while (entities.size() < recycleCount) {
+        Entity entity{nextEntityId, sceneEntities[nextEntityId].version};
+        nextEntityId = sceneEntities[nextEntityId].id;
+        isActive[entity.id] = true;
+        
+        entities.push_back(entity);
+    }
+    
+    auto newEntityCount = sceneEntities.size() + count;
+    assert(newEntityCount < Entity::MAX_COUNT && "Number of entities must be less than Entity::MAX_COUNT");
+    
+    sceneEntities.reserve(newEntityCount);
+    isActive.resize(newEntityCount, true);
+    entityIdToMask.resize(newEntityCount, {});
+    
+    for (size_t i = sceneEntities.size(); i < newEntityCount; i++) {
+        Entity newEntity{static_cast<Entity::Id>(i), 0};
+        sceneEntities.push_back(newEntity);
+        entities.push_back(newEntity);
+    }
+    
+    return entities;
+}
+
+void Scene::ReleaseEntity(Entity entity) {
+    sceneEntities[entity.id] = {nextEntityId, entity.version + 1};
+    nextEntityId = entity.id;
+    releasedEntityCount++;
+}
+
+void Scene::ReleaseEntities(const std::vector<Entity>& entities) {
+    for (auto entity : entities) {
+        sceneEntities[entity.id] = {nextEntityId, entity.version + 1};
+        nextEntityId = entity.id;
+    }
+    
+    releasedEntityCount += entities.size();
+}
+
+auto Scene::GetComponentCount(ComponentType type) const -> size_t {
+    auto pool = pools[to_underlying(type)];
+    return pool == nullptr ? 0 : pool->size();
+}
+
+void Scene::ApplyMaskChanges(Entity entity, ComponentMask changes, bool subtract) {
+    auto previousMask = entityIdToMask[entity.id];
+    auto newMask = subtract ? previousMask & ~changes : previousMask | changes;
+    
+    UpdateGroups(entity, newMask);
+}
+
+void Scene::ApplyMaskChanges(const std::vector<Entity>& entitiesSortedByMask, ComponentMask changes, bool subtract) {
+    auto prevMask = entityIdToMask[entitiesSortedByMask.front().id];
+    size_t startIndex = 0;
+    
+    for (size_t i = 1; i < entitiesSortedByMask.size(); i++) {
+        auto entityMask = entityIdToMask[entitiesSortedByMask[i].id];
+        
+        if (entityMask != prevMask) {
+            std::vector<Entity> entitiesWithSameMaskSortedById(entitiesSortedByMask.begin() + startIndex, entitiesSortedByMask.begin() + i);
+            std::sort(entitiesWithSameMaskSortedById.begin(), entitiesWithSameMaskSortedById.end(), [](auto a, auto b) {
+                return a.id < b.id;
+            });
+            
+            auto newMask = subtract ? prevMask & ~changes : prevMask | changes;
+            UpdateGroups(entitiesWithSameMaskSortedById, newMask);
+            
+            for (auto entity : entitiesWithSameMaskSortedById) {
+                entityIdToMask[entity.id] = newMask;
             }
+            
+            prevMask = entityMask;
+            startIndex = i;
         }
+    }
+    
+    std::vector<Entity> entitiesWithSameMask(entitiesSortedByMask.begin() + startIndex, entitiesSortedByMask.end());
+    std::sort(entitiesWithSameMask.begin(), entitiesWithSameMask.end(), [](auto a, auto b) {
+        return a.id < b.id;
     });
+    
+    auto newMask = subtract ? prevMask & ~changes : prevMask | changes;
+    UpdateGroups(entitiesWithSameMask, newMask);
+    
+    for (auto entity : entitiesWithSameMask) {
+        entityIdToMask[entity.id] = newMask;
+    }
 }
 
-void UpdateInstancesInParallel(std::vector<std::vector<Entity>>& groups,
-                               size_t totalCount,
-                               std::vector<Instance>& instances,
-                               double timeSinceUpdate) {
-    using Batch = std::vector<std::span<Entity>>;
-    UpdateInParallel(groups, totalCount, [t = timeSinceUpdate,
-                                          instances = instances.data()](Batch ranges, size_t idx) {
-        for (auto& range : ranges) {
-            for (auto& entity : range) {
-                instances[idx] = entity.GetInstance(t);
-                idx++;
-            }
+void Scene::UpdateGroups(Entity entity, ComponentMask newMask) {
+    for (auto group : groups) {
+        bool matchesPrev = group->MatchesGroup(entityIdToMask[entity.id]);
+        bool matchesNew = group->MatchesGroup(newMask);
+        
+        if (matchesNew && !matchesPrev) {
+            group->AddEntity(entity);
         }
+        else if (matchesPrev && !matchesNew) {
+            group->RemoveEntity(entity.id);
+        }
+    }
+    
+    entityIdToMask[entity.id] = newMask;
+}
+
+void Scene::UpdateGroups(const std::vector<Entity>& entitiesWithSameMaskSortedById, const ComponentMask newMask) {
+    const auto prevMask = entityIdToMask[entitiesWithSameMaskSortedById.front().id];
+    
+    for (auto group : groups) {
+        bool matchesPrev = group->MatchesGroup(prevMask);
+        bool matchesNew = group->MatchesGroup(newMask);
+        
+        if (matchesNew && !matchesPrev) {
+            group->AddEntities(entitiesWithSameMaskSortedById);
+        }
+        else if (matchesPrev && !matchesNew) {
+            group->RemoveEntities(entitiesWithSameMaskSortedById);
+        }
+    }
+}
+
+auto Scene::GetSortedEntityIds(std::vector<Entity>::const_iterator begin, std::vector<Entity>::const_iterator end) -> std::vector<Entity::Id> {
+    std::vector<Entity::Id> sortedEntityIds;
+    sortedEntityIds.reserve(end - begin);
+    
+    std::transform(begin, end, std::back_inserter(sortedEntityIds), [](auto entity) {
+        return entity.id;
     });
+    
+    std::sort(sortedEntityIds.begin(), sortedEntityIds.end());
+    
+    return sortedEntityIds;
 }
 
-void UpdateEntitiesInSeries(std::vector<std::vector<Entity>>& groups, double timestep) {
-    for (auto& group : groups) {
-        for (auto& enemy : group) {
-            enemy.Update(timestep);
-        }
-    }
-}
-
-void UpdateInstancesInSeries(std::vector<std::vector<Entity>>& groups,
-                             std::vector<Instance>& instances,
-                             double timeSinceUpdate) {
-    size_t instanceIdx = 0;
-    for (auto& group : groups) {
-        for (auto& enemy : group) {
-            instances[instanceIdx] = enemy.GetInstance(timeSinceUpdate);
-            instanceIdx++;
-        }
-    }
-}
-
-}
-
-Scene::Scene(size_t maxEntityCount, double timestep, Camera cam, GameClock clock)
-: _maxInstanceCount{maxEntityCount}
-, _timestep{timestep}
-, _instances(maxEntityCount)
-, clock(clock)
-, _nextTickTime{clock.Time()}
-, _prevRenderTime{clock.Time()}
-, camera(cam) { }
-
-Entity& Scene::AddEntity(Entity&& entity) {
-    uint32_t idx = entity.type;
-    
-    if (idx + 1 > _entityGroups.size()) {
-        _entityGroups.resize(idx + 1);
-        _groupSizes.resize(idx + 1, 0);
-    }
-    
-    _entityGroups[idx].push_back(entity);
-    _groupSizes[idx]++;
-    _instanceCount++;
-    
-    if (_instanceCount > _maxInstanceCount) {
-        throw std::length_error("Instance count exceeded the maximum value set.");
-    }
-    
-    return _entityGroups[idx].back();
-}
-
-std::vector<Entity>& Scene::GetEntitiesOfType(uint32_t type) {
-    return _entityGroups[type];
-}
-
-void Scene::Update() {
-    auto time = clock.Time();
-    
-    bool useMultithreading = ThreadPool::ThreadCount > 0 && _instanceCount > ThreadPool::ThreadCount;
-    
-    while (time >= _nextTickTime) {
+void Scene::SortByMask(std::vector<Entity>& entities) {
+    std::sort(entities.begin(), entities.end(), [this](auto a, auto b) {
+        auto maskValueA = entityIdToMask[a.id].to_ullong();
+        auto maskValueB = entityIdToMask[b.id].to_ullong();
         
-        OnUpdate();
-        
-        if (useMultithreading) {
-            UpdateEntitiesInParallel(_entityGroups, _instanceCount, _timestep);
-        }
-        else {
-            UpdateEntitiesInSeries(_entityGroups, _timestep);
-        }
-        
-        _nextTickTime += _timestep;
-    }
-    
-    double timeSinceUpdate = _timestep - (_nextTickTime - time);
-    
-    OnRender(time - _prevRenderTime);
-    _prevRenderTime = time;
-    
-    if (useMultithreading) {
-        UpdateInstancesInParallel(_entityGroups, _instanceCount, _instances, timeSinceUpdate);
-    }
-    else {
-        UpdateInstancesInSeries(_entityGroups, _instances, timeSinceUpdate);
-    }
-}
-
-FrameData Scene::GetFrameData() {
-    GlobalUniforms uniforms;
-    uniforms.projMatrix = camera.GetProjectionMatrix();
-    uniforms.viewMatrix = camera.GetViewMatrix();
-    
-    FrameData frameData;
-    frameData.globalUniforms = uniforms;
-    
-    frameData.instanceCount = _instanceCount;
-    frameData.instances = _instances.data();
-    
-    frameData.groupCount = static_cast<uint32_t>(_groupSizes.size());
-    frameData.groupSizes = _groupSizes.data();
-    
-    return frameData;
-}
-
-double Scene::Timestep() const {
-    return _timestep;
-}
-
-size_t Scene::InstanceCount() const {
-    return _instanceCount;
-}
-
-size_t Scene::MaxInstanceCount() const {
-    return _maxInstanceCount;
+        return maskValueA < maskValueB;
+    });
 }

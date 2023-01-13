@@ -153,7 +153,7 @@ class Renderer : NSObject, MTKViewDelegate {
         var startOffset = 0
         
         for groupIdx in 0..<frameData.groupCount {
-            let meshIndex = Int(Neon_MeshForGroup(groupIdx))
+            let meshIndex = Int(groupIdx)
             let mesh = meshes[meshIndex]
             
             let instanceCount = frameData.groupSizes.advanced(by: Int(groupIdx)).pointee
