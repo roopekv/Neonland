@@ -26,6 +26,9 @@
 		7AE607F22950F1B300C66EA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE607F12950F1B300C66EA5 /* AppDelegate.swift */; };
 		7AE607F42950F1B300C66EA5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE607F32950F1B300C66EA5 /* ViewController.swift */; };
 		7AE607F62950F1B400C66EA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7AE607F52950F1B400C66EA5 /* Assets.xcassets */; };
+		7AF3784F29718DC100CC8572 /* HP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AF3784D29718DC100CC8572 /* HP.cpp */; };
+		7AF378522971909200CC8572 /* Enemy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AF378502971909200CC8572 /* Enemy.cpp */; };
+		7AF37855297191B000CC8572 /* PlayerProjectile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AF37853297191B000CC8572 /* PlayerProjectile.cpp */; };
 		7AFA6033296268EA004823C6 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AFA6032296268EA004823C6 /* Camera.cpp */; };
 		7AFA60362962701E004823C6 /* ThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AFA60342962701E004823C6 /* ThreadPool.cpp */; };
 /* End PBXBuildFile section */
@@ -72,6 +75,12 @@
 		7AE607F32950F1B300C66EA5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		7AE607F52950F1B400C66EA5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7AE607FA2950F1B400C66EA5 /* Neonland.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Neonland.entitlements; sourceTree = "<group>"; };
+		7AF3784D29718DC100CC8572 /* HP.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = HP.cpp; sourceTree = "<group>"; };
+		7AF3784E29718DC100CC8572 /* HP.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = HP.hpp; sourceTree = "<group>"; };
+		7AF378502971909200CC8572 /* Enemy.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Enemy.cpp; sourceTree = "<group>"; };
+		7AF378512971909200CC8572 /* Enemy.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Enemy.hpp; sourceTree = "<group>"; };
+		7AF37853297191B000CC8572 /* PlayerProjectile.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerProjectile.cpp; sourceTree = "<group>"; };
+		7AF37854297191B000CC8572 /* PlayerProjectile.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PlayerProjectile.hpp; sourceTree = "<group>"; };
 		7AFA603029626598004823C6 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 		7AFA6032296268EA004823C6 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		7AFA60342962701E004823C6 /* ThreadPool.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ThreadPool.cpp; sourceTree = "<group>"; };
@@ -101,10 +110,10 @@
 				7A62FC54295FAB97001742A3 /* GameClock.hpp */,
 				7A62FC56295FACB6001742A3 /* GameClock.cpp */,
 				7AA0786929712E3E00B31EAC /* Scene.hpp */,
-				7A5259462970A1CE00B5152B /* IGroup.cpp */,
-				7A5259472970A1CE00B5152B /* IPool.cpp */,
 				7A5259452970A1CE00B5152B /* Scene.cpp */,
+				7A5259472970A1CE00B5152B /* IPool.cpp */,
 				7A5259372970A16000B5152B /* IGroup.hpp */,
+				7A5259462970A1CE00B5152B /* IGroup.cpp */,
 				7A5259382970A16000B5152B /* Group.hpp */,
 				7A5259392970A16000B5152B /* ComponentType.hpp */,
 				7A52593B2970A16000B5152B /* Pool.hpp */,
@@ -114,14 +123,6 @@
 				7A5259412970A16000B5152B /* Entity.hpp */,
 				7AFA60352962701E004823C6 /* ThreadPool.hpp */,
 				7AFA60342962701E004823C6 /* ThreadPool.cpp */,
-				7AFA603029626598004823C6 /* Camera.hpp */,
-				7AFA6032296268EA004823C6 /* Camera.cpp */,
-				7A75B1E92970B1B00087202E /* Transform.hpp */,
-				7A75B1E82970B1B00087202E /* Transform.cpp */,
-				7A75B1EC2970B4090087202E /* Physics.hpp */,
-				7A75B1EB2970B4090087202E /* Physics.cpp */,
-				7AA078672970F3E500B31EAC /* Mesh.hpp */,
-				7AA078662970F3E500B31EAC /* Mesh.cpp */,
 			);
 			path = Engine;
 			sourceTree = "<group>";
@@ -152,6 +153,20 @@
 				7AD68D6D296872F6003821A3 /* NeonScene.cpp */,
 				7AD68D7029687C01003821A3 /* NeonConstants.h */,
 				7AD68D7129687C01003821A3 /* NeonConstants.cpp */,
+				7AFA603029626598004823C6 /* Camera.hpp */,
+				7AFA6032296268EA004823C6 /* Camera.cpp */,
+				7A75B1E92970B1B00087202E /* Transform.hpp */,
+				7A75B1E82970B1B00087202E /* Transform.cpp */,
+				7A75B1EC2970B4090087202E /* Physics.hpp */,
+				7A75B1EB2970B4090087202E /* Physics.cpp */,
+				7AA078672970F3E500B31EAC /* Mesh.hpp */,
+				7AA078662970F3E500B31EAC /* Mesh.cpp */,
+				7AF3784E29718DC100CC8572 /* HP.hpp */,
+				7AF3784D29718DC100CC8572 /* HP.cpp */,
+				7AF378512971909200CC8572 /* Enemy.hpp */,
+				7AF378502971909200CC8572 /* Enemy.cpp */,
+				7AF37854297191B000CC8572 /* PlayerProjectile.hpp */,
+				7AF37853297191B000CC8572 /* PlayerProjectile.cpp */,
 			);
 			path = Neonland;
 			sourceTree = "<group>";
@@ -256,16 +271,19 @@
 				7AD68D7229687C01003821A3 /* NeonConstants.cpp in Sources */,
 				7A5259482970A1CE00B5152B /* Scene.cpp in Sources */,
 				7AFA6033296268EA004823C6 /* Camera.cpp in Sources */,
+				7AF37855297191B000CC8572 /* PlayerProjectile.cpp in Sources */,
 				7A5259492970A1CE00B5152B /* IGroup.cpp in Sources */,
 				7A62FC52295F56D9001742A3 /* MathUtils.cpp in Sources */,
 				7AA078682970F3E500B31EAC /* Mesh.cpp in Sources */,
 				7AFA60362962701E004823C6 /* ThreadPool.cpp in Sources */,
+				7AF378522971909200CC8572 /* Enemy.cpp in Sources */,
 				7A94521029548BCD004CFF4D /* Neonland.cpp in Sources */,
 				7A75B1EA2970B1B00087202E /* Transform.cpp in Sources */,
 				7A75B1ED2970B4090087202E /* Physics.cpp in Sources */,
 				7AE607F42950F1B300C66EA5 /* ViewController.swift in Sources */,
 				7AD68D6F296872F6003821A3 /* NeonScene.cpp in Sources */,
 				7AE607F22950F1B300C66EA5 /* AppDelegate.swift in Sources */,
+				7AF3784F29718DC100CC8572 /* HP.cpp in Sources */,
 				7A0F89482952223D00A999F2 /* MenuBar.swift in Sources */,
 				7A7323D42952757C0008C92E /* Renderer.swift in Sources */,
 				7A62FC57295FACB6001742A3 /* GameClock.cpp in Sources */,

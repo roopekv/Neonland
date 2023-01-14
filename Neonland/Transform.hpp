@@ -26,10 +26,8 @@ public:
     
     const float3& GetPosition() const;
     const float3& GetRotation() const;
-    
-    float4x4 GetMatrix(double interpolation) const;
 
-    friend class Physics;
+    friend class NeonScene;
 protected:
     float3 _position;
     float3 _rotation;

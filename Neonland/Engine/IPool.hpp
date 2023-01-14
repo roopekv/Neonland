@@ -27,7 +27,6 @@ protected:
     auto HasComponentFor(Entity::Id entityId) const -> bool;
     
     virtual void RemoveComponent(Entity::Id entityId) = 0;
-    virtual void RemoveComponents(const std::vector<Entity::Id>& sortedEntityIds) = 0;
     
     friend class Scene;
 };

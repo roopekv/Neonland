@@ -20,7 +20,8 @@ public:
     
     float3 velocity;
     float3 angularVelocity;
-    Physics(float3 vel = {0, 0, 0}, float3 angularVel = {0, 0, 0});
     
-    void Update(Transform& tf, double timestep);
+    float collisionRadius;
+    
+    Physics(float3 vel = {0, 0, 0}, float3 angularVel = {0, 0, 0}, float radius = 0.5f);
 };

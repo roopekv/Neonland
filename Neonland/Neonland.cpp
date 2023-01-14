@@ -6,7 +6,7 @@
 
 namespace {
 
-auto scene = NeonScene(MAX_ENTITY_COUNT, TIMESTEP, GameClock(true));
+auto scene = NeonScene(MAX_INSTANCE_COUNT, TIMESTEP, GameClock(true));
     
 }
 
@@ -28,11 +28,15 @@ void Neon_UpdateCursorPosition(vector_float2 newPos) {
     scene.mouseDelta += scene.mousePos - scene.prevMousePos;
 }
 
-void Neon_UpdateMoveDirection(vector_float2 newDir) {
-    scene.moveDir += {newDir.x, newDir.y, 0.0f};
-    float length = simd_length(scene.moveDir);
+void Neon_UpdateMouseDown(bool down) {
+    scene.mouseDown = down;
+}
+
+void Neon_UpdateDirectionalInput(vector_float2 newDir) {
+    float length = simd_length(newDir);
     if (length > 0.0f) {
-        scene.moveDir /= length;
+        newDir /= length;
     }
+    scene.directionalInput = newDir;
 }
 

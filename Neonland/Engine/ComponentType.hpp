@@ -11,6 +11,9 @@ enum class ComponentType {
     physics,
     camera,
     mesh,
+    hp,
+    enemy,
+    playerProjectile,
     componentTypeCount
 };
 

@@ -20,6 +20,8 @@ public:
     
     auto GetEntities() const -> const std::vector<Entity>&;
     auto Size() -> size_t;
+    
+    auto GroupLocked() const -> bool;
 protected:
     std::vector<Entity> groupEntities;
 private:

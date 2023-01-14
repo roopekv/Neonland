@@ -4,6 +4,9 @@
 
 #include "IPool.hpp"
 #include "Component.hpp"
+#include <mutex>
+
+#include <iostream>
 
 template<Component T>
 class Pool : public IPool {
@@ -31,13 +34,10 @@ private:
     std::vector<T> components;
     
     bool removeLocked;
-    std::vector<Index> removeLockedCache;
+    std::vector<Entity::Id> removeLockedCache;
     
     void RemoveComponent(Entity::Id entityId) override final;
-    void RemoveComponents(const std::vector<Entity::Id>& sortedEntityIds) override final;
-    
     void AddComponent(Entity::Id entityId, T&& component);
-    void AddComponents(const std::vector<Entity::Id>& sortedEntityIds, T&& component);
     
     auto IsRemoveLocked() -> bool;
     
@@ -107,55 +107,19 @@ auto Pool<T>::back() const -> const T& {
 
 template<Component T>
 void Pool<T>::AddComponent(const Entity::Id entityId, T&& component) {
-    if (entityId < entityIdToIndex.size()) {
-        if (entityIdToIndex[entityId] != DESTROYED) {
-            return;
-        }
-    }
-    else {
+    assert(!(entityId < entityIdToIndex.size() && entityIdToIndex[entityId] != DESTROYED) && "Component cannot be added twice");
+    
+    if (entityId + 1 > entityIdToIndex.size()) {
         entityIdToIndex.resize(entityId + 1, DESTROYED);
     }
     
     Index index = static_cast<Index>(std::upper_bound(components.begin(), components.end(), component) - components.begin());
     entityIdToIndex[entityId] = index;
     for (Index i = index; i < indexToEntityId.size(); i++) {
-        entityIdToIndex[i]++;
+        entityIdToIndex[indexToEntityId[i]]++;
     }
     indexToEntityId.insert(indexToEntityId.begin() + index, entityId);
     components.insert(components.begin() + index, component);
-}
-
-template<Component T>
-void Pool<T>::AddComponents(const std::vector<Entity::Id>& sortedEntityIds, T&& component) {
-    if (sortedEntityIds.empty()) {
-        return;
-    }
-    
-    assert(!sortedEntityIds.empty() && "Entities must not be empty");
-    
-    auto requiredSize = sortedEntityIds.back() + 1;
-    if (entityIdToIndex.size() < requiredSize) {
-        entityIdToIndex.resize(requiredSize, DESTROYED);
-    }
-    
-    Index index = static_cast<Index>(std::upper_bound(components.begin(), components.end(), component) - components.begin());
-    Index nextIndex = index;
-    for (auto entityId : sortedEntityIds) {
-        if (entityIdToIndex[entityId] == DESTROYED) {
-            entityIdToIndex[entityId] = nextIndex++;
-            indexToEntityId.push_back(entityId);
-        }
-    }
-    
-    Index newCount = nextIndex - index;
-    for (Index i = nextIndex; i < indexToEntityId.size(); i++) {
-        entityIdToIndex[i] += newCount;
-    }
-    
-    std::vector<T> tmp(newCount, component);
-    components.insert(components.begin() + index,
-                      std::make_move_iterator(tmp.begin()),
-                      std::make_move_iterator(tmp.end()));
 }
 
 template<Component T>
@@ -163,39 +127,16 @@ void Pool<T>::RemoveComponent(Entity::Id entityId) {
     assert(HasComponentFor(entityId) && "Entity must have the specified component");
     
     if (removeLocked) {
-        removeLockedCache.push_back(entityIdToIndex[entityId]);
-        entityIdToIndex[entityId] = DESTROYED;
-    }
-    else if (components.back() == components[entityIdToIndex[entityId]]){
-        auto backEntityId = indexToEntityId.back();
-        auto index = entityIdToIndex[entityId];
-        
-        indexToEntityId[index] = backEntityId;
-        entityIdToIndex[backEntityId] = index;
-        
-        std::swap(components[index], components.back());
-        
-        indexToEntityId.pop_back();
-        components.pop_back();
-        entityIdToIndex[entityId] = DESTROYED;
+        removeLockedCache.push_back(entityId);
     }
     else {
         Index index = entityIdToIndex[entityId];
         components.erase(components.begin() + index);
         indexToEntityId.erase(indexToEntityId.begin() + index);
         for (Index i = index; i < indexToEntityId.size(); i++) {
-            entityIdToIndex[i] -= 1;
+            entityIdToIndex[indexToEntityId[i]]--;
         }
-        
         entityIdToIndex[entityId] = DESTROYED;
-    }
-}
-
-template<Component T>
-void Pool<T>::RemoveComponents(const std::vector<Entity::Id>& sortedEntityIds) {
-    // Can be optimized
-    for (auto entityId : sortedEntityIds) {
-        RemoveComponent(entityId);
     }
 }
 
@@ -217,15 +158,10 @@ void Pool<T>::LockRemove() {
 template<Component T>
 void Pool<T>::UnlockRemove() {
     removeLocked = false;
-    for (auto index : removeLockedCache) {
-        auto backEntityId = indexToEntityId.back();
-        
-        indexToEntityId[index] = backEntityId;
-        entityIdToIndex[backEntityId] = index;
-        
-        std::swap(components[index], components.back());
-        
-        indexToEntityId.pop_back();
-        components.pop_back();
+    if (!removeLockedCache.empty()) {
+        for (auto entityId : removeLockedCache) {
+            RemoveComponent(entityId);
+        }
+        removeLockedCache.clear();
     }
 }

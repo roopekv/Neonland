@@ -2,11 +2,8 @@ import MetalKit
 import Metal
 import Dispatch
 import simd
-import Carbon.HIToolbox.Events
 
 class Renderer : NSObject, MTKViewDelegate {
-    
-    var keysDown = [Bool](repeating: false, count: Int(UInt16.max))
     
     static let maxFramesInFlight = 3
     
@@ -43,7 +40,7 @@ class Renderer : NSObject, MTKViewDelegate {
             globalUniformsBuffer.label = "Global Uniforms \(i)"
             globalUniformBuffers.append(globalUniformsBuffer)
             
-            let instanceBuffer = device.makeBuffer(length: MemoryLayout<Instance>.size * MAX_ENTITY_COUNT, options: .storageModeShared)!
+            let instanceBuffer = device.makeBuffer(length: MemoryLayout<Instance>.size * MAX_INSTANCE_COUNT, options: .storageModeShared)!
             instanceBuffer.label = "Instances \(i)"
             instanceBuffers.append(instanceBuffer)
             
@@ -72,7 +69,7 @@ class Renderer : NSObject, MTKViewDelegate {
         
         let allocator = MTKMeshBufferAllocator(device: device)
         
-        let playerMDLMesh = MDLMesh(sphereWithExtent: .init(1, 1, 1),
+        let playerMDLMesh = MDLMesh(sphereWithExtent: .init(0.5, 0.5, 0.5),
                                     segments: .init(4, 4),
                                     inwardNormals: false,
                                     geometryType: .triangles,
@@ -124,7 +121,7 @@ class Renderer : NSObject, MTKViewDelegate {
     func draw(in view: MTKView) {
         frameSemaphore.wait()
         
-        pollInput(view: view)
+        pollMouseInput(view: view)
         
         let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
         var frameData = Neon_Render(aspectRatio)
@@ -190,7 +187,7 @@ class Renderer : NSObject, MTKViewDelegate {
         commandBuffer.commit()
     }
     
-    func pollInput(view: MTKView) {
+    func pollMouseInput(view: MTKView) {
         if let window = view.window, window.isKeyWindow {
             var pos = view.convert(window.mouseLocationOutsideOfEventStream, to: nil)
             pos.x = (pos.x / view.bounds.width) * 2 - 1;
@@ -198,26 +195,6 @@ class Renderer : NSObject, MTKViewDelegate {
             
             Neon_UpdateCursorPosition(SIMD2<Float>(Float(pos.x), Float(pos.y)))
         }
-        
-        var dir = SIMD2<Float>.zero
-        
-        if keysDown[kVK_ANSI_W] {
-            dir.y += 1
-        }
-        
-        if keysDown[kVK_ANSI_S] {
-            dir.y -= 1
-        }
-        
-        if keysDown[kVK_ANSI_D] {
-            dir.x += 1
-        }
-        
-        if keysDown[kVK_ANSI_A] {
-            dir.x -= 1
-        }
-        
-        Neon_UpdateMoveDirection(dir)
     }
     
     func updateUniforms(frameData: inout FrameData) {
