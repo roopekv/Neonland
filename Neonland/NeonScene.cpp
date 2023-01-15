@@ -1,7 +1,6 @@
 #include "NeonScene.hpp"
 
 #include <iostream>
-#include <random>
 #include <atomic>
 
 NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
@@ -11,6 +10,8 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
 , clock(clock)
 , _nextTickTime{clock.Time()}
 , _prevRenderTime{clock.Time()} {
+    std::random_device device;
+    randomEngine = std::default_random_engine(device());
     
     _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, -90, 0}, float3{1, mapSize.y, mapSize.x}), Mesh(Mesh::PLANE));
     
@@ -31,17 +32,24 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
     float width = (rows - 1) * (1 + gap);
     float height = (columns - 1) * (1 + gap);
     
-    std::random_device device;
-    std::default_random_engine engine(device());
-    std::uniform_real_distribution<float> distribution(-1.0f, 1.0f);
-    
     for (int x = 0; x < columns; x++) {
         for (int y = 0; y < rows; y++) {
             float3 pos = {x * (1 + gap) - width / 2, y * (1 + gap) - height / 2};
             Transform tf(pos);
-            Entity enemy = _scene.CreateEntity(Physics(tf), std::move(tf), Mesh(Mesh::ENEMY), Enemy(), HP());
-            _scene.Get<Physics>(enemy).angularVelocity.z = 30 * distribution(engine);
+            Entity enemy = _scene.CreateEntity(Physics(tf), std::move(tf), Mesh(Mesh::ENEMY), Enemy(1, 0.5f, 0.5f), HP());
+            _scene.Get<Physics>(enemy).angularVelocity.z = 30 * RandomValue();
         }
+    }
+}
+
+float NeonScene::RandomValue() {
+    std::uniform_real_distribution<float> distribution(-1.0f, 1.0f);
+    return distribution(randomEngine);
+}
+
+void NeonScene::SelectWeapon(int i) {
+    if (i > -1 && i < weapons.size()) {
+        weaponIdx = i;
     }
 }
 
@@ -82,10 +90,24 @@ void NeonScene::Update(float aspectRatio) {
 }
 
 void NeonScene::EarlyRender(double time, double dt) {
-    _scene.Get<Physics>(player).velocity = moveDir * 5;
+    _scene.Get<Physics>(player).velocity = moveDir * movementSpeed;
 }
 
 void NeonScene::Tick(double time) {
+    {
+        float3 targetPos = _scene.Get<Physics>(player).position;
+        _scene.GetGroup<Physics, Enemy>()->UpdateParallel([targetPos](auto entity, auto& physics, auto& enemy) {
+            float3 dir = targetPos - physics.position;
+            
+            float length = simd_length(dir);
+            if (length > 0.0f) {
+                dir /= length;
+            }
+            
+            physics.velocity = dir * enemy.movementSpeed;
+        });
+    }
+    
     _scene.GetGroup<Transform, Physics>()->UpdateParallel([timestep = _timestep](auto entity, auto& tf, auto& physics) {
         Physics::Update(physics, tf, timestep);
     });
@@ -97,7 +119,8 @@ void NeonScene::Tick(double time) {
         _scene.Get<Physics>(player).position = pos;
     }
     
-    if (mouseDown && shotCooldownEndTime < time) {
+    Weapon& weapon = weapons[weaponIdx];
+    if (mouseDown && weapon.cooldownEndTime < time) {
         float3 playerPos = _scene.Get<Transform>(player).position;
         float3 aimPos = _scene.Get<Transform>(crosshair).position;
         
@@ -110,11 +133,25 @@ void NeonScene::Tick(double time) {
         
         float r = std::atan2f(dir.y, dir.x) * RadToDeg;
         
-        float3 spawnPos = playerPos + dir * 0.5f;
+        float3 spawnPos = playerPos + dir * 0.5f * weapon.bulletSize;
         
-        auto tf = Transform(spawnPos, float3{0, 0, r}, float3{1.0f, 0.25f, 0.25f});
-        _scene.CreateEntity(Physics(tf, dir * 20.0f), std::move(tf), Mesh(Mesh::PROJECTILE), PlayerProjectile(1, time + 1.0f));
-        shotCooldownEndTime = time + shotCooldown;
+        for (int i = 0; i < weapon.bulletsPerShot; i++) {
+            
+            auto tf = Transform(spawnPos, float3{0, 0, r}, float3{1.0f, 0.25f, 0.25f} * weapon.bulletSize);
+            PlayerProjectile projectile = weapon.bullet;
+            projectile.despawnTime = time + projectile.lifespan;
+            
+            float3 vel = dir + float3{-dir.y, dir.x, 0.0f} * weapon.spread * RandomValue();
+            float length = simd_length(dir);
+            if (length > 0.0f) {
+                dir /= length;
+            }
+            vel *= projectile.speed;
+            
+            _scene.CreateEntity(Physics(tf, vel), std::move(tf), Mesh(Mesh::PROJECTILE), std::move(projectile));
+            
+            weapon.cooldownEndTime = time + weapon.cooldown;
+        }
     }
     
     auto& playerTf = _scene.Get<Transform>(player);
@@ -145,12 +182,15 @@ void NeonScene::Tick(double time) {
                                                                              auto& enemy,
                                                                              auto& enemyHP) {
             if (Physics::Overlapping(projectilePhysics, enemyPhysics, projectileTf, enemyTf)) {
-                enemyHP.currentHP -= projectile.damage;
-                didHit = true;
+                
+                if (enemyHP.currentHP > 0) {                
+                    enemyHP.currentHP -= projectile.damage;
+                    didHit = true;
+                }
             }
         });
         
-        if (didHit || projectile.despawnTime < t) {
+        if ((didHit && projectile.destructsOnCollision) || projectile.despawnTime < t) {
             _scene.DestroyEntity(projectileEntity);
         }
     });
@@ -158,7 +198,7 @@ void NeonScene::Tick(double time) {
     
     _scene.GetGroup<HP>()->UpdateParallel([&](auto entity,
                                               auto& hp) {
-        if (hp.currentHP < 0) {
+        if (hp.currentHP <= 0) {
             
             if (entity == player) {
                 gameOver = true;

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7A0F89482952223D00A999F2 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F89472952223D00A999F2 /* MenuBar.swift */; };
+		7A41137A29739F11002F116C /* Weapon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A41137829739F11002F116C /* Weapon.cpp */; };
 		7A445EF02951EFBE007A3A38 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A445EEF2951EFBE007A3A38 /* main.swift */; };
 		7A5259482970A1CE00B5152B /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A5259452970A1CE00B5152B /* Scene.cpp */; };
 		7A5259492970A1CE00B5152B /* IGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A5259462970A1CE00B5152B /* IGroup.cpp */; };
@@ -35,6 +36,8 @@
 
 /* Begin PBXFileReference section */
 		7A0F89472952223D00A999F2 /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
+		7A41137829739F11002F116C /* Weapon.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Weapon.cpp; sourceTree = "<group>"; };
+		7A41137929739F11002F116C /* Weapon.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Weapon.hpp; sourceTree = "<group>"; };
 		7A445EEF2951EFBE007A3A38 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		7A5259372970A16000B5152B /* IGroup.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = IGroup.hpp; sourceTree = "<group>"; };
 		7A5259382970A16000B5152B /* Group.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Group.hpp; sourceTree = "<group>"; };
@@ -159,6 +162,8 @@
 				7A75B1E82970B1B00087202E /* Transform.cpp */,
 				7A75B1EC2970B4090087202E /* Physics.hpp */,
 				7A75B1EB2970B4090087202E /* Physics.cpp */,
+				7A41137929739F11002F116C /* Weapon.hpp */,
+				7A41137829739F11002F116C /* Weapon.cpp */,
 				7AA078672970F3E500B31EAC /* Mesh.hpp */,
 				7AA078662970F3E500B31EAC /* Mesh.cpp */,
 				7AF3784E29718DC100CC8572 /* HP.hpp */,
@@ -270,6 +275,7 @@
 				7A82E5042952857300BDB064 /* Shaders.metal in Sources */,
 				7AD68D7229687C01003821A3 /* NeonConstants.cpp in Sources */,
 				7A5259482970A1CE00B5152B /* Scene.cpp in Sources */,
+				7A41137A29739F11002F116C /* Weapon.cpp in Sources */,
 				7AFA6033296268EA004823C6 /* Camera.cpp in Sources */,
 				7AF37855297191B000CC8572 /* PlayerProjectile.cpp in Sources */,
 				7A5259492970A1CE00B5152B /* IGroup.cpp in Sources */,

@@ -40,3 +40,11 @@ void Neon_UpdateDirectionalInput(vector_float2 newDir) {
     scene.directionalInput = newDir;
 }
 
+void Neon_UpdateNumberKeyPressed(int num) {
+    if (num == 0) {
+        num = 10;
+    }
+    
+    scene.SelectWeapon(num - 1);
+}
+

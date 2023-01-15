@@ -21,5 +21,7 @@ public:
     double attackCooldown;
     double cooldownEndTime;
     
-    Enemy(int dmg = 1, double cooldown = 0.5f);
+    float movementSpeed;
+    
+    Enemy(int dmg, double cooldown, float moveSpeed);
 };

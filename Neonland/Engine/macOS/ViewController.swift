@@ -59,12 +59,30 @@ class ViewController: NSViewController {
     }
     
     override func keyDown(with event: NSEvent) {
+        let keyCode = UInt16(event.keyCode)
         keysDown[Int(event.keyCode)] = true
         Neon_UpdateDirectionalInput(MoveDir)
+        
+        if let num = getNumber(keyCode: keyCode){
+            Neon_UpdateNumberKeyPressed(num)
+        }
     }
     
     override func keyUp(with event: NSEvent) {
         keysDown[Int(event.keyCode)] = false
         Neon_UpdateDirectionalInput(MoveDir)
+    }
+    
+    func getNumber(keyCode: UInt16) -> Int32? {
+        switch keyCode {
+        case UInt16(kVK_ANSI_1):
+            return 1
+        case UInt16(kVK_ANSI_2):
+            return 2
+        case UInt16(kVK_ANSI_3):
+            return 3
+        default:
+            return nil
+        }
     }
 }

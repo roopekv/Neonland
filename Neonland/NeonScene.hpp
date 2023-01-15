@@ -1,5 +1,8 @@
 #pragma once
 
+#include <array>
+#include <random>
+
 #include "Scene.hpp"
 #include "GameClock.hpp"
 #include "NeonConstants.h"
@@ -11,6 +14,7 @@
 #include "HP.hpp"
 #include "Enemy.hpp"
 #include "PlayerProjectile.hpp"
+#include "Weapon.hpp"
 
 #include "FrameData.h"
 
@@ -26,8 +30,17 @@ public:
     bool prevMouseState = false;
     bool mousePressed = false;
     
-    double shotCooldown = 0.1f;
-    double shotCooldownEndTime = 0;
+    std::array<Weapon, 3> weapons = {
+        Weapon(PlayerProjectile(1, 1.5f, 25.0f, true), 0.1f, 0.0f, 1, 1.0f),
+        Weapon(PlayerProjectile(1, 1.5f, 20.0f, true), 0.5f, 0.2f, 5, 1.0f),
+        Weapon(PlayerProjectile(1, 2.0f, 15.0f, false), 0.5f, 0.0f, 1, 1.5f)
+    };
+    
+    int weaponIdx = 0;
+    
+    std::default_random_engine randomEngine;
+    
+    double movementSpeed = 7.0f;
     
     float2 directionalInput = {0, 0};
     float3 moveDir = {0, 0, 0};
@@ -44,6 +57,8 @@ public:
     
     NeonScene(size_t maxInstanceCount, double timestep, GameClock clock);
     
+    void SelectWeapon(int i);
+    
     void Update(float aspectRatio);
     
     void EarlyRender(double time, double dt);
@@ -55,6 +70,8 @@ public:
     double Timestep() const;
     
     size_t MaxInstanceCount() const;
+    
+    float RandomValue();
 private:
     Scene _scene;
     

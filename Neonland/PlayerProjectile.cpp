@@ -1,5 +1,8 @@
 #include "PlayerProjectile.hpp"
 
-PlayerProjectile::PlayerProjectile(int dmg, float despawnTime)
+PlayerProjectile::PlayerProjectile(int dmg, float lifespan, float speed, bool destructsOnCol)
 : damage{dmg}
-, despawnTime{despawnTime} {}
+, lifespan{lifespan}
+, speed{speed}
+, destructsOnCollision{destructsOnCol}
+, despawnTime{0} {}
