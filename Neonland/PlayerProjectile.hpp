@@ -18,9 +18,7 @@ public:
     }
     
     int damage;
-    float lifespan;
-    float speed;
     float despawnTime;
     
-    PlayerProjectile(int damage = 1, float speed = 100.0f, float lifespan = 2.0f, float despawnTime = 0.0f);
+    PlayerProjectile(int damage, float despawnTime);
 };

@@ -15,8 +15,7 @@ concept Component = requires (const T& a, const T& b) {
     { a < b } -> std::same_as<bool>;
     { a > b } -> std::same_as<bool>;
     { a == b } -> std::same_as<bool>;
-}
-&& std::default_initializable<T>;
+};
 
 template<typename T, typename... Args>
 inline constexpr bool AllUnique = sizeof...(Args) == 0 ? true : (!std::is_same_v<T, Args> && ...) && AllUnique<Args...>;

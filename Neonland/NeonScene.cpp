@@ -12,14 +12,18 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
 , _nextTickTime{clock.Time()}
 , _prevRenderTime{clock.Time()} {
     
-    player = _scene.CreateEntity(Transform(), Physics(), Mesh(0), HP());
+    _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, -90, 0}, float3{1, mapSize.y, mapSize.x}), Mesh(2));
+    
+    auto tf = Transform();
+    player = _scene.CreateEntity(Physics(tf), std::move(tf), Mesh(0), HP());
+    
     cam = _scene.CreateEntity<Camera>();
     crosshair = _scene.CreateEntity(Transform(), Mesh(0));
     
-    _scene.Get<Camera>(cam).SetPosition({0, 0, -20});
+    _scene.Get<Camera>(cam).SetPosition({0, 0, -camDistance});
     _scene.Get<Camera>(cam).SetFarClipPlane(200);
     
-    size_t enemyCount = 100'000;
+    size_t enemyCount = 10;
     int columns = sqrt(enemyCount), rows = sqrt(enemyCount);
     
     float gap = 2.0f;
@@ -33,16 +37,18 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
     
     for (int x = 0; x < columns; x++) {
         for (int y = 0; y < rows; y++) {
-            Entity enemy = _scene.CreateEntity(Transform(), Physics(), Mesh(1), Enemy(), HP());
             float3 pos = {x * (1 + gap) - width / 2, y * (1 + gap) - height / 2};
-            _scene.Get<Transform>(enemy).SetPosition(pos);
+            Transform tf(pos);
+            Entity enemy = _scene.CreateEntity(Physics(tf), std::move(tf), Mesh(1), Enemy(), HP());
             _scene.Get<Physics>(enemy).angularVelocity.z = 30 * distribution(engine);
         }
     }
 }
 
 void NeonScene::Update(float aspectRatio) {
-    auto time = clock.Time();
+    double time = clock.Time();
+    double dt = time - _prevRenderTime;
+    
     if (aspectRatio != _scene.Get<Camera>(cam).GetAspectRatio()) {
         _scene.Get<Camera>(cam).SetAspectRatio(aspectRatio);
     }
@@ -55,125 +61,38 @@ void NeonScene::Update(float aspectRatio) {
     
     mousePressed |= !prevMouseState && mouseDown;
     
-    bool updated = time >= _nextTickTime;
+    EarlyRender(time, dt);
+    
+    bool didTick = time >= _nextTickTime;
     while (time >= _nextTickTime) {
-        std::atomic<int> totalDamage = 0;
-        _scene.GetGroup<Transform, Physics>()->UpdateParallel([timestep = _timestep]
-                                                              (auto entity, auto& tf, auto& physics) {
-            tf._prevPosition = tf._position;
-            tf._prevRotation = tf._rotation;
-            tf._position += physics.velocity * timestep;
-            tf._rotation += physics.angularVelocity * timestep;
-            tf._movedOutsideUpdate = false;
-            tf._rotatedOutsideUpdate = false;
-        });
-        
-        auto& playerTf = _scene.Get<Transform>(player);
-        auto& playerPhysics = _scene.Get<Physics>(player);
-        
-        _scene.GetGroup<Transform, Physics, Enemy, HP>()->UpdateParallel([&, t = time]
-                                                                     (auto entity, auto& tf, auto& physics, auto& enemy, auto& hp) {
-            float dist = simd_distance(tf.GetPosition(), playerTf.GetPosition());
-            
-            if (dist < playerPhysics.collisionRadius + physics.collisionRadius) {
-                if (enemy.cooldownEndTime < t) {
-                    totalDamage += enemy.attackDamage;
-                    enemy.cooldownEndTime = t + enemy.attackCooldown;
-                }
-            }
-        });
-        
-        _scene.GetGroup<Transform, Physics, PlayerProjectile>()->Update([&, t = time](auto projectileEntity, auto& projectileTf, auto& projectilePhysics, auto& projectile) {
-            std::atomic<bool> didHit = false;
-            _scene.GetGroup<Transform, Physics, Enemy, HP>()->UpdateParallel([&](auto entity, auto& enemyTf, auto& enemyPhysics, auto& enemy, auto& hp) {
-                float dist = simd_distance(projectileTf.GetPosition(), enemyTf.GetPosition());
-                if (dist < enemyPhysics.collisionRadius + projectilePhysics.collisionRadius) {
-                    hp.currentHP -= projectile.damage;
-                    didHit = true;
-                }
-            });
-            
-            if (didHit || projectile.despawnTime < t) {
-                _scene.DestroyEntity(projectileEntity);
-            }
-        });
-        
-        _scene.Get<HP>(player).currentHP -= totalDamage;
-        
-        _scene.GetGroup<HP>()->UpdateParallel([&](auto entity, auto& hp) {
-            if (hp.currentHP < 0) {
-                
-                if (entity == player) {
-                    gameOver = true;
-                }
-                else {
-                    _scene.DestroyEntity(entity);
-                }
-            }
-        });
-        
+        Tick(time);
         _nextTickTime += _timestep;
     }
     
-    double timeSinceUpdate = _timestep - (_nextTickTime - time);
-
-    OnRenderUpdate(time, time - _prevRenderTime);
+    LateRender(time, dt);
+    
     _prevRenderTime = time;
-
-    auto entitiesWithMesh = _scene.GetGroup<Transform, Mesh>();
+    mouseDelta = {0, 0};
     
-    _scene.GetGroup<Transform, Mesh>()->UpdateParallel([interpolation = timeSinceUpdate / _timestep]
-                                                       (auto entity, auto& tf, auto& mesh) {
-        constexpr static auto xAxis = float3{1, 0, 0};
-        constexpr static auto yAxis = float3{0, 1, 0};
-        constexpr static auto zAxis = float3{0, 0, 1};
-        
-        float4x4 T, R, S;
-        
-        S = ScaleMatrix(tf.scale);
-        
-        float4x4 rX;
-        float4x4 rY;
-        float4x4 rZ;
-        
-        if (tf._movedOutsideUpdate) {
-            T = TranslationMatrix(tf._position);
-            
-            rX = RotationMatrix(xAxis, tf._rotation.x);
-            rY = RotationMatrix(yAxis, tf._rotation.y);
-            rZ = RotationMatrix(zAxis, tf._rotation.z);
-        }
-        else {
-            T = TranslationMatrix(tf._prevPosition + (tf._position - tf._prevPosition) * interpolation);
-            
-            float3 r = tf._rotation + (tf._rotation - tf._prevRotation) * interpolation;
-            rX = RotationMatrix(xAxis, r.x);
-            rY = RotationMatrix(yAxis, r.y);
-            rZ = RotationMatrix(zAxis, r.z);
-        }
-        
-        R = rZ * rY * rX;
-        
-        mesh.modelMatrix =  T * R * S;
-    });
-    
-    if (updated) {
+    if (didTick) {
         moveDir = {0, 0, 0};
         prevMouseState = mouseDown;
         mousePressed = false;
     }
 }
 
-void NeonScene::OnPhysicsUpdate(double time) {
-
+void NeonScene::EarlyRender(double time, double dt) {
+    _scene.Get<Physics>(player).velocity = moveDir * 5;
 }
 
-void NeonScene::OnRenderUpdate(double time, double dt) {
-    _scene.Get<Physics>(player).velocity = moveDir * 5;
+void NeonScene::Tick(double time) {
+    _scene.GetGroup<Transform, Physics>()->UpdateParallel([timestep = _timestep](auto entity, auto& tf, auto& physics) {
+        Physics::Update(physics, tf, timestep);
+    });
     
     if (mouseDown) {
-        float3 playerPos = _scene.Get<Transform>(player).GetPosition();
-        float3 aimPos = _scene.Get<Camera>(cam).ScreenPointToWorld(mousePos, playerPos.z);
+        float3 playerPos = _scene.Get<Physics>(player).position;
+        float3 aimPos = _scene.Get<Transform>(crosshair).position;
         
         float3 dir = aimPos - playerPos;
         
@@ -182,18 +101,140 @@ void NeonScene::OnRenderUpdate(double time, double dt) {
             dir /= length;
         }
         
+        float r = std::atan2f(dir.y, dir.x) * RadToDeg;
+        
         float3 spawnPos = playerPos + dir * 0.5f;
         
-        auto projectile = _scene.CreateEntity(Transform(spawnPos), Physics(), Mesh(0), PlayerProjectile());
-        _scene.Get<Physics>(projectile).velocity = dir * _scene.Get<PlayerProjectile>(projectile).speed;
-        _scene.Get<PlayerProjectile>(projectile).despawnTime = time + _scene.Get<PlayerProjectile>(projectile).lifespan;
+        auto tf = Transform(spawnPos, float3{0, 0, r}, float3{1.0f, 0.25f, 0.25f});
+        std::cout << tf.rotation.z << std::endl;
+        _scene.CreateEntity(Physics(tf, dir * 20.0f), std::move(tf), Mesh(0), PlayerProjectile(1, time + 2));
     }
     
-    float depth = _scene.Get<Transform>(crosshair).GetPosition().z;
-    float3 pos = _scene.Get<Camera>(cam).ScreenPointToWorld(mousePos, depth);
-    _scene.Get<Transform>(crosshair).SetPosition(pos);
+    auto& playerTf = _scene.Get<Transform>(player);
+    auto& playerPhysics = _scene.Get<Physics>(player);
     
-    mouseDelta = {0, 0};
+    std::atomic<int> totalDamage = 0;
+    _scene.GetGroup<Transform, Physics, Enemy>()->UpdateParallel([&, t = time](auto entity,
+                                                                               auto& tf,
+                                                                               auto& physics,
+                                                                               auto& enemy) {
+        if (Physics::Overlapping(physics, playerPhysics, tf, playerTf)) {
+            if (enemy.cooldownEndTime < t) {
+                totalDamage += enemy.attackDamage;
+                enemy.cooldownEndTime = t + enemy.attackCooldown;
+            }
+        }
+    });
+    _scene.Get<HP>(player).currentHP -= totalDamage;
+    
+    _scene.GetGroup<Transform, Physics, PlayerProjectile>()->Update([&, t = time](auto projectileEntity,
+                                                                                  auto& projectileTf,
+                                                                                  auto& projectilePhysics,
+                                                                                  auto& projectile) {
+        std::atomic<bool> didHit = false;
+        _scene.GetGroup<Transform, Physics, Enemy, HP>()->UpdateParallel([&](auto enemyEntity,
+                                                                             auto& enemyTf,
+                                                                             auto& enemyPhysics,
+                                                                             auto& enemy,
+                                                                             auto& enemyHP) {
+            if (Physics::Overlapping(projectilePhysics, enemyPhysics, projectileTf, enemyTf)) {
+                enemyHP.currentHP -= projectile.damage;
+                didHit = true;
+            }
+        });
+        
+        if (didHit || projectile.despawnTime < t) {
+            _scene.DestroyEntity(projectileEntity);
+        }
+    });
+    
+    
+    _scene.GetGroup<HP>()->UpdateParallel([&](auto entity,
+                                              auto& hp) {
+        if (hp.currentHP < 0) {
+            
+            if (entity == player) {
+                gameOver = true;
+            }
+            else {
+                _scene.DestroyEntity(entity);
+            }
+        }
+    });
+}
+
+void NeonScene::LateRender(double time, double dt) {
+    const double interpolation = std::clamp((_timestep - (_nextTickTime - time)) / _timestep, 0.0, 1.0);
+    
+    {
+        float3 playerPos = _scene.Get<Physics>(player).GetInterpolatedPosition(interpolation);
+        _scene.Get<Camera>(cam).SetPosition({0.0f, 0.0f, playerPos.z - camDistance});
+        float3 topRightPos = _scene.Get<Camera>(cam).ScreenPointToWorld({1.0f, 1.0f}, playerPos.z);
+        float hWidth = topRightPos.x;
+        float hHeight = topRightPos.y;
+        
+        float3 camPos = playerPos;
+        camPos.x = std::clamp(camPos.x, std::min(-mapSize.x / 2 + hWidth, 0.0f), std::max(mapSize.x / 2 - hWidth, 0.0f));
+        camPos.y = std::clamp(camPos.y, std::min(-mapSize.y / 2 + hHeight, 0.0f), std::max(mapSize.y  / 2 - hHeight, 0.0f));
+        camPos.z -= camDistance;
+        
+        _scene.Get<Camera>(cam).SetPosition(camPos);
+    }
+    
+    {
+        float3 playerPos = _scene.Get<Physics>(player).position;
+        float depth = playerPos.z;
+        float3 crosshairPos = _scene.Get<Camera>(cam).ScreenPointToWorld(mousePos, depth);
+        _scene.Get<Transform>(crosshair).position = crosshairPos;
+        
+        float3 dir = crosshairPos - playerPos;
+        
+        float length = simd_length(dir);
+        if (length > 0.0f) {
+            dir /= length;
+        }
+        
+        float r = std::atan2f(dir.y, dir.x) * RadToDeg;
+        _scene.Get<Transform>(player).SetRotation({0, 0, r});
+    }
+    
+    constexpr static auto xAxis = float3{1, 0, 0};
+    constexpr static auto yAxis = float3{0, 1, 0};
+    constexpr static auto zAxis = float3{0, 0, 1};
+    
+    _scene.GetGroup<Transform, Mesh>(GetComponentMask<Physics>())->UpdateParallel([interpolation](auto entity,
+                                                                                                  auto& tf,
+                                                                                                  auto& mesh) {
+        float4x4 S = ScaleMatrix(tf.scale);
+        float4x4 T = TranslationMatrix(tf.position);
+        
+        float4x4 rX = RotationMatrix(xAxis, tf.rotation.x);
+        float4x4 rY = RotationMatrix(yAxis, tf.rotation.y);
+        float4x4 rZ = RotationMatrix(zAxis, tf.rotation.z);
+        
+        float4x4 R = rZ * rY * rX;
+        
+        mesh.modelMatrix =  T * R * S;
+    });
+    
+    _scene.GetGroup<Transform, Mesh, Physics>()->UpdateParallel([interpolation](auto entity,
+                                                                                auto& tf,
+                                                                                auto& mesh,
+                                                                                auto& physics) {
+        float4x4 T, R, S;
+        
+        S = ScaleMatrix(tf.scale);
+        T = TranslationMatrix(physics.GetInterpolatedPosition(interpolation));
+        
+        float3 r = physics.GetInterpolatedRotation(interpolation);
+        float4x4 rX = RotationMatrix(xAxis, r.x);
+        float4x4 rY = RotationMatrix(yAxis, r.y);
+        float4x4 rZ = RotationMatrix(zAxis, r.z);
+        
+        R = rZ * rY * rX;
+        
+        mesh.modelMatrix =  T * R * S;
+    });
 }
 
 FrameData NeonScene::GetFrameData() {
@@ -203,6 +244,7 @@ FrameData NeonScene::GetFrameData() {
     
     FrameData frameData;
     frameData.globalUniforms = uniforms;
+    frameData.clearColor = _scene.Get<Camera>(cam).clearColor;
     
     _groupSizes.clear();
     _instances.clear();

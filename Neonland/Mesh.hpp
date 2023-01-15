@@ -21,7 +21,7 @@ public:
     float4x4 modelMatrix;
     uint32_t GetMeshIdx() const;
     
-    Mesh(uint32_t idx = 0);
+    Mesh(uint32_t idx);
 private:
     uint32_t _meshIdx;
 };

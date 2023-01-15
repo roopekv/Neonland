@@ -17,24 +17,15 @@ public:
         return true;
     }
     
+    float3 position;
     float3 scale;
+    float3 rotation;
+    
+    bool teleported;
+    bool rotationSet;
     
     Transform(float3 pos = {0, 0, 0}, float3 rot = {0, 0, 0}, float3 scale = {1, 1, 1});
     
-    void SetPosition(float3 pos);
+    void Teleport(float3 pos);
     void SetRotation(float3 rot);
-    
-    const float3& GetPosition() const;
-    const float3& GetRotation() const;
-
-    friend class NeonScene;
-protected:
-    float3 _position;
-    float3 _rotation;
-    
-    float3 _prevPosition;
-    float3 _prevRotation;
-    
-    bool _movedOutsideUpdate;
-    bool _rotatedOutsideUpdate;
 };

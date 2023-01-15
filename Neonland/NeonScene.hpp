@@ -33,14 +33,19 @@ public:
     Entity cam;
     Entity crosshair;
     
+    float2 mapSize = {20, 20};
+    
     bool gameOver = false;
+    
+    float camDistance = 20;
     
     NeonScene(size_t maxInstanceCount, double timestep, GameClock clock);
     
     void Update(float aspectRatio);
     
-    void OnPhysicsUpdate(double time);
-    void OnRenderUpdate(double time, double dt);
+    void EarlyRender(double time, double dt);
+    void Tick(double time);
+    void LateRender(double time, double dt);
     
     FrameData GetFrameData();
     

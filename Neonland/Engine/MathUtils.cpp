@@ -1,16 +1,10 @@
 #include "MathUtils.hpp"
-#include <numbers>
-#include <cmath>
-
-namespace {
-constexpr float degToRad = std::numbers::pi_v<float> / 180;
-}
 
 float4x4 ProjectionMatrix(float verticalFoVInDegrees,
                           float aspectRatio,
                           float near,
                           float far) {
-    float fov = verticalFoVInDegrees * degToRad;
+    float fov = verticalFoVInDegrees * DegToRad;
     
     float scale = 1 / std::tan(fov / 2);
     float x = scale / aspectRatio;
@@ -41,7 +35,7 @@ float4x4 RotationMatrix(float3 axis, float degrees) {
     float y = axis.y;
     float z = axis.z;
     
-    float angle = degrees * degToRad;
+    float angle = degrees * DegToRad;
     float s = std::sin(angle);
     float c = std::cos(angle);
     

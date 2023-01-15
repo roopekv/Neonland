@@ -4,6 +4,7 @@
 
 typedef struct FrameData {
     GlobalUniforms globalUniforms;
+    vector_float3 clearColor;
     
     size_t instanceCount;
     Instance* instances;

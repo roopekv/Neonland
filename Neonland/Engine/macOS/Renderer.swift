@@ -26,8 +26,8 @@ class Renderer : NSObject, MTKViewDelegate {
         mtkView.device = device
         mtkView.colorPixelFormat = .bgra8Unorm_srgb
         mtkView.depthStencilPixelFormat = .depth32Float
-        mtkView.clearColor = .init(red: 0, green: 0, blue: 0.2, alpha: 1)
-        mtkView.preferredFramesPerSecond = 120
+        mtkView.clearColor = .init(red: 0, green: 0, blue: 0, alpha: 1)
+        mtkView.preferredFramesPerSecond = 60
         
         commandQueue = device.makeCommandQueue()!
         commandQueue.label = "Command Queue"
@@ -69,7 +69,7 @@ class Renderer : NSObject, MTKViewDelegate {
         
         let allocator = MTKMeshBufferAllocator(device: device)
         
-        let playerMDLMesh = MDLMesh(sphereWithExtent: .init(0.5, 0.5, 0.5),
+        let playerMDLMesh = MDLMesh(sphereWithExtent: .one / 2,
                                     segments: .init(4, 4),
                                     inwardNormals: false,
                                     geometryType: .triangles,
@@ -85,9 +85,13 @@ class Renderer : NSObject, MTKViewDelegate {
         
         enemyMDLMesh.vertexDescriptor = mdlVertexDescriptor
         
+        let quadMDLMesh = MDLMesh(planeWithExtent: .one, segments: .one, geometryType: .triangles, allocator: allocator)
+        quadMDLMesh.vertexDescriptor = mdlVertexDescriptor
+        
         self.meshes = [
             try! MTKMesh(mesh: playerMDLMesh, device: device),
-            try! MTKMesh(mesh: enemyMDLMesh, device: device)
+            try! MTKMesh(mesh: enemyMDLMesh, device: device),
+            try! MTKMesh(mesh: quadMDLMesh, device: device),
         ]
         
         let library = device.makeDefaultLibrary()!
@@ -126,6 +130,9 @@ class Renderer : NSObject, MTKViewDelegate {
         let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
         var frameData = Neon_Render(aspectRatio)
         updateUniforms(frameData: &frameData)
+        view.clearColor = MTLClearColorMake(Double(frameData.clearColor.x),
+                                            Double(frameData.clearColor.y),
+                                            Double(frameData.clearColor.z), 1);
         
         let renderPassDescriptor = view.currentRenderPassDescriptor!
         let commandBuffer = commandQueue.makeCommandBuffer()!
