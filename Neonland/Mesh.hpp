@@ -2,26 +2,33 @@
 
 #include "MathUtils.hpp"
 #include "ComponentType.hpp"
+#include "NeonConstants.h"
 
 class Mesh {
 public:
     static constexpr ComponentType componentType = ComponentType::mesh;
     bool operator<(const Mesh& rhs) const {
-        return _meshIdx < rhs._meshIdx;
+        return type < rhs.type;
     }
     
     bool operator>(const Mesh& rhs) const {
-        return _meshIdx > rhs._meshIdx;
+        return type > rhs.type;
     }
     
     bool operator==(const Mesh& rhs) const {
-        return _meshIdx == rhs._meshIdx;
+        return type == rhs.type;
     }
     
-    float4x4 modelMatrix;
-    uint32_t GetMeshIdx() const;
+    enum Type : uint32_t {
+        PLAYER = SPHERE_MESH,
+        PROJECTILE = SPHERE_MESH,
+        CROSSHAIR = SPHERE_MESH,
+        ENEMY = CUBE_MESH,
+        PLANE = PLANE_MESH
+    };
     
-    Mesh(uint32_t idx);
-private:
-    uint32_t _meshIdx;
+    float4x4 modelMatrix;
+    Type type;
+    
+    Mesh(Type type);
 };

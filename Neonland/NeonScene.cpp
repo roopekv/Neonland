@@ -12,18 +12,18 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
 , _nextTickTime{clock.Time()}
 , _prevRenderTime{clock.Time()} {
     
-    _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, -90, 0}, float3{1, mapSize.y, mapSize.x}), Mesh(2));
+    _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, -90, 0}, float3{1, mapSize.y, mapSize.x}), Mesh(Mesh::PLANE));
     
     auto tf = Transform();
-    player = _scene.CreateEntity(Physics(tf), std::move(tf), Mesh(0), HP());
+    player = _scene.CreateEntity(Physics(tf), std::move(tf), Mesh(Mesh::PLAYER), HP());
     
     cam = _scene.CreateEntity<Camera>();
-    crosshair = _scene.CreateEntity(Transform(), Mesh(0));
+    crosshair = _scene.CreateEntity(Transform(), Mesh(Mesh::CROSSHAIR));
     
     _scene.Get<Camera>(cam).SetPosition({0, 0, -camDistance});
     _scene.Get<Camera>(cam).SetFarClipPlane(200);
     
-    size_t enemyCount = 10;
+    size_t enemyCount = 10'000;
     int columns = sqrt(enemyCount), rows = sqrt(enemyCount);
     
     float gap = 2.0f;
@@ -39,7 +39,7 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
         for (int y = 0; y < rows; y++) {
             float3 pos = {x * (1 + gap) - width / 2, y * (1 + gap) - height / 2};
             Transform tf(pos);
-            Entity enemy = _scene.CreateEntity(Physics(tf), std::move(tf), Mesh(1), Enemy(), HP());
+            Entity enemy = _scene.CreateEntity(Physics(tf), std::move(tf), Mesh(Mesh::ENEMY), Enemy(), HP());
             _scene.Get<Physics>(enemy).angularVelocity.z = 30 * distribution(engine);
         }
     }
@@ -90,8 +90,15 @@ void NeonScene::Tick(double time) {
         Physics::Update(physics, tf, timestep);
     });
     
-    if (mouseDown) {
-        float3 playerPos = _scene.Get<Physics>(player).position;
+    {
+        float3 pos = _scene.Get<Physics>(player).position;
+        pos.x = std::clamp(pos.x, -mapSize.x / 2, mapSize.x / 2);
+        pos.y = std::clamp(pos.y, -mapSize.y / 2, mapSize.y / 2);
+        _scene.Get<Physics>(player).position = pos;
+    }
+    
+    if (mouseDown && shotCooldownEndTime < time) {
+        float3 playerPos = _scene.Get<Transform>(player).position;
         float3 aimPos = _scene.Get<Transform>(crosshair).position;
         
         float3 dir = aimPos - playerPos;
@@ -106,8 +113,8 @@ void NeonScene::Tick(double time) {
         float3 spawnPos = playerPos + dir * 0.5f;
         
         auto tf = Transform(spawnPos, float3{0, 0, r}, float3{1.0f, 0.25f, 0.25f});
-        std::cout << tf.rotation.z << std::endl;
-        _scene.CreateEntity(Physics(tf, dir * 20.0f), std::move(tf), Mesh(0), PlayerProjectile(1, time + 2));
+        _scene.CreateEntity(Physics(tf, dir * 20.0f), std::move(tf), Mesh(Mesh::PROJECTILE), PlayerProjectile(1, time + 1.0f));
+        shotCooldownEndTime = time + shotCooldown;
     }
     
     auto& playerTf = _scene.Get<Transform>(player);
@@ -166,6 +173,18 @@ void NeonScene::Tick(double time) {
 void NeonScene::LateRender(double time, double dt) {
     const double interpolation = std::clamp((_timestep - (_nextTickTime - time)) / _timestep, 0.0, 1.0);
     
+    _scene.GetGroup<Transform, Physics>()->UpdateParallel([interpolation](auto entity,
+                                                                          auto& tf,
+                                                                          auto& physics) {
+        if (!tf.teleported) {
+            tf.position = physics.GetInterpolatedPosition(interpolation);
+        }
+        
+        if (!tf.rotationSet) {
+            tf.rotation = physics.GetInterpolatedRotation(interpolation);
+        }
+    });
+    
     {
         float3 playerPos = _scene.Get<Physics>(player).GetInterpolatedPosition(interpolation);
         _scene.Get<Camera>(cam).SetPosition({0.0f, 0.0f, playerPos.z - camDistance});
@@ -202,9 +221,9 @@ void NeonScene::LateRender(double time, double dt) {
     constexpr static auto yAxis = float3{0, 1, 0};
     constexpr static auto zAxis = float3{0, 0, 1};
     
-    _scene.GetGroup<Transform, Mesh>(GetComponentMask<Physics>())->UpdateParallel([interpolation](auto entity,
-                                                                                                  auto& tf,
-                                                                                                  auto& mesh) {
+    _scene.GetGroup<Transform, Mesh>()->UpdateParallel([interpolation](auto entity,
+                                                                       auto& tf,
+                                                                       auto& mesh) {
         float4x4 S = ScaleMatrix(tf.scale);
         float4x4 T = TranslationMatrix(tf.position);
         
@@ -213,25 +232,6 @@ void NeonScene::LateRender(double time, double dt) {
         float4x4 rZ = RotationMatrix(zAxis, tf.rotation.z);
         
         float4x4 R = rZ * rY * rX;
-        
-        mesh.modelMatrix =  T * R * S;
-    });
-    
-    _scene.GetGroup<Transform, Mesh, Physics>()->UpdateParallel([interpolation](auto entity,
-                                                                                auto& tf,
-                                                                                auto& mesh,
-                                                                                auto& physics) {
-        float4x4 T, R, S;
-        
-        S = ScaleMatrix(tf.scale);
-        T = TranslationMatrix(physics.GetInterpolatedPosition(interpolation));
-        
-        float3 r = physics.GetInterpolatedRotation(interpolation);
-        float4x4 rX = RotationMatrix(xAxis, r.x);
-        float4x4 rY = RotationMatrix(yAxis, r.y);
-        float4x4 rZ = RotationMatrix(zAxis, r.z);
-        
-        R = rZ * rY * rX;
         
         mesh.modelMatrix =  T * R * S;
     });
@@ -249,14 +249,16 @@ FrameData NeonScene::GetFrameData() {
     _groupSizes.clear();
     _instances.clear();
     auto meshPool = _scene.GetPool<Mesh>();
+    meshPool->Sort();
+    
     if (meshPool->size() > 0) {
-        _groupSizes.resize(meshPool->back().GetMeshIdx() + 1, 0);
+        _groupSizes.resize(meshPool->back().type + 1, 0);
         
         for (auto& mesh : *meshPool) {
             Instance instance;
             instance.transform = mesh.modelMatrix;
             _instances.emplace_back(instance);
-            _groupSizes[mesh.GetMeshIdx()]++;
+            _groupSizes[mesh.type]++;
         }
     }
     

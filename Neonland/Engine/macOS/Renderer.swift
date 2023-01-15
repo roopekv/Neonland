@@ -27,7 +27,7 @@ class Renderer : NSObject, MTKViewDelegate {
         mtkView.colorPixelFormat = .bgra8Unorm_srgb
         mtkView.depthStencilPixelFormat = .depth32Float
         mtkView.clearColor = .init(red: 0, green: 0, blue: 0, alpha: 1)
-        mtkView.preferredFramesPerSecond = 60
+        mtkView.preferredFramesPerSecond = 120
         
         commandQueue = device.makeCommandQueue()!
         commandQueue.label = "Command Queue"
@@ -69,30 +69,31 @@ class Renderer : NSObject, MTKViewDelegate {
         
         let allocator = MTKMeshBufferAllocator(device: device)
         
-        let playerMDLMesh = MDLMesh(sphereWithExtent: .one / 2,
+        let sphereMDLMesh = MDLMesh(sphereWithExtent: .one / 2,
                                     segments: .init(4, 4),
                                     inwardNormals: false,
                                     geometryType: .triangles,
                                     allocator: allocator)
         
-        playerMDLMesh.vertexDescriptor = mdlVertexDescriptor
+        sphereMDLMesh.vertexDescriptor = mdlVertexDescriptor
         
-        let enemyMDLMesh = MDLMesh(boxWithExtent: .one,
+        let cubeMDLMesh = MDLMesh(boxWithExtent: .one,
                                    segments: .one,
                                    inwardNormals: false,
                                    geometryType: .triangles,
                                    allocator: allocator)
         
-        enemyMDLMesh.vertexDescriptor = mdlVertexDescriptor
+        cubeMDLMesh.vertexDescriptor = mdlVertexDescriptor
         
-        let quadMDLMesh = MDLMesh(planeWithExtent: .one, segments: .one, geometryType: .triangles, allocator: allocator)
-        quadMDLMesh.vertexDescriptor = mdlVertexDescriptor
+        let planeMDLMesh = MDLMesh(planeWithExtent: .one, segments: .one, geometryType: .triangles, allocator: allocator)
+        planeMDLMesh.vertexDescriptor = mdlVertexDescriptor
         
-        self.meshes = [
-            try! MTKMesh(mesh: playerMDLMesh, device: device),
-            try! MTKMesh(mesh: enemyMDLMesh, device: device),
-            try! MTKMesh(mesh: quadMDLMesh, device: device),
-        ]
+        var meshes = [MTKMesh?](repeating: nil, count: Int(MeshTypeCount.rawValue))
+        meshes[Int(SPHERE_MESH.rawValue)] = try! MTKMesh(mesh: sphereMDLMesh, device: device)
+        meshes[Int(CUBE_MESH.rawValue)] = try! MTKMesh(mesh: cubeMDLMesh, device: device)
+        meshes[Int(PLANE_MESH.rawValue)] = try! MTKMesh(mesh: planeMDLMesh, device: device)
+        
+        self.meshes = meshes.map { $0! }
         
         let library = device.makeDefaultLibrary()!
         library.label = "Default Library"

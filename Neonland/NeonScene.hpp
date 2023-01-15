@@ -26,6 +26,9 @@ public:
     bool prevMouseState = false;
     bool mousePressed = false;
     
+    double shotCooldown = 0.1f;
+    double shotCooldownEndTime = 0;
+    
     float2 directionalInput = {0, 0};
     float3 moveDir = {0, 0, 0};
     

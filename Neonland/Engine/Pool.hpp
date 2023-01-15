@@ -30,9 +30,10 @@ public:
     auto back() const -> const T&;
     
     auto GetComponent(Entity::Id entityId) -> T&;
+    
+    void Sort();
 private:
     std::vector<T> components;
-    
     bool removeLocked;
     std::vector<Entity::Id> removeLockedCache;
     
@@ -163,5 +164,18 @@ void Pool<T>::UnlockRemove() {
             RemoveComponent(entityId);
         }
         removeLockedCache.clear();
+    }
+}
+
+template<Component T>
+void Pool<T>::Sort() {
+    std::sort(indexToEntityId.begin(), indexToEntityId.end(), [this](auto a, auto b) {
+        return components[entityIdToIndex[a]] < components[entityIdToIndex[b]];
+    });
+    
+    std::sort(components.begin(), components.end());
+    
+    for (Index idx = 0; idx < indexToEntityId.size(); idx++) {
+        entityIdToIndex[indexToEntityId[idx]] = idx;
     }
 }
