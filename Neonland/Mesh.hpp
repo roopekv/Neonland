@@ -8,15 +8,15 @@ class Mesh {
 public:
     static constexpr ComponentType componentType = ComponentType::mesh;
     bool operator<(const Mesh& rhs) const {
-        return type < rhs.type;
+        return type < rhs.type || (type == rhs.type && texture < rhs.texture);
     }
     
     bool operator>(const Mesh& rhs) const {
-        return type > rhs.type;
+        return type > rhs.type || (type == rhs.type && texture > rhs.texture);
     }
     
     bool operator==(const Mesh& rhs) const {
-        return type == rhs.type;
+        return type == rhs.type && texture == rhs.texture;
     }
     
     enum Type : uint32_t {
@@ -29,6 +29,9 @@ public:
     
     float4x4 modelMatrix;
     Type type;
+    TextureType texture;
     
-    Mesh(Type type);
+    bool hidden;
+    
+    Mesh(Type type, TextureType tex = NO_TEX, bool hidden = false);
 };

@@ -13,6 +13,10 @@ using float4x4 = simd::float4x4;
 constexpr float DegToRad = std::numbers::pi_v<float> / 180;
 constexpr float RadToDeg = 180 / std::numbers::pi_v<float>;
 
+constexpr auto xAxis = float3{1, 0, 0};
+constexpr auto yAxis = float3{0, 1, 0};
+constexpr auto zAxis = float3{0, 0, 1};
+
 float4x4 ProjectionMatrix(float verticalFoVInDegrees,
                           float aspectRatio,
                           float near,

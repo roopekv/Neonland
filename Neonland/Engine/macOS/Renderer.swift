@@ -11,11 +11,14 @@ class Renderer : NSObject, MTKViewDelegate {
     let commandQueue: MTLCommandQueue
     
     let meshes: [MTKMesh]
+    let textures: [MTLTexture]
+    
     let globalUniformBuffers: [MTLBuffer]
     let instanceBuffers: [MTLBuffer]
     
     let renderPipelineState: MTLRenderPipelineState
     let depthStencilState: MTLDepthStencilState
+    let samplerState: MTLSamplerState
     
     let frameSemaphore = DispatchSemaphore(value: maxFramesInFlight)
     
@@ -61,11 +64,17 @@ class Renderer : NSObject, MTKViewDelegate {
         vertexDescriptor.attributes[1].offset = 12
         vertexDescriptor.attributes[1].bufferIndex = 0
         
-        vertexDescriptor.layouts[0].stride = 24
+        // Texture Coord
+        vertexDescriptor.attributes[2].format = .float2
+        vertexDescriptor.attributes[2].offset = 24
+        vertexDescriptor.attributes[2].bufferIndex = 0
+        
+        vertexDescriptor.layouts[0].stride = 32
         
         let mdlVertexDescriptor = MTKModelIOVertexDescriptorFromMetal(vertexDescriptor)
         (mdlVertexDescriptor.attributes as! [MDLVertexAttribute])[0].name = MDLVertexAttributePosition;
         (mdlVertexDescriptor.attributes as! [MDLVertexAttribute])[1].name = MDLVertexAttributeNormal;
+        (mdlVertexDescriptor.attributes as! [MDLVertexAttribute])[2].name = MDLVertexAttributeTextureCoordinate;
         
         let allocator = MTKMeshBufferAllocator(device: device)
         
@@ -94,6 +103,40 @@ class Renderer : NSObject, MTKViewDelegate {
         meshes[Int(PLANE_MESH.rawValue)] = try! MTKMesh(mesh: planeMDLMesh, device: device)
         
         self.meshes = meshes.map { $0! }
+        
+        let textureLoader = MTKTextureLoader(device: device)
+        
+        let textureOptions: [MTKTextureLoader.Option : Any] = [
+            .textureUsage : MTLTextureUsage.shaderRead.rawValue,
+            .textureStorageMode : MTLStorageMode.private.rawValue
+        ]
+        
+        let groundTexture = try! textureLoader.newTexture(name: "ground",
+                                                    scaleFactor: 1.0,
+                                                    bundle: nil,
+                                                    options: textureOptions)
+        
+        var textures = [MTLTexture?](repeating: nil, count: Int(TextureTypeCount.rawValue))
+        
+        for i in 0..<10 {
+            textures[i] = try! textureLoader.newTexture(name: "\(i)",
+                                                       scaleFactor: 1.0,
+                                                       bundle: nil,
+                                                       options: textureOptions)
+        }
+        
+        textures[Int(GROUND_TEX.rawValue)] = groundTexture
+        self.textures = textures.map { $0! }
+        
+        let samplerDescriptor = MTLSamplerDescriptor()
+        samplerDescriptor.normalizedCoordinates = true
+        samplerDescriptor.magFilter = .linear
+        samplerDescriptor.minFilter = .linear
+        
+        samplerDescriptor.sAddressMode = .repeat
+        samplerDescriptor.tAddressMode = .repeat
+        
+        samplerState = device.makeSamplerState(descriptor: samplerDescriptor)!
         
         let library = device.makeDefaultLibrary()!
         library.label = "Default Library"
@@ -145,7 +188,9 @@ class Renderer : NSObject, MTKViewDelegate {
         renderCommandEncoder.setRenderPipelineState(renderPipelineState)
         renderCommandEncoder.setDepthStencilState(depthStencilState)
         renderCommandEncoder.setFrontFacing(.clockwise)
-        renderCommandEncoder.setCullMode(.back)
+        renderCommandEncoder.setCullMode(.none)
+        
+        renderCommandEncoder.setFragmentSamplerState(samplerState, index: 0)
         
         renderCommandEncoder.setVertexBuffer(instanceBuffers[bufferIndex],
                                              offset: 0,
@@ -157,12 +202,28 @@ class Renderer : NSObject, MTKViewDelegate {
         
         var startOffset = 0
         
-        for groupIdx in 0..<frameData.groupCount {
-            let meshIndex = Int(groupIdx)
+        var prevTextureIdx = NO_TEX.rawValue
+        for groupIdx in 0..<Int(frameData.groupCount) {
+            let meshIndex = Int(frameData.groupMeshes.advanced(by: groupIdx).pointee)
             let mesh = meshes[meshIndex]
             
-            let instanceCount = frameData.groupSizes.advanced(by: Int(groupIdx)).pointee
-            guard instanceCount > 0 else { continue; }
+            let textureIndex = frameData.groupTextures.advanced(by: groupIdx).pointee
+            
+            if textureIndex != prevTextureIdx {
+                
+                if textureIndex == NO_TEX.rawValue {
+                    renderCommandEncoder.setFragmentTexture(nil, index: 0)
+                }
+                else {
+                    renderCommandEncoder.setFragmentTexture(textures[Int(textureIndex)], index: 0)
+                }
+                
+                prevTextureIdx = textureIndex
+            }
+            
+            let instanceCount = frameData.groupSizes.advanced(by: groupIdx).pointee
+            
+            guard instanceCount > 0 else { fatalError("!"); }
             
             for (i, vertexBuffer) in mesh.vertexBuffers.enumerated() {
                 renderCommandEncoder.setVertexBuffer(vertexBuffer.buffer,
@@ -183,7 +244,6 @@ class Renderer : NSObject, MTKViewDelegate {
             
             startOffset += instanceCount
         }
-        
         
         renderCommandEncoder.endEncoding()
         commandBuffer.present(view.currentDrawable!)

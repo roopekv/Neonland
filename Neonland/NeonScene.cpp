@@ -2,6 +2,10 @@
 
 #include <iostream>
 #include <atomic>
+#include <map>
+#include <bit>
+
+#include "UINumber.hpp"
 
 NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
 : _maxInstanceCount{maxInstanceCount}
@@ -13,18 +17,27 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
     std::random_device device;
     randomEngine = std::default_random_engine(device());
     
-    _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, -90, 0}, float3{1, mapSize.y, mapSize.x}), Mesh(Mesh::PLANE));
+    std::array<Entity, 10> numbers;
+    for (size_t i = 0; i < 10; i++) {
+        numbers[i] = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 90, -90}, float3{1, 0.01f, 0.01f}),
+                                         Mesh(Mesh::PLANE, ZERO_TEX), UINumber(0));
+    }
+    scoreField.numberEntities = numbers;
+    scoreField.SetValue(0);
+    scoreField.screenOrigin = {-0.9f, 0.9f};
+    
+    _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 90, -90}, float3{1, mapSize.y, mapSize.x}), Mesh(Mesh::PLANE, GROUND_TEX));
     
     auto tf = Transform();
     player = _scene.CreateEntity(Physics(tf), std::move(tf), Mesh(Mesh::PLAYER), HP());
     
     cam = _scene.CreateEntity<Camera>();
+    _scene.Get<Camera>(cam).SetPosition({0, 0, -camDistance});
+    _scene.Get<Camera>(cam).SetFarClipPlane(camDistance + 10);
+    
     crosshair = _scene.CreateEntity(Transform(), Mesh(Mesh::CROSSHAIR));
     
-    _scene.Get<Camera>(cam).SetPosition({0, 0, -camDistance});
-    _scene.Get<Camera>(cam).SetFarClipPlane(200);
-    
-    size_t enemyCount = 10'000;
+    size_t enemyCount = 1000;
     int columns = sqrt(enemyCount), rows = sqrt(enemyCount);
     
     float gap = 2.0f;
@@ -108,10 +121,6 @@ void NeonScene::Tick(double time) {
         });
     }
     
-    _scene.GetGroup<Transform, Physics>()->UpdateParallel([timestep = _timestep](auto entity, auto& tf, auto& physics) {
-        Physics::Update(physics, tf, timestep);
-    });
-    
     {
         float3 pos = _scene.Get<Physics>(player).position;
         pos.x = std::clamp(pos.x, -mapSize.x / 2, mapSize.x / 2);
@@ -171,6 +180,7 @@ void NeonScene::Tick(double time) {
     });
     _scene.Get<HP>(player).currentHP -= totalDamage;
     
+    std::atomic<int> entitiesDestroyed = 0;
     _scene.GetGroup<Transform, Physics, PlayerProjectile>()->Update([&, t = time](auto projectileEntity,
                                                                                   auto& projectileTf,
                                                                                   auto& projectilePhysics,
@@ -185,6 +195,7 @@ void NeonScene::Tick(double time) {
                 
                 if (enemyHP.currentHP > 0) {                
                     enemyHP.currentHP -= projectile.damage;
+                    entitiesDestroyed++;
                     didHit = true;
                 }
             }
@@ -194,6 +205,8 @@ void NeonScene::Tick(double time) {
             _scene.DestroyEntity(projectileEntity);
         }
     });
+    
+    scoreField.SetValue(scoreField.GetValue() + entitiesDestroyed);
     
     
     _scene.GetGroup<HP>()->UpdateParallel([&](auto entity,
@@ -207,6 +220,10 @@ void NeonScene::Tick(double time) {
                 _scene.DestroyEntity(entity);
             }
         }
+    });
+    
+    _scene.GetGroup<Transform, Physics>()->UpdateParallel([timestep = _timestep](auto entity, auto& tf, auto& physics) {
+        Physics::Update(physics, tf, timestep);
     });
 }
 
@@ -257,9 +274,7 @@ void NeonScene::LateRender(double time, double dt) {
         _scene.Get<Transform>(player).SetRotation({0, 0, r});
     }
     
-    constexpr static auto xAxis = float3{1, 0, 0};
-    constexpr static auto yAxis = float3{0, 1, 0};
-    constexpr static auto zAxis = float3{0, 0, 1};
+    RenderUI();
     
     _scene.GetGroup<Transform, Mesh>()->UpdateParallel([interpolation](auto entity,
                                                                        auto& tf,
@@ -277,6 +292,34 @@ void NeonScene::LateRender(double time, double dt) {
     });
 }
 
+void NeonScene::RenderUI() {
+    auto& camera = _scene.Get<Camera>(cam);
+    {
+        float3 origin = camera.ScreenPointToWorld({-1, 1}, camera.GetPosition().z + camera.GetNearClipPlane() + 0.01f);
+        for (size_t i = 0; i < scoreField.numberEntities.size(); i++) {
+            _scene.Get<UINumber>(scoreField.numberEntities[i]).value = scoreField.numbers[i];
+            
+            Transform& tf = _scene.Get<Transform>(scoreField.numberEntities[i]);
+            
+            float margin = 0.0025f;
+            float3 pos = origin;
+            pos.x += tf.scale.z * 0.55 * (i + 1) + margin;
+            pos.y -= tf.scale.y * 0.55 + margin;
+            tf.position = pos;
+        }
+    }
+    
+    _scene.GetGroup<Mesh, UINumber>()->UpdateParallel([](auto entity, auto& mesh, auto& num) {
+        if (num.value < 10) {
+            mesh.texture = static_cast<TextureType>(num.value);
+            mesh.hidden = false;
+        }
+        else {
+            mesh.hidden = true;
+        }
+    });
+}
+
 FrameData NeonScene::GetFrameData() {
     GlobalUniforms uniforms;
     uniforms.projMatrix = _scene.Get<Camera>(cam).GetProjectionMatrix();
@@ -287,18 +330,42 @@ FrameData NeonScene::GetFrameData() {
     frameData.clearColor = _scene.Get<Camera>(cam).clearColor;
     
     _groupSizes.clear();
+    _groupMeshes.clear();
+    _groupTextures.clear();
     _instances.clear();
     auto meshPool = _scene.GetPool<Mesh>();
     meshPool->Sort();
     
     if (meshPool->size() > 0) {
-        _groupSizes.resize(meshPool->back().type + 1, 0);
+        const Mesh& firstMesh = (*meshPool)[0];
+        auto prevTexture = firstMesh.texture;
+        auto prevType = firstMesh.type;
         
+        _groupSizes.push_back(0);
+        _groupMeshes.push_back(prevType);
+        _groupTextures.push_back(prevTexture);
+        size_t groupIdx = 0;
         for (auto& mesh : *meshPool) {
+            if (mesh.hidden) {
+                continue;;
+            }
+            
             Instance instance;
             instance.transform = mesh.modelMatrix;
             _instances.emplace_back(instance);
-            _groupSizes[mesh.type]++;
+            
+            auto type = mesh.type;
+            auto texture = mesh.texture;
+            if (type != prevType || texture != prevTexture) {
+                _groupSizes.push_back(0);
+                _groupMeshes.push_back(type);
+                _groupTextures.push_back(texture);
+                prevTexture = texture;
+                prevType = type;
+                groupIdx++;
+            }
+            
+            _groupSizes[groupIdx]++;
         }
     }
     
@@ -308,6 +375,8 @@ FrameData NeonScene::GetFrameData() {
     
     frameData.groupCount = static_cast<uint32_t>(_groupSizes.size());
     frameData.groupSizes = _groupSizes.data();
+    frameData.groupMeshes = _groupMeshes.data();
+    frameData.groupTextures = _groupTextures.data();
     
     return frameData;
 }

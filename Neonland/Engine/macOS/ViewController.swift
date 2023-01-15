@@ -4,10 +4,12 @@ import Carbon.HIToolbox.Events
 
 class ViewController: NSViewController {
     
-    let mtkView = MTKView()
+    let mtkView = SceneView()
     var renderer: Renderer!
     
     var keysDown = [Bool](repeating: false, count: Int(UInt16.max))
+    
+    var cursorHidden = false
     
     var MoveDir: SIMD2<Float> {
         var dir = SIMD2<Float>.zero
@@ -48,6 +50,22 @@ class ViewController: NSViewController {
         view.window?.makeFirstResponder(self)
     }
     
+    override func mouseEntered(with event: NSEvent) {
+        if (!cursorHidden) {
+            NSCursor.hide()
+            cursorHidden = true
+        }
+        super.mouseEntered(with: event)
+    }
+    
+    override func mouseExited(with event: NSEvent) {
+        if (cursorHidden) {
+            NSCursor.unhide()
+            cursorHidden = false
+        }
+        super.mouseExited(with: event)
+    }
+    
     override func mouseDown(with event: NSEvent) {
         Neon_UpdateMouseDown(true);
         super.mouseDown(with: event)
@@ -55,7 +73,7 @@ class ViewController: NSViewController {
     
     override func mouseUp(with event: NSEvent) {
         Neon_UpdateMouseDown(false);
-        super.mouseDown(with: event)
+        super.mouseUp(with: event)
     }
     
     override func keyDown(with event: NSEvent) {

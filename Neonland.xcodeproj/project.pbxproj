@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7A03E6432974780B00B3EEC6 /* UINumber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A03E6412974780B00B3EEC6 /* UINumber.cpp */; };
+		7A03E6492974882800B3EEC6 /* NumberField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A03E6472974882700B3EEC6 /* NumberField.cpp */; };
+		7A03E64B2974A7EF00B3EEC6 /* SceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A03E64A2974A7EF00B3EEC6 /* SceneView.swift */; };
 		7A0F89482952223D00A999F2 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F89472952223D00A999F2 /* MenuBar.swift */; };
 		7A41137A29739F11002F116C /* Weapon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A41137829739F11002F116C /* Weapon.cpp */; };
 		7A445EF02951EFBE007A3A38 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A445EEF2951EFBE007A3A38 /* main.swift */; };
@@ -35,6 +38,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7A03E6412974780B00B3EEC6 /* UINumber.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = UINumber.cpp; sourceTree = "<group>"; };
+		7A03E6422974780B00B3EEC6 /* UINumber.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = UINumber.hpp; sourceTree = "<group>"; };
+		7A03E6472974882700B3EEC6 /* NumberField.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NumberField.cpp; sourceTree = "<group>"; };
+		7A03E6482974882800B3EEC6 /* NumberField.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = NumberField.hpp; sourceTree = "<group>"; };
+		7A03E64A2974A7EF00B3EEC6 /* SceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneView.swift; sourceTree = "<group>"; };
 		7A0F89472952223D00A999F2 /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
 		7A41137829739F11002F116C /* Weapon.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Weapon.cpp; sourceTree = "<group>"; };
 		7A41137929739F11002F116C /* Weapon.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Weapon.hpp; sourceTree = "<group>"; };
@@ -137,6 +145,7 @@
 				7AE607F12950F1B300C66EA5 /* AppDelegate.swift */,
 				7A0F89472952223D00A999F2 /* MenuBar.swift */,
 				7AE607F32950F1B300C66EA5 /* ViewController.swift */,
+				7A03E64A2974A7EF00B3EEC6 /* SceneView.swift */,
 				7A7323D32952757C0008C92E /* Renderer.swift */,
 				7A82E5032952857300BDB064 /* Shaders.metal */,
 				7AE607F52950F1B400C66EA5 /* Assets.xcassets */,
@@ -166,6 +175,10 @@
 				7A41137829739F11002F116C /* Weapon.cpp */,
 				7AA078672970F3E500B31EAC /* Mesh.hpp */,
 				7AA078662970F3E500B31EAC /* Mesh.cpp */,
+				7A03E6422974780B00B3EEC6 /* UINumber.hpp */,
+				7A03E6412974780B00B3EEC6 /* UINumber.cpp */,
+				7A03E6482974882800B3EEC6 /* NumberField.hpp */,
+				7A03E6472974882700B3EEC6 /* NumberField.cpp */,
 				7AF3784E29718DC100CC8572 /* HP.hpp */,
 				7AF3784D29718DC100CC8572 /* HP.cpp */,
 				7AF378512971909200CC8572 /* Enemy.hpp */,
@@ -272,6 +285,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A52594A2970A1CE00B5152B /* IPool.cpp in Sources */,
+				7A03E6492974882800B3EEC6 /* NumberField.cpp in Sources */,
 				7A82E5042952857300BDB064 /* Shaders.metal in Sources */,
 				7AD68D7229687C01003821A3 /* NeonConstants.cpp in Sources */,
 				7A5259482970A1CE00B5152B /* Scene.cpp in Sources */,
@@ -292,6 +306,8 @@
 				7AF3784F29718DC100CC8572 /* HP.cpp in Sources */,
 				7A0F89482952223D00A999F2 /* MenuBar.swift in Sources */,
 				7A7323D42952757C0008C92E /* Renderer.swift in Sources */,
+				7A03E64B2974A7EF00B3EEC6 /* SceneView.swift in Sources */,
+				7A03E6432974780B00B3EEC6 /* UINumber.cpp in Sources */,
 				7A62FC57295FACB6001742A3 /* GameClock.cpp in Sources */,
 				7A445EF02951EFBE007A3A38 /* main.swift in Sources */,
 			);
