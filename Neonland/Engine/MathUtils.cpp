@@ -41,13 +41,18 @@ float4x4 RotationMatrix(float3 axis, float degrees) {
     
     float4x4 m;
     
+//    m.columns[0] = { x * x + (1 - x * x) * c, x * y * (1 - c) - z * s, x * z * (1 - c) + y * s, 0};
+//    m.columns[1] = {x * y * (1 - c) + z * s, y * y + (1 - y * y) * c, y * z * (1 - c) - x * s, 0};
+//    m.columns[2] = {x * z * (1 - c) - y * s, y * z * (1 - c) + x * s, z * z + (1 - z * z) * c, 0};
+//    m.columns[3] = {                      0,                       0,                       0, 1};
+    
     m.columns[0] = {
         c + x * x * (1 - c),
         y * x * (1 - c) + z * s,
         z * x * (1 - c) - y * s,
         0
     };
-    
+
     m.columns[1] = {
         x * y * (1 - c) - z * s,
         c + y * y * (1 - c),

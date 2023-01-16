@@ -16,6 +16,7 @@
 		7A5259482970A1CE00B5152B /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A5259452970A1CE00B5152B /* Scene.cpp */; };
 		7A5259492970A1CE00B5152B /* IGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A5259462970A1CE00B5152B /* IGroup.cpp */; };
 		7A52594A2970A1CE00B5152B /* IPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A5259472970A1CE00B5152B /* IPool.cpp */; };
+		7A54A4E329755C4800B48A23 /* plane.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7A54A4E229755C4800B48A23 /* plane.obj */; };
 		7A62FC52295F56D9001742A3 /* MathUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A62FC50295F56D9001742A3 /* MathUtils.cpp */; };
 		7A62FC57295FACB6001742A3 /* GameClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A62FC56295FACB6001742A3 /* GameClock.cpp */; };
 		7A7323D42952757C0008C92E /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A7323D32952757C0008C92E /* Renderer.swift */; };
@@ -58,6 +59,7 @@
 		7A5259452970A1CE00B5152B /* Scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
 		7A5259462970A1CE00B5152B /* IGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IGroup.cpp; sourceTree = "<group>"; };
 		7A5259472970A1CE00B5152B /* IPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IPool.cpp; sourceTree = "<group>"; };
+		7A54A4E229755C4800B48A23 /* plane.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = plane.obj; sourceTree = "<group>"; };
 		7A62FC50295F56D9001742A3 /* MathUtils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MathUtils.cpp; sourceTree = "<group>"; };
 		7A62FC51295F56D9001742A3 /* MathUtils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MathUtils.hpp; sourceTree = "<group>"; };
 		7A62FC54295FAB97001742A3 /* GameClock.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GameClock.hpp; sourceTree = "<group>"; };
@@ -138,6 +140,14 @@
 			path = Engine;
 			sourceTree = "<group>";
 		};
+		7A54A4DF297554FD00B48A23 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				7A54A4E229755C4800B48A23 /* plane.obj */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		7A945207295487F8004CFF4D /* macOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -158,6 +168,7 @@
 		7A94520829548A06004CFF4D /* Neonland */ = {
 			isa = PBXGroup;
 			children = (
+				7A54A4DF297554FD00B48A23 /* Models */,
 				7A460670296F714D00A6A183 /* Engine */,
 				7A94520F29548BCD004CFF4D /* Neonland.h */,
 				7A94520E29548BCD004CFF4D /* Neonland.cpp */,
@@ -273,6 +284,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A94520C29548B8D004CFF4D /* TODO in Resources */,
+				7A54A4E329755C4800B48A23 /* plane.obj in Resources */,
 				7AE607F62950F1B400C66EA5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

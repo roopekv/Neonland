@@ -30,6 +30,7 @@ vertex auto vertexFunc(Vertex in [[stage_in]],
 fragment auto fragmentFunc(FragmentData in [[stage_in]],
                            texture2d<float, access::sample> texMap [[texture(0)]],
                            sampler texSampler [[sampler(0)]]) -> float4 {
+    
     float4 out;
     if (is_null_texture(texMap)) {
         float3 light = normalize(float3(1, 1, 1));
@@ -40,10 +41,11 @@ fragment auto fragmentFunc(FragmentData in [[stage_in]],
     }
     else {
         out = texMap.sample(texSampler, in.texCoords);
-        if (out.a < 0.5f) {
-            discard_fragment();
-        }
     }
 
+    if (out.a < 0.1) {
+        discard_fragment();
+    }
+    
     return out;
 }

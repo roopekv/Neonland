@@ -94,8 +94,9 @@ class Renderer : NSObject, MTKViewDelegate {
         
         cubeMDLMesh.vertexDescriptor = mdlVertexDescriptor
         
-        let planeMDLMesh = MDLMesh(planeWithExtent: .one, segments: .one, geometryType: .triangles, allocator: allocator)
-        planeMDLMesh.vertexDescriptor = mdlVertexDescriptor
+        let mdlAsset = MDLAsset(url: Bundle.main.url(forResource: "plane", withExtension: "obj"), vertexDescriptor: mdlVertexDescriptor, bufferAllocator: allocator)
+        
+        let planeMDLMesh = (mdlAsset.childObjects(of: MDLMesh.self) as! [MDLMesh])[0]
         
         var meshes = [MTKMesh?](repeating: nil, count: Int(MeshTypeCount.rawValue))
         meshes[Int(SPHERE_MESH.rawValue)] = try! MTKMesh(mesh: sphereMDLMesh, device: device)
@@ -132,6 +133,7 @@ class Renderer : NSObject, MTKViewDelegate {
         samplerDescriptor.normalizedCoordinates = true
         samplerDescriptor.magFilter = .linear
         samplerDescriptor.minFilter = .linear
+        samplerDescriptor.mipFilter = .linear
         
         samplerDescriptor.sAddressMode = .repeat
         samplerDescriptor.tAddressMode = .repeat
@@ -146,6 +148,17 @@ class Renderer : NSObject, MTKViewDelegate {
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "vertexFunc")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "fragmentFunc")
         renderPipelineDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat
+        
+        renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
+        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
+        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .sourceAlpha
+        
+        renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
+        renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
+        
+        renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
+        renderPipelineDescriptor.colorAttachments[0].alphaBlendOperation = .add
+        
         renderPipelineDescriptor.depthAttachmentPixelFormat = mtkView.depthStencilPixelFormat
         
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
@@ -188,7 +201,7 @@ class Renderer : NSObject, MTKViewDelegate {
         renderCommandEncoder.setRenderPipelineState(renderPipelineState)
         renderCommandEncoder.setDepthStencilState(depthStencilState)
         renderCommandEncoder.setFrontFacing(.clockwise)
-        renderCommandEncoder.setCullMode(.none)
+        renderCommandEncoder.setCullMode(.back)
         
         renderCommandEncoder.setFragmentSamplerState(samplerState, index: 0)
         

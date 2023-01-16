@@ -19,14 +19,14 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
     
     std::array<Entity, 10> numbers;
     for (size_t i = 0; i < 10; i++) {
-        numbers[i] = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 90, -90}, float3{1, 0.01f, 0.01f}),
+        numbers[i] = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 0}, float3{0.01f, 0.01f, 1.0f}),
                                          Mesh(Mesh::PLANE, ZERO_TEX), UINumber(0));
     }
     scoreField.numberEntities = numbers;
     scoreField.SetValue(0);
     scoreField.screenOrigin = {-0.9f, 0.9f};
     
-    _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 90, -90}, float3{1, mapSize.y, mapSize.x}), Mesh(Mesh::PLANE, GROUND_TEX));
+    _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 0}, float3{mapSize.x, mapSize.y, 1}), Mesh(Mesh::PLANE, GROUND_TEX));
     
     auto tf = Transform();
     player = _scene.CreateEntity(Physics(tf), std::move(tf), Mesh(Mesh::PLAYER), HP());
@@ -303,7 +303,7 @@ void NeonScene::RenderUI() {
             
             float margin = 0.0025f;
             float3 pos = origin;
-            pos.x += tf.scale.z * 0.55 * (i + 1) + margin;
+            pos.x += tf.scale.x * 0.55 * (i + 1) + margin;
             pos.y -= tf.scale.y * 0.55 + margin;
             tf.position = pos;
         }
