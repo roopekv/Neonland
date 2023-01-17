@@ -87,21 +87,32 @@ class Renderer : NSObject, MTKViewDelegate {
         sphereMDLMesh.vertexDescriptor = mdlVertexDescriptor
         
         let cubeMDLMesh = MDLMesh(boxWithExtent: .one,
-                                   segments: .one,
-                                   inwardNormals: false,
-                                   geometryType: .triangles,
-                                   allocator: allocator)
+                                  segments: .one,
+                                  inwardNormals: false,
+                                  geometryType: .triangles,
+                                  allocator: allocator)
         
         cubeMDLMesh.vertexDescriptor = mdlVertexDescriptor
         
-        let mdlAsset = MDLAsset(url: Bundle.main.url(forResource: "plane", withExtension: "obj"), vertexDescriptor: mdlVertexDescriptor, bufferAllocator: allocator)
-        
-        let planeMDLMesh = (mdlAsset.childObjects(of: MDLMesh.self) as! [MDLMesh])[0]
-        
         var meshes = [MTKMesh?](repeating: nil, count: Int(MeshTypeCount.rawValue))
+        
         meshes[Int(SPHERE_MESH.rawValue)] = try! MTKMesh(mesh: sphereMDLMesh, device: device)
         meshes[Int(CUBE_MESH.rawValue)] = try! MTKMesh(mesh: cubeMDLMesh, device: device)
-        meshes[Int(PLANE_MESH.rawValue)] = try! MTKMesh(mesh: planeMDLMesh, device: device)
+        
+        let meshIdxToName: [UInt32 : String] = [
+            PLANE_MESH.rawValue : "plane",
+            CROSSHAIR_MESH.rawValue : "crosshair",
+            SPREAD_MESH.rawValue : "spread_circle"
+        ]
+        
+        for pair in meshIdxToName {
+            let asset = MDLAsset(url: Bundle.main.url(forResource: pair.value, withExtension: "obj"),
+                                 vertexDescriptor: mdlVertexDescriptor, bufferAllocator: allocator)
+            
+            let mdlMesh = (asset.childObjects(of: MDLMesh.self) as! [MDLMesh])[0]
+            
+            meshes[Int(pair.key)] = try! MTKMesh(mesh: mdlMesh, device: device)
+        }
         
         self.meshes = meshes.map { $0! }
         
@@ -109,24 +120,27 @@ class Renderer : NSObject, MTKViewDelegate {
         
         let textureOptions: [MTKTextureLoader.Option : Any] = [
             .textureUsage : MTLTextureUsage.shaderRead.rawValue,
-            .textureStorageMode : MTLStorageMode.private.rawValue
+            .textureStorageMode : MTLStorageMode.private.rawValue,
+            .generateMipmaps : MTKTextureLoader.Option.generateMipmaps,
+            .origin : MTKTextureLoader.Origin.topLeft
         ]
-        
-        let groundTexture = try! textureLoader.newTexture(name: "ground",
-                                                    scaleFactor: 1.0,
-                                                    bundle: nil,
-                                                    options: textureOptions)
         
         var textures = [MTLTexture?](repeating: nil, count: Int(TextureTypeCount.rawValue))
         
-        for i in 0..<10 {
-            textures[i] = try! textureLoader.newTexture(name: "\(i)",
-                                                       scaleFactor: 1.0,
-                                                       bundle: nil,
-                                                       options: textureOptions)
+        for i in 0...9 {
+            textures[Int(ZERO_TEX.rawValue) + i] = try! textureLoader.newTexture(URL: Bundle.main.url(forResource: "\(i)", withExtension: "png")!,
+                                                                                 options: textureOptions)
         }
         
-        textures[Int(GROUND_TEX.rawValue)] = groundTexture
+        textures[Int(GROUND_TEX.rawValue)] = try! textureLoader.newTexture(URL: Bundle.main.url(forResource: "ground", withExtension: "png")!,
+                                                                           options: textureOptions)
+        
+        textures[Int(NO_TEX.rawValue)] = try! textureLoader.newTexture(URL: Bundle.main.url(forResource: "blank", withExtension: "png")!,
+                                                                       options: textureOptions)
+        
+        textures[Int(SLASH_TEX.rawValue)] = try! textureLoader.newTexture(URL: Bundle.main.url(forResource: "slash", withExtension: "png")!,
+                                                                          options: textureOptions)
+        
         self.textures = textures.map { $0! }
         
         let samplerDescriptor = MTLSamplerDescriptor()
@@ -137,6 +151,7 @@ class Renderer : NSObject, MTKViewDelegate {
         
         samplerDescriptor.sAddressMode = .repeat
         samplerDescriptor.tAddressMode = .repeat
+        samplerDescriptor.label = "Sampler State"
         
         samplerState = device.makeSamplerState(descriptor: samplerDescriptor)!
         
@@ -215,7 +230,7 @@ class Renderer : NSObject, MTKViewDelegate {
         
         var startOffset = 0
         
-        var prevTextureIdx = NO_TEX.rawValue
+        var prevTextureIdx: UInt32 = TextureTypeCount.rawValue
         for groupIdx in 0..<Int(frameData.groupCount) {
             let meshIndex = Int(frameData.groupMeshes.advanced(by: groupIdx).pointee)
             let mesh = meshes[meshIndex]
@@ -223,14 +238,7 @@ class Renderer : NSObject, MTKViewDelegate {
             let textureIndex = frameData.groupTextures.advanced(by: groupIdx).pointee
             
             if textureIndex != prevTextureIdx {
-                
-                if textureIndex == NO_TEX.rawValue {
-                    renderCommandEncoder.setFragmentTexture(nil, index: 0)
-                }
-                else {
-                    renderCommandEncoder.setFragmentTexture(textures[Int(textureIndex)], index: 0)
-                }
-                
+                renderCommandEncoder.setFragmentTexture(textures[Int(textureIndex)], index: 0)
                 prevTextureIdx = textureIndex
             }
             

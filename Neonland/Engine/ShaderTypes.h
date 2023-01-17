@@ -9,4 +9,5 @@ typedef struct GlobalUniforms {
 
 typedef struct Instance {
     matrix_float4x4 transform;
+    vector_float4 color;
 } Instance;

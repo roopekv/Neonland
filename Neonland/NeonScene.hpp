@@ -18,6 +18,7 @@
 
 #include "FrameData.h"
 #include "NumberField.hpp"
+#include "Level.hpp"
 
 class NeonScene {
 public:
@@ -31,53 +32,73 @@ public:
     bool prevMouseState = false;
     bool mousePressed = false;
     
+    int currentWeaponIdx = 0;
     std::array<Weapon, 3> weapons = {
-        Weapon(PlayerProjectile(1, 1.5f, 35.0f, true), 0.1f, 0.02f, 1, 1.0f),
-        Weapon(PlayerProjectile(1, 1.5f, 30.0f, true), 0.5f, 0.2f, 5, 1.0f),
-        Weapon(PlayerProjectile(1, 2.0f, 25.0f, false), 0.5f, 0.01f, 1, 1.5f)
+        Weapon(PlayerProjectile(3, 2.0f, 35.0f, true), 0.1f, 0.05f, 1, 1.0f),
+        Weapon(PlayerProjectile(4, 1.5f, 30.0f, true), 0.4f, 0.1f, 5, 1.0f),
+        Weapon(PlayerProjectile(5, 2.0f, 25.0f, false), 0.3f, 0.05f, 1, 1.5f)
     };
     
-    int weaponIdx = 0;
-    
-    std::default_random_engine randomEngine;
-    
-    double movementSpeed = 7.0f;
-    
     float2 directionalInput = {0, 0};
+    
+    NeonScene(size_t maxInstanceCount, double timestep, GameClock clock);
+    
+    void SelectWeapon(int i);
+    void Update(float aspectRatio);
+    
+    FrameData GetFrameData();
+    
+    double Timestep() const;
+    size_t MaxInstanceCount() const;
+    
+    float RandomBetween(float a, float b);
+    
+    const Level& CurrentLevel();
+    
+    NumberField CreateField(float2 size = {0.005f, 0.01f}, float4 color = {1, 1, 1, 1});
+    void UpdateField(const NumberField& field);
+private:
+    Scene _scene;
+    
     float3 moveDir = {0, 0, 0};
     
     Entity player;
     Entity cam;
     Entity crosshair;
+    Entity spreadCircle;
+    
+    Entity ground;
+    
+    float spreadMult = 1.0f;
+    float prevSpreadMult = 1.0f;
     
     NumberField scoreField;
+    NumberField healthField;
     
-    float2 mapSize = {50, 50};
-    
-    bool gameOver = false;
+    double movementSpeed = 7.0f;
     
     float camDistance = 25;
     
-    NeonScene(size_t maxInstanceCount, double timestep, GameClock clock);
+    int levelIdx = 0;
     
-    void SelectWeapon(int i);
+    bool gameOver = false;
+    bool levelWon = false;
+    size_t currentWave = 0;
+    size_t currentSubWave = 0;
+    double nextSubWaveStartTime = 0;
     
-    void Update(float aspectRatio);
+    void LoadLevel(int i);
+    
+    void UpdateLevelProgress(double time);
+    
+    void SpawnSubWave(const Wave::SubWave& subWave);
     
     void EarlyRender(double time, double dt);
     void Tick(double time);
     void LateRender(double time, double dt);
     void RenderUI();
     
-    FrameData GetFrameData();
-    
-    double Timestep() const;
-    
-    size_t MaxInstanceCount() const;
-    
-    float RandomValue();
-private:
-    Scene _scene;
+    std::default_random_engine randomEngine;
     
     std::vector<Instance> _instances;
     std::vector<size_t> _groupSizes;

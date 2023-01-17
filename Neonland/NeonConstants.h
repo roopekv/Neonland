@@ -12,22 +12,25 @@ extern const size_t MAX_INSTANCE_COUNT;
 typedef enum MeshType {
     SPHERE_MESH,
     CUBE_MESH,
+    CROSSHAIR_MESH,
     PLANE_MESH,
+    SPREAD_MESH,
     MeshTypeCount
 } MeshType;
 
 typedef enum TextureType {
-    ZERO_TEX =  0,
-    ONE_TEX =   1,
-    TWO_TEX =   2,
-    THREE_TEX = 3,
-    FOUR_TEX =  4,
-    FIVE_TEX =  5,
-    SIX_TEX =   6,
-    SEVEN_TEX = 7,
-    EIGHT_TEX = 8,
-    NINE_TEX =  9,
+    NO_TEX,
     GROUND_TEX,
+    SLASH_TEX,
+    ZERO_TEX,
+    ONE_TEX,
+    TWO_TEX,
+    THREE_TEX,
+    FOUR_TEX,
+    FIVE_TEX,
+    SIX_TEX,
+    SEVEN_TEX,
+    EIGHT_TEX,
+    NINE_TEX,
     TextureTypeCount,
-    NO_TEX
 } TextureType;
