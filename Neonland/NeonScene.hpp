@@ -34,9 +34,9 @@ public:
     
     int currentWeaponIdx = 0;
     std::array<Weapon, 3> weapons = {
-        Weapon(PlayerProjectile(3, 2.0f, 35.0f, true), 0.1f, 0.05f, 1, 1.0f),
+        Weapon(PlayerProjectile(1, 2.0f, 35.0f, true), 0.1f, 0.05f, 1, 1.0f),
         Weapon(PlayerProjectile(4, 1.5f, 30.0f, true), 0.4f, 0.1f, 5, 1.0f),
-        Weapon(PlayerProjectile(5, 2.0f, 25.0f, false), 0.3f, 0.05f, 1, 1.5f)
+        Weapon(PlayerProjectile(1, 2.0f, 25.0f, false), 0.3f, 0.05f, 1, 1.5f)
     };
     
     float2 directionalInput = {0, 0};
@@ -75,7 +75,7 @@ private:
     NumberField scoreField;
     NumberField healthField;
     
-    double movementSpeed = 7.0f;
+    float movementSpeed = 7.0f;
     
     float camDistance = 25;
     
@@ -93,9 +93,8 @@ private:
     
     void SpawnSubWave(const Wave::SubWave& subWave);
     
-    void EarlyRender(double time, double dt);
     void Tick(double time);
-    void LateRender(double time, double dt);
+    void Render(double time, double dt);
     void RenderUI();
     
     std::default_random_engine randomEngine;

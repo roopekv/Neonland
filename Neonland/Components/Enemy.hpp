@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ComponentType.hpp"
+#include "MathUtils.hpp"
 
 class Enemy {
 public:
@@ -21,7 +22,8 @@ public:
     double attackCooldown;
     double cooldownEndTime;
     
-    float movementSpeed;
+    float maxMovementSpeed;
+    float acceleration;
     
-    Enemy(int dmg, double cooldown, float moveSpeed);
+    Enemy(int dmg, double cooldown, float maxSpeed, float acceleration = 1.0f);
 };

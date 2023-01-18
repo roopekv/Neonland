@@ -7,16 +7,16 @@ Physics::Physics(const Transform& tf, float3 vel, float3 angularVel, float radiu
 , position{tf.position}
 , rotation{tf.rotation}
 , prevPosition{tf.position}
-, prevRotation{tf.rotation}{}
+, prevRotation{tf.rotation} {}
 
 bool Physics::Overlapping(const Physics& a, const Physics& b,
-                        const Transform& tfA, const Transform& tfB) {
+                        const Transform& tfA, const Transform& tfB, float epsilon) {
     
-    float dist = simd_distance(tfA.position, tfB.position);
-    float radA = a.collisionRadius * std::min({tfA.scale.x, tfA.scale.y, tfA.scale.z});
-    float radB = b.collisionRadius * std::min({tfB.scale.x, tfB.scale.y, tfB.scale.z});
+    float dist = VecDistance(tfA.position, tfB.position);
+    float radA = a.GetScaledCollisionRadius(tfA);
+    float radB = b.GetScaledCollisionRadius(tfB);
     
-    return dist < radA + radB;
+    return dist - epsilon < radA + radB;
 }
 
 void Physics::Update(Physics& physics, Transform& tf, double timestep) {
@@ -37,9 +37,10 @@ void Physics::Update(Physics& physics, Transform& tf, double timestep) {
     
     physics.position += physics.velocity * timestep;
     physics.rotation += physics.angularVelocity * timestep;
-    
-    tf.position = physics.position;
-    tf.rotation = physics.rotation;
+}
+
+float Physics::GetScaledCollisionRadius(const Transform& tf) const {
+    return collisionRadius * std::min({tf.scale.x, tf.scale.y, tf.scale.z});
 }
 
 float3 Physics::GetInterpolatedPosition(double interpolation) const {

@@ -17,6 +17,8 @@
 template<Component... Args> requires (sizeof...(Args) > 0) && AllUnique<Args...>
 class Group : public IGroup {
 public:
+    Group<Args...>(ComponentMask exclude, std::shared_ptr<Pool<Args>>... pools);
+    
     template<typename Func> requires std::invocable<Func, Entity, Args&...>
     void Update(Func func);
     
@@ -24,7 +26,6 @@ public:
     void UpdateParallel(Func func);
     
     auto GetMembers() -> std::vector<std::tuple<Entity, Args&...>>;
-    Group<Args...>(ComponentMask exclude, std::shared_ptr<Pool<Args>>... pools);
 private:
     std::tuple<std::shared_ptr<Pool<Args>>...> pools;
     
@@ -128,7 +129,7 @@ auto Group<Args...>::GetMembers(std::shared_ptr<Pool<Args>>... pools) -> std::ve
     members.reserve(groupEntities.size());
     
     for (auto entity : groupEntities) {
-        auto member = std::forward_as_tuple(entity, pools->GetComponent(entity)...);
+        auto member = std::forward_as_tuple(entity, pools->GetComponent(entity.id)...);
         members.push_back(member);
     }
     

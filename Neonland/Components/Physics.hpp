@@ -19,7 +19,7 @@ public:
     }
     
     static bool Overlapping(const Physics& a, const Physics& b,
-                            const Transform& tfA, const Transform& tfB);
+                            const Transform& tfA, const Transform& tfB, float epsilon = 0.0f);
     
     static void Update(Physics& physics, Transform& tf, double timestep);
     
@@ -32,6 +32,8 @@ public:
     
     float3 GetInterpolatedPosition(double interpolation) const;
     float3 GetInterpolatedRotation(double interpolation) const;
+    
+    float GetScaledCollisionRadius(const Transform& tf) const;
     
     float3 position;
     float3 rotation;

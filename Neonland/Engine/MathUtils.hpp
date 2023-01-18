@@ -27,3 +27,12 @@ float4x4 TranslationMatrix(float3 t);
 float4x4 RotationMatrix(float3 axis, float degrees);
 
 float4x4 ScaleMatrix(float3 s);
+
+float3 VecNormalize(float3 vec);
+float2 VecNormalize(float2 vec);
+
+float VecLength(const float3& vec);
+float VecLength(const float2& vec);
+
+float VecDistance(const float3& a, const float3& b);
+float VecDistance(const float2& a, const float2& b);

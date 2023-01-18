@@ -68,3 +68,34 @@ float4x4 RotationMatrix(float3 axis, float degrees) {
 float4x4 ScaleMatrix(float3 s) {
     return float4x4(float4{s.x, s.y, s.z, 1});
 }
+
+float3 VecNormalize(float3 vec) {
+    float len = simd_length(vec);
+    if (len > 0.0f) {
+        vec /= len;
+    }
+    return vec;
+}
+float2 VecNormalize(float2 vec) {
+    float len = simd_length(vec);
+    if (len > 0.0f) {
+        vec /= len;
+    }
+    return vec;
+}
+
+float VecLength(const float3& vec) {
+    return simd_length(vec);
+}
+
+float VecLength(const float2& vec) {
+    return simd_length(vec);
+}
+
+float VecDistance(const float3& a, const float3& b) {
+    return simd_distance(a, b);
+}
+
+float VecDistance(const float2& a, const float2& b) {
+    return simd_distance(a, b);
+}

@@ -1,6 +1,7 @@
 #pragma once
 
-#include"ComponentType.hpp"
+#include "ComponentType.hpp"
+#include "Entity.hpp"
 
 class PlayerProjectile {
 public:
@@ -24,5 +25,6 @@ public:
     
     float despawnTime;
     
+    Entity hit = { Entity::NULL_ID, Entity::NULL_VERSION };
     PlayerProjectile(int damage, float lifespan, float speed, bool destructsOnCol);
 };

@@ -33,11 +33,7 @@ void Neon_UpdateMouseDown(bool down) {
 }
 
 void Neon_UpdateDirectionalInput(vector_float2 newDir) {
-    float length = simd_length(newDir);
-    if (length > 0.0f) {
-        newDir /= length;
-    }
-    scene.directionalInput = newDir;
+    scene.directionalInput = VecNormalize(newDir);
 }
 
 void Neon_UpdateNumberKeyPressed(int num) {

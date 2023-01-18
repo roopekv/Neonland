@@ -86,23 +86,15 @@ class Renderer : NSObject, MTKViewDelegate {
         
         sphereMDLMesh.vertexDescriptor = mdlVertexDescriptor
         
-        let cubeMDLMesh = MDLMesh(boxWithExtent: .one,
-                                  segments: .one,
-                                  inwardNormals: false,
-                                  geometryType: .triangles,
-                                  allocator: allocator)
-        
-        cubeMDLMesh.vertexDescriptor = mdlVertexDescriptor
-        
         var meshes = [MTKMesh?](repeating: nil, count: Int(MeshTypeCount.rawValue))
         
         meshes[Int(SPHERE_MESH.rawValue)] = try! MTKMesh(mesh: sphereMDLMesh, device: device)
-        meshes[Int(CUBE_MESH.rawValue)] = try! MTKMesh(mesh: cubeMDLMesh, device: device)
         
         let meshIdxToName: [UInt32 : String] = [
             PLANE_MESH.rawValue : "plane",
             CROSSHAIR_MESH.rawValue : "crosshair",
-            SPREAD_MESH.rawValue : "spread_circle"
+            SPREAD_MESH.rawValue : "spread_circle",
+            CUBE_MESH.rawValue : "cube"
         ]
         
         for pair in meshIdxToName {
@@ -132,8 +124,10 @@ class Renderer : NSObject, MTKViewDelegate {
                                                                                  options: textureOptions)
         }
         
-        textures[Int(GROUND_TEX.rawValue)] = try! textureLoader.newTexture(URL: Bundle.main.url(forResource: "ground", withExtension: "png")!,
-                                                                           options: textureOptions)
+        for i in 0...2 {
+            textures[Int(GROUND0_TEX.rawValue) + i] = try! textureLoader.newTexture(URL: Bundle.main.url(forResource: "ground\(i)", withExtension: "png")!,
+                                                                                   options: textureOptions)
+        }
         
         textures[Int(NO_TEX.rawValue)] = try! textureLoader.newTexture(URL: Bundle.main.url(forResource: "blank", withExtension: "png")!,
                                                                        options: textureOptions)

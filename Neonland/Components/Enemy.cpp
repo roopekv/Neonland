@@ -1,7 +1,8 @@
 #include "Enemy.hpp"
 
-Enemy::Enemy(int dmg, double cooldown, float moveSpeed)
+Enemy::Enemy(int dmg, double cooldown, float maxSpeed, float acceleration)
 : attackDamage{dmg}
 , attackCooldown{cooldown}
-, movementSpeed{moveSpeed}
+, maxMovementSpeed{maxSpeed}
+, acceleration{acceleration}
 , cooldownEndTime{0} {}

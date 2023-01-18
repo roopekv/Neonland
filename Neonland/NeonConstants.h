@@ -20,7 +20,9 @@ typedef enum MeshType {
 
 typedef enum TextureType {
     NO_TEX,
-    GROUND_TEX,
+    GROUND0_TEX,
+    GROUND1_TEX,
+    GROUND2_TEX,
     SLASH_TEX,
     ZERO_TEX,
     ONE_TEX,
