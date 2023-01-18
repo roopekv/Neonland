@@ -14,4 +14,6 @@ typedef struct FrameData {
     size_t* groupSizes;
     uint32_t* groupMeshes;
     uint32_t* groupTextures;
+    uint32_t* groupShaders;
+    
 } FrameData;

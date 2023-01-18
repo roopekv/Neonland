@@ -15,14 +15,24 @@ typedef enum MeshType {
     CROSSHAIR_MESH,
     PLANE_MESH,
     SPREAD_MESH,
+    SHARD_MESH,
     MeshTypeCount
 } MeshType;
+
+typedef enum ShaderType {
+    LIT_SHADER,
+    UI_SHADER,
+    ShaderTypeCount
+} ShaderType;
 
 typedef enum TextureType {
     NO_TEX,
     GROUND0_TEX,
     GROUND1_TEX,
     GROUND2_TEX,
+    NEONLAND_TEX,
+    WAVE_TEX,
+    HP_TEX,
     SLASH_TEX,
     ZERO_TEX,
     ONE_TEX,

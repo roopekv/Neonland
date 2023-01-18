@@ -17,8 +17,18 @@ public:
         return true;
     }
     
-    int currentHP;
-    int maxHP;
     
     HP(int max = 1);
+    
+    void Set(int hp);
+    
+    int Get() const;
+    
+    int Max() const;
+    
+    void Decrease(int dmg);
+    
+private:
+    int hp;
+    int maxHP;
 };

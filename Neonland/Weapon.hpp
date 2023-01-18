@@ -1,17 +1,19 @@
 #pragma once
 
 #include "PlayerProjectile.hpp"
+#include "Mesh.hpp"
 
 class Weapon {
 public:
-    const PlayerProjectile bullet;
+    const PlayerProjectile projectile;
+    const Mesh projectileMesh;
     const double cooldown;
     
     const float spread;
-    const int bulletsPerShot;
-    const float bulletSize;
+    const int projectilesPerShot;
+    const float projectileSize;
     
     double cooldownEndTime;
     
-    Weapon(PlayerProjectile bullet, double cooldown, float spread, int bulletsPerShot, float bulletSize);
+    Weapon(PlayerProjectile projectile, double cooldown, float spread, int projectilesPerShot, float projectileSize, Mesh projectileMesh);
 };

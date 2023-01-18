@@ -1,9 +1,10 @@
 #include "Weapon.hpp"
 
-Weapon::Weapon(PlayerProjectile bullet, double cooldown, float spread, int bulletsPerShot, float bulletSize)
-: bullet{bullet}
+Weapon::Weapon(PlayerProjectile projectile, double cooldown, float spread, int projectilesPerShot, float projectileSize, Mesh projectileMesh)
+: projectile{projectile}
 , cooldown{cooldown}
 , spread{spread}
-, bulletsPerShot{bulletsPerShot}
-, bulletSize(bulletSize)
+, projectilesPerShot{projectilesPerShot}
+, projectileSize{projectileSize}
+, projectileMesh{projectileMesh}
 , cooldownEndTime{0} {}

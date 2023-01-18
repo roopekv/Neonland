@@ -10,19 +10,19 @@ class NumberField {
 public:
     std::array<Entity, 10> valueUIEntities;
     std::array<Entity, 10> maxValueUIEntities;
-    std::vector<uint8_t> valueNums;
-    std::vector<uint8_t> maxValueNums;
+    std::vector<int32_t> valueNums;
+    std::vector<int32_t> maxValueNums;
     
     Entity slash;
     
-    float2 screenOrigin = {0, 0};
+    float2 origin = {0, 0};
     
-    void SetValue(unsigned int value);
-    unsigned int GetValue() const;
+    void SetValue(int32_t value);
+    int32_t GetValue() const;
     
-    void SetMaxValue(unsigned int value);
-    unsigned int GetMaxValue() const;
+    void SetMaxValue(int32_t value);
+    int32_t GetMaxValue() const;
 private:
-    unsigned int value = 0;
-    unsigned int maxValue = 0;
+    int32_t value = 0;
+    int32_t maxValue = 0;
 };

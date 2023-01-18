@@ -32,11 +32,27 @@ public:
     bool prevMouseState = false;
     bool mousePressed = false;
     
-    int currentWeaponIdx = 0;
+    int weaponIdx = 0;
     std::array<Weapon, 3> weapons = {
-        Weapon(PlayerProjectile(1, 2.0f, 35.0f, true), 0.1f, 0.05f, 1, 1.0f),
-        Weapon(PlayerProjectile(4, 1.5f, 30.0f, true), 0.4f, 0.1f, 5, 1.0f),
-        Weapon(PlayerProjectile(1, 2.0f, 25.0f, false), 0.3f, 0.05f, 1, 1.5f)
+        Weapon(PlayerProjectile(1, 2.0f, 35.0f, true),
+               0.1f,
+               0.025f,
+               1,
+               1.0f,
+               Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{0, 1, 0, 1}))),
+        Weapon(PlayerProjectile(4, 1.5f, 30.0f, true),
+               0.4f,
+               0.1f,
+               5,
+               1.0f,
+               Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{1, 0, 0, 1}))),
+
+        Weapon(PlayerProjectile(1, 2.0f, 25.0f, false),
+               0.3f,
+               0.025f,
+               1,
+               1.5f,
+               Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{0, 0, 1, 1})))
     };
     
     float2 directionalInput = {0, 0};
@@ -54,9 +70,10 @@ public:
     float RandomBetween(float a, float b);
     
     const Level& CurrentLevel();
+    Weapon& CurrentWeapon();
     
     NumberField CreateField(float2 size = {0.005f, 0.01f}, float4 color = {1, 1, 1, 1});
-    void UpdateField(const NumberField& field);
+    void UpdateField(const NumberField& field, float3 origin);
 private:
     Scene _scene;
     
@@ -103,6 +120,7 @@ private:
     std::vector<size_t> _groupSizes;
     std::vector<uint32_t> _groupMeshes;
     std::vector<uint32_t> _groupTextures;
+    std::vector<uint32_t> _groupShaders;
     
     size_t _maxInstanceCount;
     

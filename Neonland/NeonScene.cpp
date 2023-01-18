@@ -5,7 +5,7 @@
 #include <map>
 #include <bit>
 
-#include "UINumber.hpp"
+#include "Material.hpp"
 
 NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
 : _maxInstanceCount{maxInstanceCount}
@@ -18,36 +18,45 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
     randomEngine = std::default_random_engine(device());
     
     scoreField = CreateField({0.0025f, 0.005f});
-    scoreField.screenOrigin = {0, 1};
+    scoreField.origin = {0, 1};
     
     healthField = CreateField({0.0025f, 0.005f});
-    healthField.screenOrigin = {0, -1};
+    healthField.origin = {0, -1};
     
-    ground = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{0, 0, 1}), Mesh(PLANE_MESH, GROUND0_TEX));
-    player = _scene.CreateEntity(Physics(Transform({0, -0.5f, 0})), Transform(), Mesh(SPHERE_MESH), HP(100));
+    ground = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 0}, float3{0, 0, 1}),
+                                 Mesh(PLANE_MESH, Material(LIT_SHADER, GROUND0_TEX)));
+    
+    auto playerTf = Transform(float3{0, 0, -0.5f}, float3{0, 0, 0}, float3{1, 1, 1});
+    player = _scene.CreateEntity(Physics(playerTf),
+                                 std::move(playerTf),
+                                 Mesh(SPHERE_MESH, Material(LIT_SHADER)),
+                                 HP(100));
     
     cam = _scene.CreateEntity<Camera>();
     _scene.Get<Camera>(cam).SetPosition({0, 0, -camDistance});
     _scene.Get<Camera>(cam).SetFarClipPlane(camDistance + 10);
     
-    crosshair = _scene.CreateEntity(Transform(), Mesh(CROSSHAIR_MESH, NO_TEX, float4{0, 1, 1, 1}));
-    _scene.Get<Transform>(crosshair).scale = {0.3, 0.3, 0.3};
+    crosshair = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 0}, float3{0.3, 0.3, 0.3}),
+                                    Mesh(CROSSHAIR_MESH, Material(UI_SHADER, NO_TEX, float4{0, 1, 1, 1}), false));
     
-    spreadCircle = _scene.CreateEntity(Transform(), Mesh(SPREAD_MESH, NO_TEX, float4{0, 1, 1, 1}));
+    spreadCircle = _scene.CreateEntity(Transform(),
+                                       Mesh(SPREAD_MESH, Material(UI_SHADER, NO_TEX), false));
     
+    SelectWeapon(weaponIdx);
     LoadLevel(levelIdx);
 }
 
 NumberField NeonScene::CreateField(float2 size, float4 color) {
     NumberField field;
     for (size_t i = 0; i < 10; i++) {
-        field.valueUIEntities[i] = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{size.x, size.y, 1.0f}),
-                                                       Mesh(PLANE_MESH, ZERO_TEX, color), UINumber(10));
-        field.maxValueUIEntities[i] = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{size.x, size.y, 1.0f}),
-                                                          Mesh(PLANE_MESH, ZERO_TEX, color), UINumber(10));
+        field.valueUIEntities[i] = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{size.x, size.y, 1}),
+                                                       Mesh(PLANE_MESH, Material(UI_SHADER, ZERO_TEX, color), true));
+        
+        field.maxValueUIEntities[i] = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{size.x, size.y, 1}),
+                                                          Mesh(PLANE_MESH, Material(UI_SHADER, ZERO_TEX, color), true));
     }
     field.slash = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{size.x, size.y, 1.0f}),
-                                      Mesh(PLANE_MESH, SLASH_TEX, color));
+                                      Mesh(PLANE_MESH, Material(UI_SHADER, SLASH_TEX, color)));
     field.SetValue(0);
     field.SetMaxValue(0);
     
@@ -57,16 +66,16 @@ NumberField NeonScene::CreateField(float2 size, float4 color) {
 void NeonScene::LoadLevel(int i) {
     levelIdx = i;
     
-    _scene.Get<Mesh>(ground).texture = CurrentLevel().groundTexture;
+    _scene.Get<Mesh>(ground).material.texture = CurrentLevel().groundTexture;
     _scene.Get<Transform>(ground).scale = {CurrentLevel().mapSize.x, CurrentLevel().mapSize.y, 1};
     
     gameOver = false;
     levelWon = false;
     
     auto& playerHP = _scene.Get<HP>(player);
-    playerHP.currentHP = playerHP.maxHP;
-    healthField.SetValue(playerHP.currentHP);
-    healthField.SetMaxValue(playerHP.maxHP);
+    playerHP.Set(playerHP.Max());
+    healthField.SetValue(playerHP.Get());
+    healthField.SetMaxValue(playerHP.Max());
     
     currentWave = 0;
     currentSubWave = 0;
@@ -130,11 +139,11 @@ void NeonScene::SpawnSubWave(const Wave::SubWave& subWave) {
         spawnPos.z = -subWave.type.scale.z / 2;
         
         auto mesh = subWave.type.mesh;
-        mesh.colorMult = 0.0f;
+        mesh.tint = {0, 0, 0, 1};
         auto enemy = subWave.type.enemy;
         
         auto tf = Transform(spawnPos, float3{0, RandomBetween(0.0f, 360.0f), 0}, subWave.type.scale);
-        _scene.CreateEntity(Physics(tf, float3{0, 0, 0}, float3{0, -90 * subWave.type.enemy.maxMovementSpeed, 0}),
+        _scene.CreateEntity(Physics(tf, float3{0, 0, 0}, float3{0, -90 * subWave.type.enemy.maxMovementSpeed, 0}, 0.6f),
                             std::move(tf),
                             std::move(mesh),
                             std::move(enemy),
@@ -149,8 +158,14 @@ float NeonScene::RandomBetween(float a, float b) {
 
 void NeonScene::SelectWeapon(int i) {
     if (i > -1 && i < weapons.size()) {
-        currentWeaponIdx = i;
+        weaponIdx = i;
+        _scene.Get<Mesh>(spreadCircle).tint = CurrentWeapon().projectileMesh.material.color;
+        _scene.Get<Mesh>(player).material.color = CurrentWeapon().projectileMesh.material.color;
     }
+}
+
+Weapon& NeonScene::CurrentWeapon() {
+    return weapons[weaponIdx];
 }
 
 void NeonScene::Update(float aspectRatio) {
@@ -217,8 +232,7 @@ void NeonScene::Tick(double time) {
     }
     
     prevSpreadMult = spreadMult;
-    Weapon& weapon = weapons[currentWeaponIdx];
-    if (mouseDown && weapon.cooldownEndTime < time) {
+    if (mouseDown && CurrentWeapon().cooldownEndTime < time) {
         float3 playerPos = _scene.Get<Transform>(player).position;
         float3 aimPos = _scene.Get<Transform>(crosshair).position;
         
@@ -227,29 +241,31 @@ void NeonScene::Tick(double time) {
         
         aimDir = VecNormalize(aimDir);
         
-        float3 spawnPos = playerPos + aimDir * 0.5f * weapon.bulletSize;
+        float3 spawnPos = playerPos + aimDir * 0.5f * CurrentWeapon().projectileSize;
         
-        for (int i = 0; i < weapon.bulletsPerShot; i++) {
+        for (int i = 0; i < CurrentWeapon().projectilesPerShot; i++) {
             
-            float3 vel = aimDir + float3{-aimDir.y, aimDir.x, 0.0f} * weapon.spread * spreadMult * RandomBetween(-1.0f, 1.0f);
+            float3 vel = aimDir + float3{-aimDir.y, aimDir.x, 0.0f} * CurrentWeapon().spread * spreadMult * RandomBetween(-1.0f, 1.0f);
             vel = VecNormalize(vel);
 
             float r = std::atan2f(vel.y, vel.x) * RadToDeg;
             
-            PlayerProjectile projectile = weapon.bullet;
+            PlayerProjectile projectile = CurrentWeapon().projectile;
             projectile.despawnTime = time + projectile.lifespan;
             vel *= projectile.speed;
             
-            auto tf = Transform(spawnPos, float3{0, 0, r}, float3{1.0f, 0.25f, 0.25f} * weapon.bulletSize);
-            _scene.CreateEntity(Physics(tf, vel), std::move(tf), Mesh(SPHERE_MESH), std::move(projectile));
+            auto mesh = CurrentWeapon().projectileMesh;
             
-            weapon.cooldownEndTime = time + weapon.cooldown;
+            auto tf = Transform(spawnPos, float3{0, 0, r}, float3{1.0f, 0.5f, 0.5f} * CurrentWeapon().projectileSize);
+            _scene.CreateEntity(Physics(tf, vel), std::move(tf), std::move(mesh), std::move(projectile));
+            
+            CurrentWeapon().cooldownEndTime = time + CurrentWeapon().cooldown;
         }
         
-        spreadMult = std::clamp(spreadMult += 2 * _timestep, 1.0f, 2.0f);
+        spreadMult = std::clamp(spreadMult += 4 * _timestep, 1.0f, 2.0f);
     }
-    else if (weapon.cooldownEndTime < time){
-        spreadMult = std::clamp(spreadMult -= _timestep, 1.0f, 2.0f);
+    else if (CurrentWeapon().cooldownEndTime < time){
+        spreadMult = std::clamp(spreadMult -= 0.5f * _timestep, 1.0f, 2.0f);
     }
     
     auto& playerTf = _scene.Get<Transform>(player);
@@ -267,7 +283,11 @@ void NeonScene::Tick(double time) {
             }
         }
     });
-    _scene.Get<HP>(player).currentHP -= totalDamage;
+    _scene.Get<HP>(player).Decrease(totalDamage);
+    if (totalDamage > 0) {
+        auto& playerMesh = _scene.Get<Mesh>(player);
+        playerMesh.tint.x = std::clamp(playerMesh.tint.x - 0.2f * totalDamage, 0.0f, 1.0f);
+    }
     
     _scene.GetGroup<Transform, Physics, PlayerProjectile>()->Update([&, t = time](auto projectileEntity,
                                                                                   auto& projectileTf,
@@ -282,8 +302,9 @@ void NeonScene::Tick(double time) {
                                                                                    auto& enemyMesh) {
             if (Physics::Overlapping(projectilePhysics, enemyPhysics, projectileTf, enemyTf)) {
                 
-                if (enemyHP.currentHP > 0 && !didHit.exchange(true) && enemyEntity != projectile.hit) {
-                    enemyHP.currentHP -= projectile.damage;
+                if (enemyHP.Get() > 0 && !didHit.exchange(true) && enemyEntity != projectile.hit) {
+                    enemyHP.Decrease(projectile.damage);
+                    enemyMesh.tint.x = std::clamp(enemyMesh.tint.x - 0.2f * projectile.damage, 0.0f, 1.0f);
                     projectile.hit = enemyEntity;
                 }
             }
@@ -298,7 +319,7 @@ void NeonScene::Tick(double time) {
     std::atomic<int> entitiesDestroyed = 0;
     _scene.GetGroup<HP>()->UpdateParallel([&](auto entity,
                                               auto& hp) {
-        if (hp.currentHP <= 0) {
+        if (hp.Get() <= 0) {
             
             if (entity == player) {
                 gameOver = true;
@@ -310,7 +331,7 @@ void NeonScene::Tick(double time) {
         }
     });
     
-    healthField.SetValue(_scene.Get<HP>(player).currentHP);
+    healthField.SetValue(_scene.Get<HP>(player).Get());
     
     scoreField.SetValue(scoreField.GetValue() + entitiesDestroyed);
     
@@ -338,6 +359,7 @@ void NeonScene::Tick(double time) {
                 physicsA.position -= aToB * overlap;
                 physicsB.position += aToB * overlap;
             }
+            
         }
     }
     
@@ -347,7 +369,7 @@ void NeonScene::Render(double time, double dt) {
     const double interpolation = std::clamp((_timestep - (_nextTickTime - time)) / _timestep, 0.0, 1.0);
     
     float interpolatedSpreadMult = prevSpreadMult + (spreadMult - prevSpreadMult) * interpolation;
-    float spreadScale = 0.5f + weapons[currentWeaponIdx].spread * 4.0f * interpolatedSpreadMult;
+    float spreadScale = 0.5f + weapons[weaponIdx].spread * 10 * (interpolatedSpreadMult - 1);
     _scene.Get<Transform>(spreadCircle).scale = float3{spreadScale, spreadScale, spreadScale};
     
     _scene.GetGroup<Transform, Physics>()->UpdateParallel([interpolation](auto entity,
@@ -363,13 +385,15 @@ void NeonScene::Render(double time, double dt) {
     });
     
     {
-        float3 playerPos = _scene.Get<Physics>(player).GetInterpolatedPosition(interpolation);
-        _scene.Get<Camera>(cam).SetPosition({0.0f, 0.0f, playerPos.z - camDistance});
-        float3 topRightPos = _scene.Get<Camera>(cam).ScreenPointToWorld({1.0f, 1.0f}, playerPos.z);
+        _scene.Get<Camera>(cam).SetPosition({0.0f, 0.0f, -camDistance});
+        float3 topRightPos = _scene.Get<Camera>(cam).ScreenPointToWorld({1.0f, 1.0f}, 0);
         float hWidth = topRightPos.x;
         float hHeight = topRightPos.y;
         
         float2 mapSize = CurrentLevel().mapSize;
+        
+        float3 playerPos = _scene.Get<Physics>(player).GetInterpolatedPosition(interpolation);
+        playerPos.z = 0;
         
         float3 camPos = playerPos;
         camPos.x = std::clamp(camPos.x, std::min(-mapSize.x / 2 + hWidth, 0.0f), std::max(mapSize.x / 2 - hWidth, 0.0f));
@@ -381,8 +405,7 @@ void NeonScene::Render(double time, double dt) {
     
     {
         float3 playerPos = _scene.Get<Physics>(player).position;
-        float depth = playerPos.z - 1.0f;
-        float3 crosshairPos = _scene.Get<Camera>(cam).ScreenPointToWorld(mousePos, depth);
+        float3 crosshairPos = _scene.Get<Camera>(cam).ScreenPointToWorld(mousePos, playerPos.z);
         _scene.Get<Transform>(crosshair).position = crosshairPos;
         _scene.Get<Transform>(spreadCircle).position = crosshairPos;
         
@@ -399,7 +422,8 @@ void NeonScene::Render(double time, double dt) {
     _scene.GetGroup<Mesh, HP>()->UpdateParallel([dt](auto entity,
                                                      auto& mesh,
                                                      auto& hp) {
-        mesh.colorMult = std::min(mesh.colorMult + static_cast<float>(dt) * 0.25f, std::abs(static_cast<float>(hp.currentHP) / hp.maxHP));
+        float tint = std::min(mesh.tint.x + static_cast<float>(dt) * 0.25f, std::abs(static_cast<float>(hp.Get()) / hp.Max()));
+        mesh.tint = float4{tint, tint, tint, 1};
     });
     
     _scene.GetGroup<Transform, Mesh>()->UpdateParallel([interpolation](auto entity,
@@ -418,13 +442,37 @@ void NeonScene::Render(double time, double dt) {
     });
 }
 
-void NeonScene::UpdateField(const NumberField& field) {
-    auto& camera = _scene.Get<Camera>(cam);
+void NeonScene::UpdateField(const NumberField& field, float3 origin) {
+    for (size_t i = 0; i < field.valueNums.size(); i++) {
+        Mesh& img = _scene.Get<Mesh>(field.valueUIEntities[i]);
+        
+        int value = field.valueNums[i];
+        
+        if (value < 10) {
+            img.material.texture = static_cast<TextureType>(ZERO_TEX + value);
+            img.hidden = false;
+        }
+        else {
+            img.hidden = true;
+        }
+    }
+    
+    for (size_t i = 0; i < field.maxValueNums.size(); i++) {
+        Mesh& img = _scene.Get<Mesh>(field.maxValueUIEntities[i]);
+        int value = field.maxValueNums[i];
+        
+        if (value < 10) {
+            img.material.texture = static_cast<TextureType>(ZERO_TEX + value);
+            img.hidden = false;
+        }
+        else {
+            img.hidden = true;
+        }
+    }
     
     {
-        float3 origin = camera.ScreenPointToWorld(field.screenOrigin, camera.GetPosition().z + camera.GetNearClipPlane() + 0.01f);
-        auto updateFieldElementPos = [&origin, this, field](int i, Transform& tf) {
-            float ySign = field.screenOrigin.y < 0 ? 1 : -1;
+        auto updateFieldElementPos = [&origin, field](int i, Transform& tf) {
+            float ySign = field.origin.y < 0 ? 1 : -1;
             
             float3 pos = origin;
             pos.x += tf.scale.x * i;
@@ -436,34 +484,22 @@ void NeonScene::UpdateField(const NumberField& field) {
         
         for (size_t i = 0; i < field.valueNums.size(); i++) {
             Transform& tf = _scene.Get<Transform>(field.valueUIEntities[i]);
-            _scene.Get<UINumber>(field.valueUIEntities[i]).value = field.valueNums[i];
-            
             updateFieldElementPos(-static_cast<int>(i) - 1, tf);
         }
         
         for (size_t i = 0; i < field.maxValueNums.size(); i++) {
             Transform& tf = _scene.Get<Transform>(field.maxValueUIEntities[i]);
-            _scene.Get<UINumber>(field.maxValueUIEntities[i]).value = field.maxValueNums[i];
-            
             updateFieldElementPos(static_cast<int>(i) + 1, tf);
         }
     }
 }
 
 void NeonScene::RenderUI() {
-    UpdateField(scoreField);
+    auto& camera = _scene.Get<Camera>(cam);
+    float3 origin = camera.ScreenPointToWorld(scoreField.origin, camera.GetPosition().z + camera.GetNearClipPlane() + 0.01f);
+    UpdateField(scoreField, origin);
     
-    UpdateField(healthField);
-    
-    _scene.GetGroup<Mesh, UINumber>()->UpdateParallel([](auto entity, auto& mesh, auto& num) {
-        if (num.value < 10) {
-            mesh.texture = static_cast<TextureType>(ZERO_TEX + num.value);
-            mesh.hidden = false;
-        }
-        else {
-            mesh.hidden = true;
-        }
-    });
+    UpdateField(healthField, _scene.Get<Transform>(crosshair).position);
 }
 
 FrameData NeonScene::GetFrameData() {
@@ -478,18 +514,20 @@ FrameData NeonScene::GetFrameData() {
     _groupSizes.clear();
     _groupMeshes.clear();
     _groupTextures.clear();
+    _groupShaders.clear();
     _instances.clear();
     auto meshPool = _scene.GetPool<Mesh>();
     meshPool->Sort();
     
     if (meshPool->size() > 0) {
         const Mesh& firstMesh = (*meshPool)[0];
-        auto prevTexture = firstMesh.texture;
+        auto prevMat = firstMesh.material;
         auto prevType = firstMesh.type;
         
         _groupSizes.push_back(0);
         _groupMeshes.push_back(prevType);
-        _groupTextures.push_back(prevTexture);
+        _groupTextures.push_back(prevMat.texture);
+        _groupShaders.push_back(prevMat.shader);
         size_t groupIdx = 0;
         for (auto& mesh : *meshPool) {
             if (mesh.hidden) {
@@ -498,19 +536,17 @@ FrameData NeonScene::GetFrameData() {
             
             Instance instance;
             instance.transform = mesh.modelMatrix;
-            instance.color = mesh.color;
-            instance.color.x *= mesh.colorMult;
-            instance.color.y *= mesh.colorMult;
-            instance.color.z *= mesh.colorMult;
+            instance.color = mesh.material.color * mesh.tint;
             _instances.emplace_back(instance);
             
             auto type = mesh.type;
-            auto texture = mesh.texture;
-            if (type != prevType || texture != prevTexture) {
+            auto mat = mesh.material;
+            if (type != prevType || mat != prevMat) {
                 _groupSizes.push_back(0);
                 _groupMeshes.push_back(type);
-                _groupTextures.push_back(texture);
-                prevTexture = texture;
+                _groupTextures.push_back(mat.texture);
+                _groupShaders.push_back(mat.shader);
+                prevMat = mat;
                 prevType = type;
                 groupIdx++;
             }
@@ -527,6 +563,7 @@ FrameData NeonScene::GetFrameData() {
     frameData.groupSizes = _groupSizes.data();
     frameData.groupMeshes = _groupMeshes.data();
     frameData.groupTextures = _groupTextures.data();
+    frameData.groupShaders = _groupShaders.data();
     
     return frameData;
 }

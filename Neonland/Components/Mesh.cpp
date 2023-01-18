@@ -1,9 +1,7 @@
 #include "Mesh.hpp"
 
-Mesh::Mesh(MeshType type, TextureType tex, float4 color, bool hidden, float colorMult)
+Mesh::Mesh(MeshType type, Material material, bool hidden, float4 tint)
 : type{type}
-, texture{tex}
-, modelMatrix(1)
-, color{color}
+, material(material)
 , hidden{hidden}
-, colorMult{colorMult} {}
+, tint{tint} {}

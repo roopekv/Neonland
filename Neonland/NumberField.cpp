@@ -3,11 +3,11 @@
 #include <string>
 #include <cctype>
 
-unsigned int NumberField::GetValue() const {
+int32_t NumberField::GetValue() const {
     return value;
 }
 
-void NumberField::SetValue(unsigned int value) {
+void NumberField::SetValue(int32_t value) {
     this->value = value;
     auto numString = std::to_string(value);
     
@@ -23,7 +23,7 @@ void NumberField::SetValue(unsigned int value) {
     }
 }
 
-void NumberField::SetMaxValue(unsigned int maxValue) {
+void NumberField::SetMaxValue(int32_t maxValue) {
     this->maxValue = maxValue;
     auto numString = std::to_string(maxValue);
     
@@ -38,7 +38,8 @@ void NumberField::SetMaxValue(unsigned int maxValue) {
         }
     }
 }
-unsigned int NumberField::GetMaxValue() const {
+
+int32_t NumberField::GetMaxValue() const {
     return maxValue;
 }
 
