@@ -119,7 +119,8 @@ class Renderer : NSObject, MTKViewDelegate {
             HP_TEX.rawValue : "hp",
             WAVE_TEX.rawValue : "wave",
             NEONLAND_TEX.rawValue : "neonland",
-            LEVEL_TEX.rawValue : "level"
+            LEVEL_TEX.rawValue : "level",
+            NUM_KEYS_TEX.rawValue : "num_keys"
         ]
         
         for pair in textureIdxToName {

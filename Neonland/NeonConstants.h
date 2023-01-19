@@ -35,6 +35,7 @@ typedef enum TextureType {
     HP_TEX,
     ENEMIES_REMAINING_TEX,
     LEVEL_TEX,
+    NUM_KEYS_TEX,
     ZERO_TEX,
     ONE_TEX,
     TWO_TEX,

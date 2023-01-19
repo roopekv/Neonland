@@ -41,23 +41,26 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
     _scene.Get<Camera>(cam).SetFarClipPlane(camDistance + 10);
     
     crosshair = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 0}, float3{0.3, 0.3, 0.3}),
-                                    Mesh(CROSSHAIR_MESH, Material(UI_SHADER, NO_TEX, float4{0, 1, 1, 1}), false));
+                                    Mesh(CROSSHAIR_MESH, Material(UI_SHADER, NO_TEX, float4{1, 1, 1, 1})));
     
     spreadCircle = _scene.CreateEntity(Transform(),
-                                       Mesh(SPREAD_MESH, Material(UI_SHADER, NO_TEX), false));
+                                       Mesh(SPREAD_MESH, Material(UI_SHADER, NO_TEX)));
+    
+    numKeysImg = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{8, 4, 1}),
+                                     Mesh(PLANE_MESH, Material(UI_SHADER, NUM_KEYS_TEX)));
     
     SelectWeapon(weaponIdx);
     LoadLevel(levelIdx);
 }
 
-NumberField NeonScene::CreateField(float2 size, TextureType suffix, float4 color) {
+NumberField NeonScene::CreateField(float2 size, TextureType text, float4 color) {
     NumberField field;
     for (size_t i = 0; i < 10; i++) {
         field.valueUIEntities[i] = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{size.x, size.y, 1}),
                                                        Mesh(PLANE_MESH, Material(UI_SHADER, ZERO_TEX, color), true));
     }
     field.text = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{1, 1, 1}),
-                                       Mesh(PLANE_MESH, Material(UI_SHADER, suffix, color)));
+                                       Mesh(PLANE_MESH, Material(UI_SHADER, text, color)));
     
     return field;
 }
@@ -491,6 +494,9 @@ void NeonScene::RenderUI() {
     center = _scene.Get<Transform>(spreadCircle).position;
     center.y += _scene.Get<Transform>(spreadCircle).scale.y + 0.5f;
     UpdateField(healthField, center);
+    
+    auto& numKeysTf = _scene.Get<Transform>(numKeysImg);
+    numKeysTf.position = camera.ScreenPointToWorld({-1, -1}, 0) + float3{numKeysTf.scale.x / 2 + 0.5f, numKeysTf.scale.y / 2 + 0.5f, 0.0f};
 }
 
 FrameData NeonScene::GetFrameData() {

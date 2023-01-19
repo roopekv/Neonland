@@ -52,7 +52,7 @@ public:
                0.025f,
                1,
                1.5f,
-               Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{0, 0, 1, 1})))
+               Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{0, 0.6, 1, 1})))
     };
     
     float2 directionalInput = {0, 0};
@@ -72,7 +72,7 @@ public:
     const Level& CurrentLevel();
     Weapon& CurrentWeapon();
     
-    NumberField CreateField(float2 size, TextureType suffix, float4 color = {1, 1, 1, 1});
+    NumberField CreateField(float2 size, TextureType text, float4 color = {1, 1, 1, 1});
     void UpdateField(const NumberField& field, float3 center);
 private:
     Scene _scene;
@@ -85,6 +85,8 @@ private:
     Entity spreadCircle;
     
     Entity ground;
+    
+    Entity numKeysImg;
     
     float spreadMult = 1.0f;
     float prevSpreadMult = 1.0f;
@@ -101,6 +103,8 @@ private:
     
     bool gameOver = false;
     bool levelWon = false;
+    bool mainMenu = false;
+    
     int currentWave = 0;
     int currentSubWave = 0;
     double nextSubWaveStartTime = 0;

@@ -66,6 +66,7 @@
 		7AA621392975E059004D48C8 /* Wave.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA621372975E059004D48C8 /* Wave.cpp */; };
 		7AA6213C2975E5A2004D48C8 /* Level.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA6213A2975E5A2004D48C8 /* Level.cpp */; };
 		7AC754842978DF310088A54C /* level.png in Resources */ = {isa = PBXBuildFile; fileRef = 7AC754832978DF310088A54C /* level.png */; };
+		7AC754862978F3190088A54C /* num_keys.png in Resources */ = {isa = PBXBuildFile; fileRef = 7AC754852978F3190088A54C /* num_keys.png */; };
 		7AD68D6F296872F6003821A3 /* NeonScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AD68D6D296872F6003821A3 /* NeonScene.cpp */; };
 		7AD68D7229687C01003821A3 /* NeonConstants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AD68D7129687C01003821A3 /* NeonConstants.cpp */; };
 		7AE607F22950F1B300C66EA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE607F12950F1B300C66EA5 /* AppDelegate.swift */; };
@@ -162,6 +163,7 @@
 		7AA6213B2975E5A2004D48C8 /* Level.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Level.hpp; sourceTree = "<group>"; };
 		7ABA10F9295A559B00B2BD98 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
 		7AC754832978DF310088A54C /* level.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = level.png; sourceTree = "<group>"; };
+		7AC754852978F3190088A54C /* num_keys.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = num_keys.png; sourceTree = "<group>"; };
 		7AD68D6D296872F6003821A3 /* NeonScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NeonScene.cpp; sourceTree = "<group>"; };
 		7AD68D6E296872F6003821A3 /* NeonScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = NeonScene.hpp; sourceTree = "<group>"; };
 		7AD68D7029687C01003821A3 /* NeonConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NeonConstants.h; sourceTree = "<group>"; };
@@ -243,6 +245,7 @@
 		7A7EC4E429759AFF0007BC28 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				7AC754852978F3190088A54C /* num_keys.png */,
 				7AC754832978DF310088A54C /* level.png */,
 				7A7A5CD02978CAE3008F2175 /* enemies_remaining.png */,
 				7A7A5CC42978820B008F2175 /* ground0.pxd */,
@@ -436,6 +439,7 @@
 				7A7EC5002975A65A0007BC28 /* blank.png in Resources */,
 				7A7EC4F329759AFF0007BC28 /* 8.png in Resources */,
 				7A7A5CCC2978820B008F2175 /* neonland.pxd in Resources */,
+				7AC754862978F3190088A54C /* num_keys.png in Resources */,
 				7A7EC4FC29759AFF0007BC28 /* 3.png in Resources */,
 				7A2A6B1B29765EC400798A7E /* crosshair.blend1 in Resources */,
 				7A94520C29548B8D004CFF4D /* TODO in Resources */,

@@ -33,7 +33,7 @@ const Level& Level::GetLevel(int i) {
                 {EnemyType::Swarm(), 100, 0.0},
                 {EnemyType::Heavy(), 10, 15.0}
             })
-        }, GROUND0_TEX, float2{50, 50}),
+        }, GROUND2_TEX, float2{60, 60}),
     };
     
     return Levels[i];
