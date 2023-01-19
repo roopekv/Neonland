@@ -12,7 +12,7 @@ double SteadyTime() {
 GameClock::GameClock(bool paused)
 : _startTime{SteadyTime()}
 , _time{0} {
-    paused = false;
+    _paused = !paused;
     Paused(paused);
 }
 
@@ -24,11 +24,13 @@ void GameClock::Reset() {
 void GameClock::Paused(bool paused) {
     if (paused == _paused) { return; }
     
+    auto now = SteadyTime();
+    
     if (paused) {
-        auto now = SteadyTime();
         _time += now - _startTime;
-        _startTime = now;
     }
+    
+    _startTime = now;
     
     _paused = paused;
 }
@@ -36,6 +38,8 @@ void GameClock::Paused(bool paused) {
 bool GameClock::Paused() const { return _paused; }
 
 double GameClock::Time() const {
-    if (_paused) { return _time; }
+    if (_paused) {
+        return _time;
+    }
     return _time + (SteadyTime() - _startTime);
 }

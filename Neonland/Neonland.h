@@ -16,6 +16,7 @@ void Neon_UpdateDirectionalInput(vector_float2 newDir);
 void Neon_UpdateMouseDown(bool down);
 
 void Neon_UpdateNumberKeyPressed(int num);
+void Neon_EscapePressed();
 
 void Neon_Start();
 FrameData Neon_Render(float aspectRatio);

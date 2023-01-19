@@ -80,24 +80,15 @@ class Renderer : NSObject, MTKViewDelegate {
         
         let allocator = MTKMeshBufferAllocator(device: device)
         
-        let sphereMDLMesh = MDLMesh(sphereWithExtent: .one / 2,
-                                    segments: .init(4, 4),
-                                    inwardNormals: false,
-                                    geometryType: .triangles,
-                                    allocator: allocator)
-        
-        sphereMDLMesh.vertexDescriptor = mdlVertexDescriptor
-        
         var meshes = [MTKMesh?](repeating: nil, count: Int(MeshTypeCount.rawValue))
-        
-        meshes[Int(SPHERE_MESH.rawValue)] = try! MTKMesh(mesh: sphereMDLMesh, device: device)
         
         let meshIdxToName: [UInt32 : String] = [
             PLANE_MESH.rawValue : "plane",
             CROSSHAIR_MESH.rawValue : "crosshair",
             SPREAD_MESH.rawValue : "spread_circle",
             CUBE_MESH.rawValue : "cube",
-            SHARD_MESH.rawValue : "shard"
+            SHARD_MESH.rawValue : "shard",
+            SPHERE_MESH.rawValue : "sphere"
         ]
         
         for pair in meshIdxToName {
@@ -124,10 +115,11 @@ class Renderer : NSObject, MTKViewDelegate {
         
         let textureIdxToName: [UInt32 : String] = [
             NO_TEX.rawValue : "blank",
-            SLASH_TEX.rawValue : "slash",
+            ENEMIES_REMAINING_TEX.rawValue : "enemies_remaining",
             HP_TEX.rawValue : "hp",
             WAVE_TEX.rawValue : "wave",
-            NEONLAND_TEX.rawValue : "neonland"
+            NEONLAND_TEX.rawValue : "neonland",
+            LEVEL_TEX.rawValue : "level"
         ]
         
         for pair in textureIdxToName {

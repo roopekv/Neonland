@@ -43,6 +43,8 @@
 		7A7A5CCB2978820B008F2175 /* ground2.pxd in Resources */ = {isa = PBXBuildFile; fileRef = 7A7A5CC52978820B008F2175 /* ground2.pxd */; };
 		7A7A5CCC2978820B008F2175 /* neonland.pxd in Resources */ = {isa = PBXBuildFile; fileRef = 7A7A5CC62978820B008F2175 /* neonland.pxd */; };
 		7A7A5CCD2978820B008F2175 /* wave.pxd in Resources */ = {isa = PBXBuildFile; fileRef = 7A7A5CC72978820B008F2175 /* wave.pxd */; };
+		7A7A5CCF2978AAFA008F2175 /* sphere.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7A7A5CCE2978AAFA008F2175 /* sphere.obj */; };
+		7A7A5CD12978CAE3008F2175 /* enemies_remaining.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A7A5CD02978CAE3008F2175 /* enemies_remaining.png */; };
 		7A7EC4F229759AFF0007BC28 /* num.pxd in Resources */ = {isa = PBXBuildFile; fileRef = 7A7EC4E529759AFF0007BC28 /* num.pxd */; };
 		7A7EC4F329759AFF0007BC28 /* 8.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A7EC4E629759AFF0007BC28 /* 8.png */; };
 		7A7EC4F429759AFF0007BC28 /* 9.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A7EC4E729759AFF0007BC28 /* 9.png */; };
@@ -63,7 +65,7 @@
 		7AA621362975DEBC004D48C8 /* EnemyType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA621342975DEBC004D48C8 /* EnemyType.cpp */; };
 		7AA621392975E059004D48C8 /* Wave.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA621372975E059004D48C8 /* Wave.cpp */; };
 		7AA6213C2975E5A2004D48C8 /* Level.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA6213A2975E5A2004D48C8 /* Level.cpp */; };
-		7AA6213F29761EBD004D48C8 /* slash.png in Resources */ = {isa = PBXBuildFile; fileRef = 7AA6213E29761EBD004D48C8 /* slash.png */; };
+		7AC754842978DF310088A54C /* level.png in Resources */ = {isa = PBXBuildFile; fileRef = 7AC754832978DF310088A54C /* level.png */; };
 		7AD68D6F296872F6003821A3 /* NeonScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AD68D6D296872F6003821A3 /* NeonScene.cpp */; };
 		7AD68D7229687C01003821A3 /* NeonConstants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AD68D7129687C01003821A3 /* NeonConstants.cpp */; };
 		7AE607F22950F1B300C66EA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE607F12950F1B300C66EA5 /* AppDelegate.swift */; };
@@ -129,6 +131,8 @@
 		7A7A5CC52978820B008F2175 /* ground2.pxd */ = {isa = PBXFileReference; lastKnownFileType = file; path = ground2.pxd; sourceTree = "<group>"; };
 		7A7A5CC62978820B008F2175 /* neonland.pxd */ = {isa = PBXFileReference; lastKnownFileType = file; path = neonland.pxd; sourceTree = "<group>"; };
 		7A7A5CC72978820B008F2175 /* wave.pxd */ = {isa = PBXFileReference; lastKnownFileType = file; path = wave.pxd; sourceTree = "<group>"; };
+		7A7A5CCE2978AAFA008F2175 /* sphere.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sphere.obj; sourceTree = "<group>"; };
+		7A7A5CD02978CAE3008F2175 /* enemies_remaining.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = enemies_remaining.png; sourceTree = "<group>"; };
 		7A7EC4E529759AFF0007BC28 /* num.pxd */ = {isa = PBXFileReference; lastKnownFileType = file; path = num.pxd; sourceTree = "<group>"; };
 		7A7EC4E629759AFF0007BC28 /* 8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 8.png; sourceTree = "<group>"; };
 		7A7EC4E729759AFF0007BC28 /* 9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 9.png; sourceTree = "<group>"; };
@@ -156,8 +160,8 @@
 		7AA621382975E059004D48C8 /* Wave.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Wave.hpp; sourceTree = "<group>"; };
 		7AA6213A2975E5A2004D48C8 /* Level.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Level.cpp; sourceTree = "<group>"; };
 		7AA6213B2975E5A2004D48C8 /* Level.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Level.hpp; sourceTree = "<group>"; };
-		7AA6213E29761EBD004D48C8 /* slash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = slash.png; sourceTree = "<group>"; };
 		7ABA10F9295A559B00B2BD98 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
+		7AC754832978DF310088A54C /* level.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = level.png; sourceTree = "<group>"; };
 		7AD68D6D296872F6003821A3 /* NeonScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NeonScene.cpp; sourceTree = "<group>"; };
 		7AD68D6E296872F6003821A3 /* NeonScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = NeonScene.hpp; sourceTree = "<group>"; };
 		7AD68D7029687C01003821A3 /* NeonConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NeonConstants.h; sourceTree = "<group>"; };
@@ -193,6 +197,7 @@
 		7A2A6B0C29765EC400798A7E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				7A7A5CCE2978AAFA008F2175 /* sphere.obj */,
 				7A7A5CB42977DE59008F2175 /* shard.obj */,
 				7AA518FD2977BEA000D60A45 /* cube.obj */,
 				7A2A6B0D29765EC400798A7E /* spread_circle.blend1 */,
@@ -238,6 +243,8 @@
 		7A7EC4E429759AFF0007BC28 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				7AC754832978DF310088A54C /* level.png */,
+				7A7A5CD02978CAE3008F2175 /* enemies_remaining.png */,
 				7A7A5CC42978820B008F2175 /* ground0.pxd */,
 				7A7A5CC32978820B008F2175 /* ground1.pxd */,
 				7A7A5CC52978820B008F2175 /* ground2.pxd */,
@@ -250,7 +257,6 @@
 				7A204F212976B5B900A91707 /* ground0.png */,
 				7A204F232976B5B900A91707 /* ground1.png */,
 				7A204F222976B5B900A91707 /* ground2.png */,
-				7AA6213E29761EBD004D48C8 /* slash.png */,
 				7A7EC4FF2975A65A0007BC28 /* blank.png */,
 				7A7EC4E529759AFF0007BC28 /* num.pxd */,
 				7A7EC4E629759AFF0007BC28 /* 8.png */,
@@ -440,8 +446,8 @@
 				7A7EC4FE29759AFF0007BC28 /* 0.png in Resources */,
 				7A7A5CCA2978820B008F2175 /* ground0.pxd in Resources */,
 				7A204F252976B5B900A91707 /* ground2.png in Resources */,
+				7A7A5CD12978CAE3008F2175 /* enemies_remaining.png in Resources */,
 				7A2A6B1C29765EC400798A7E /* spread_circle.blend in Resources */,
-				7AA6213F29761EBD004D48C8 /* slash.png in Resources */,
 				7A7A5CB52977DE59008F2175 /* shard.obj in Resources */,
 				7A7EC4FA29759AFF0007BC28 /* 6.png in Resources */,
 				7A7EC4FD29759AFF0007BC28 /* 1.png in Resources */,
@@ -451,10 +457,12 @@
 				7A7EC4F429759AFF0007BC28 /* 9.png in Resources */,
 				7A2A6B1D29765EC400798A7E /* crosshair.blend in Resources */,
 				7A7A5CC82978820B008F2175 /* hp.pxd in Resources */,
+				7A7A5CCF2978AAFA008F2175 /* sphere.obj in Resources */,
 				7A7A5CB92977DE94008F2175 /* hp.png in Resources */,
 				7A7A5CC92978820B008F2175 /* ground1.pxd in Resources */,
 				7A7A5CB72977DE88008F2175 /* wave.png in Resources */,
 				7A204F242976B5B900A91707 /* ground0.png in Resources */,
+				7AC754842978DF310088A54C /* level.png in Resources */,
 				7A204F262976B5B900A91707 /* ground1.png in Resources */,
 				7A7A5CCB2978820B008F2175 /* ground2.pxd in Resources */,
 				7AE607F62950F1B400C66EA5 /* Assets.xcassets in Resources */,

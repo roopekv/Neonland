@@ -17,11 +17,15 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
     std::random_device device;
     randomEngine = std::default_random_engine(device());
     
-    scoreField = CreateField({0.0025f, 0.005f});
-    scoreField.origin = {0, 1};
+    enemiesRemainingField = CreateField({56.0f / 96.0f, 1.0f}, ENEMIES_REMAINING_TEX);
+    _scene.Get<Transform>(enemiesRemainingField.text).scale = float3{832.0f / 96.0f, 1.0f, 1.0f};
     
-    healthField = CreateField({0.0025f, 0.005f});
-    healthField.origin = {0, -1};
+    healthField = CreateField(float2{56.0f / 96.0f, 1.0f} * 0.75f, HP_TEX);
+    _scene.Get<Transform>(healthField.text).scale = float3{112.0f / 96.0f, 1.0f, 1.0f} * 0.75f;
+    
+    waveField = CreateField(float2{56.0f / 96.0f, 1.0f}, WAVE_TEX);
+    _scene.Get<Transform>(waveField.text).scale = float3{288.0f / 96.0f, 1.0f, 1.0f};
+    waveField.textFirst = true;
     
     ground = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 0}, float3{0, 0, 1}),
                                  Mesh(PLANE_MESH, Material(LIT_SHADER, GROUND0_TEX)));
@@ -46,19 +50,14 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
     LoadLevel(levelIdx);
 }
 
-NumberField NeonScene::CreateField(float2 size, float4 color) {
+NumberField NeonScene::CreateField(float2 size, TextureType suffix, float4 color) {
     NumberField field;
     for (size_t i = 0; i < 10; i++) {
         field.valueUIEntities[i] = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{size.x, size.y, 1}),
                                                        Mesh(PLANE_MESH, Material(UI_SHADER, ZERO_TEX, color), true));
-        
-        field.maxValueUIEntities[i] = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{size.x, size.y, 1}),
-                                                          Mesh(PLANE_MESH, Material(UI_SHADER, ZERO_TEX, color), true));
     }
-    field.slash = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{size.x, size.y, 1.0f}),
-                                      Mesh(PLANE_MESH, Material(UI_SHADER, SLASH_TEX, color)));
-    field.SetValue(0);
-    field.SetMaxValue(0);
+    field.text = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{1, 1, 1}),
+                                       Mesh(PLANE_MESH, Material(UI_SHADER, suffix, color)));
     
     return field;
 }
@@ -75,13 +74,12 @@ void NeonScene::LoadLevel(int i) {
     auto& playerHP = _scene.Get<HP>(player);
     playerHP.Set(playerHP.Max());
     healthField.SetValue(playerHP.Get());
-    healthField.SetMaxValue(playerHP.Max());
+    waveField.SetValue(1);
     
     currentWave = 0;
     currentSubWave = 0;
     
-    scoreField.SetValue(0);
-    scoreField.SetMaxValue(CurrentLevel().waves[currentWave].enemyCount);
+    enemiesRemainingField.SetValue(CurrentLevel().waves[currentWave].enemyCount);
     nextSubWaveStartTime = clock.Time() + CurrentLevel().waves[currentWave].subWaves[currentSubWave].duration;
 }
 
@@ -100,20 +98,18 @@ void NeonScene::UpdateLevelProgress(double time) {
         currentSubWave++;
     }
     
-    bool waveDefeated = scoreField.GetValue() >= scoreField.GetMaxValue();
+    bool waveDefeated = enemiesRemainingField.GetValue() <= 0;
     if (waveDefeated && currentSubWave >= CurrentLevel().waves[currentWave].subWaves.size()) {
         currentWave++;
+        waveField.SetValue(currentWave + 1);
         currentSubWave = 0;
-        scoreField.SetValue(0);
         
         if (currentWave >= CurrentLevel().waves.size()) {
             levelWon = true;
-            currentWave = 0;
-            scoreField.SetMaxValue(0);
         }
         else
         {
-            scoreField.SetMaxValue(CurrentLevel().waves[currentWave].enemyCount);
+            enemiesRemainingField.SetValue(CurrentLevel().waves[currentWave].enemyCount);
             nextSubWaveStartTime = time + CurrentLevel().waves[currentWave].subWaves[currentSubWave].duration;
         }
     }
@@ -247,7 +243,7 @@ void NeonScene::Tick(double time) {
             
             float3 vel = aimDir + float3{-aimDir.y, aimDir.x, 0.0f} * CurrentWeapon().spread * spreadMult * RandomBetween(-1.0f, 1.0f);
             vel = VecNormalize(vel);
-
+            
             float r = std::atan2f(vel.y, vel.x) * RadToDeg;
             
             PlayerProjectile projectile = CurrentWeapon().projectile;
@@ -286,7 +282,7 @@ void NeonScene::Tick(double time) {
     _scene.Get<HP>(player).Decrease(totalDamage);
     if (totalDamage > 0) {
         auto& playerMesh = _scene.Get<Mesh>(player);
-        playerMesh.tint.x = std::clamp(playerMesh.tint.x - 0.2f * totalDamage, 0.0f, 1.0f);
+        playerMesh.tint.x = std::clamp(playerMesh.tint.x - 0.25f * totalDamage, 0.0f, 1.0f);
     }
     
     _scene.GetGroup<Transform, Physics, PlayerProjectile>()->Update([&, t = time](auto projectileEntity,
@@ -304,7 +300,7 @@ void NeonScene::Tick(double time) {
                 
                 if (enemyHP.Get() > 0 && !didHit.exchange(true) && enemyEntity != projectile.hit) {
                     enemyHP.Decrease(projectile.damage);
-                    enemyMesh.tint.x = std::clamp(enemyMesh.tint.x - 0.2f * projectile.damage, 0.0f, 1.0f);
+                    enemyMesh.tint.x = std::clamp(enemyMesh.tint.x - 0.25f * projectile.damage, 0.0f, 1.0f);
                     projectile.hit = enemyEntity;
                 }
             }
@@ -333,7 +329,7 @@ void NeonScene::Tick(double time) {
     
     healthField.SetValue(_scene.Get<HP>(player).Get());
     
-    scoreField.SetValue(scoreField.GetValue() + entitiesDestroyed);
+    enemiesRemainingField.SetValue(enemiesRemainingField.GetValue() - entitiesDestroyed);
     
     _scene.GetGroup<Transform, Physics>()->UpdateParallel([timestep = _timestep](auto entity, auto& tf, auto& physics) {
         Physics::Update(physics, tf, timestep);
@@ -405,7 +401,7 @@ void NeonScene::Render(double time, double dt) {
     
     {
         float3 playerPos = _scene.Get<Physics>(player).position;
-        float3 crosshairPos = _scene.Get<Camera>(cam).ScreenPointToWorld(mousePos, playerPos.z);
+        float3 crosshairPos = _scene.Get<Camera>(cam).ScreenPointToWorld(mousePos, 0);
         _scene.Get<Transform>(crosshair).position = crosshairPos;
         _scene.Get<Transform>(spreadCircle).position = crosshairPos;
         
@@ -413,8 +409,10 @@ void NeonScene::Render(double time, double dt) {
         dir.z = 0;
         dir = VecNormalize(dir);
         
-        float r = std::atan2f(dir.y, dir.x) * RadToDeg;
-        _scene.Get<Transform>(player).SetRotation({0, 0, r});
+        if (!clock.Paused()) {
+            float r = std::atan2f(dir.y, dir.x) * RadToDeg;
+            _scene.Get<Transform>(player).SetRotation({0, 0, r});
+        }
     }
     
     RenderUI();
@@ -422,7 +420,7 @@ void NeonScene::Render(double time, double dt) {
     _scene.GetGroup<Mesh, HP>()->UpdateParallel([dt](auto entity,
                                                      auto& mesh,
                                                      auto& hp) {
-        float tint = std::min(mesh.tint.x + static_cast<float>(dt) * 0.25f, std::abs(static_cast<float>(hp.Get()) / hp.Max()));
+        float tint = std::min(mesh.tint.x + static_cast<float>(dt) * 0.5f, std::abs(static_cast<float>(hp.Get()) / hp.Max()));
         mesh.tint = float4{tint, tint, tint, 1};
     });
     
@@ -442,64 +440,57 @@ void NeonScene::Render(double time, double dt) {
     });
 }
 
-void NeonScene::UpdateField(const NumberField& field, float3 origin) {
+void NeonScene::UpdateField(const NumberField& field, float3 center) {
+    auto& textTf = _scene.Get<Transform>(field.text);
+    float numWidth = _scene.Get<Transform>(field.valueUIEntities[0]).scale.x;
+    
+    float overallWidth = textTf.scale.x + numWidth * field.valueNums.size();
+    
+    float3 left = center;
+    left.x -= overallWidth / 2;
+    
+    textTf.position.y = left.y;
+    if (field.textFirst) {
+        textTf.position.x = left.x + textTf.scale.x / 2;
+        left.x += textTf.scale.x;
+    }
+    else {
+        textTf.position.x = left.x + numWidth * field.valueNums.size() + textTf.scale.x / 2;
+        left.x += numWidth / 4;
+    }
+    
+    for (size_t i = 0; i < field.valueUIEntities.size(); i++) {
+        Mesh& mesh = _scene.Get<Mesh>(field.valueUIEntities[i]);
+        
+        if (i < field.valueNums.size()) {
+            mesh.material.texture = static_cast<TextureType>(ZERO_TEX + field.valueNums[i]);
+            mesh.hidden = false;
+        }
+        else {
+            mesh.hidden = true;
+        }
+    }
+    
     for (size_t i = 0; i < field.valueNums.size(); i++) {
-        Mesh& img = _scene.Get<Mesh>(field.valueUIEntities[i]);
-        
-        int value = field.valueNums[i];
-        
-        if (value < 10) {
-            img.material.texture = static_cast<TextureType>(ZERO_TEX + value);
-            img.hidden = false;
-        }
-        else {
-            img.hidden = true;
-        }
-    }
-    
-    for (size_t i = 0; i < field.maxValueNums.size(); i++) {
-        Mesh& img = _scene.Get<Mesh>(field.maxValueUIEntities[i]);
-        int value = field.maxValueNums[i];
-        
-        if (value < 10) {
-            img.material.texture = static_cast<TextureType>(ZERO_TEX + value);
-            img.hidden = false;
-        }
-        else {
-            img.hidden = true;
-        }
-    }
-    
-    {
-        auto updateFieldElementPos = [&origin, field](int i, Transform& tf) {
-            float ySign = field.origin.y < 0 ? 1 : -1;
-            
-            float3 pos = origin;
-            pos.x += tf.scale.x * i;
-            pos.y += ySign * tf.scale.y / 2 + ySign * 0.0025f;
-            tf.position = pos;
-        };
-        
-        updateFieldElementPos(0, _scene.Get<Transform>(field.slash));
-        
-        for (size_t i = 0; i < field.valueNums.size(); i++) {
-            Transform& tf = _scene.Get<Transform>(field.valueUIEntities[i]);
-            updateFieldElementPos(-static_cast<int>(i) - 1, tf);
-        }
-        
-        for (size_t i = 0; i < field.maxValueNums.size(); i++) {
-            Transform& tf = _scene.Get<Transform>(field.maxValueUIEntities[i]);
-            updateFieldElementPos(static_cast<int>(i) + 1, tf);
-        }
+        Transform& tf = _scene.Get<Transform>(field.valueUIEntities[i]);
+        float3 pos = left;
+        pos.x += tf.scale.x * i;
+        tf.position = pos;
     }
 }
 
 void NeonScene::RenderUI() {
     auto& camera = _scene.Get<Camera>(cam);
-    float3 origin = camera.ScreenPointToWorld(scoreField.origin, camera.GetPosition().z + camera.GetNearClipPlane() + 0.01f);
-    UpdateField(scoreField, origin);
+    float3 center = camera.ScreenPointToWorld({0, 1}, 0);
+    center.y -= _scene.Get<Transform>(waveField.text).scale.y;
+    UpdateField(waveField, center);
     
-    UpdateField(healthField, _scene.Get<Transform>(crosshair).position);
+    center.y -= _scene.Get<Transform>(enemiesRemainingField.text).scale.y * 1.5f;
+    UpdateField(enemiesRemainingField, center);
+    
+    center = _scene.Get<Transform>(spreadCircle).position;
+    center.y += _scene.Get<Transform>(spreadCircle).scale.y + 0.5f;
+    UpdateField(healthField, center);
 }
 
 FrameData NeonScene::GetFrameData() {

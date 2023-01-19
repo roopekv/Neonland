@@ -44,3 +44,7 @@ void Neon_UpdateNumberKeyPressed(int num) {
     scene.SelectWeapon(num - 1);
 }
 
+void Neon_EscapePressed() {
+    scene.clock.Paused(!scene.clock.Paused());
+}
+

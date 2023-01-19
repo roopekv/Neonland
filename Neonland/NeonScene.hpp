@@ -72,8 +72,8 @@ public:
     const Level& CurrentLevel();
     Weapon& CurrentWeapon();
     
-    NumberField CreateField(float2 size = {0.005f, 0.01f}, float4 color = {1, 1, 1, 1});
-    void UpdateField(const NumberField& field, float3 origin);
+    NumberField CreateField(float2 size, TextureType suffix, float4 color = {1, 1, 1, 1});
+    void UpdateField(const NumberField& field, float3 center);
 private:
     Scene _scene;
     
@@ -89,8 +89,9 @@ private:
     float spreadMult = 1.0f;
     float prevSpreadMult = 1.0f;
     
-    NumberField scoreField;
+    NumberField enemiesRemainingField;
     NumberField healthField;
+    NumberField waveField;
     
     float movementSpeed = 7.0f;
     
@@ -100,8 +101,8 @@ private:
     
     bool gameOver = false;
     bool levelWon = false;
-    size_t currentWave = 0;
-    size_t currentSubWave = 0;
+    int currentWave = 0;
+    int currentSubWave = 0;
     double nextSubWaveStartTime = 0;
     
     void LoadLevel(int i);

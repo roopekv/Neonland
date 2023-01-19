@@ -10,7 +10,7 @@ const EnemyType& EnemyType::Swarm() {
     static const auto swarm = EnemyType(Enemy(6, 0.9f, 2),
                                         Mesh(CUBE_MESH, Material(LIT_SHADER, NO_TEX, float4{0.24, 0.86, 0.59, 1})),
                                         float3{0.75, 0.75, 0.75},
-                                        1);
+                                        2);
     return swarm;
 }
 const EnemyType& EnemyType::Grunt() {
@@ -31,13 +31,13 @@ const EnemyType& EnemyType::Heavy() {
     static const auto heavy = EnemyType(Enemy(3, 0.9f, 1),
                                         Mesh(CUBE_MESH, Material(LIT_SHADER, NO_TEX, float4{0.45, 0.11,  0.85, 1})),
                                         float3{4, 4, 4},
-                                        100);
+                                        50);
     return heavy;
 }
 const EnemyType& EnemyType::UberHeavy() {
     static const auto uberHeavy = EnemyType(Enemy(3, 0.9f, 1),
                                             Mesh(CUBE_MESH, Material(LIT_SHADER, NO_TEX, float4{0.89, 0.78, 0.27, 1})),
                                             float3{8, 8, 8},
-                                            200);
+                                            100);
     return uberHeavy;
 }

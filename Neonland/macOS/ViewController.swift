@@ -11,7 +11,7 @@ class ViewController: NSViewController {
     
     var cursorHidden = false
     
-    var MoveDir: SIMD2<Float> {
+    var moveDir: SIMD2<Float> {
         var dir = SIMD2<Float>.zero
         
         if keysDown[kVK_ANSI_W] || keysDown[kVK_UpArrow] {
@@ -79,16 +79,20 @@ class ViewController: NSViewController {
     override func keyDown(with event: NSEvent) {
         let keyCode = UInt16(event.keyCode)
         keysDown[Int(event.keyCode)] = true
-        Neon_UpdateDirectionalInput(MoveDir)
+        Neon_UpdateDirectionalInput(moveDir)
         
         if let num = getNumber(keyCode: keyCode){
             Neon_UpdateNumberKeyPressed(num)
+        }
+        
+        if keyCode == kVK_Escape {
+            Neon_EscapePressed();
         }
     }
     
     override func keyUp(with event: NSEvent) {
         keysDown[Int(event.keyCode)] = false
-        Neon_UpdateDirectionalInput(MoveDir)
+        Neon_UpdateDirectionalInput(moveDir)
     }
     
     func getNumber(keyCode: UInt16) -> Int32? {
