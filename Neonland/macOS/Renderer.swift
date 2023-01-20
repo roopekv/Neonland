@@ -119,23 +119,35 @@ class Renderer : NSObject, MTKViewDelegate {
             HP_TEX.rawValue : "hp",
             WAVE_TEX.rawValue : "wave",
             NEONLAND_TEX.rawValue : "neonland",
-            LEVEL_TEX.rawValue : "level",
-            NUM_KEYS_TEX.rawValue : "num_keys"
+            NUM_KEYS_TEX.rawValue : "num_keys",
+            GROUND1_TEX.rawValue : "ground1",
+            GROUND2_TEX.rawValue : "ground2",
+            GROUND3_TEX.rawValue : "ground3",
+            LEVEL1_BT_TEX.rawValue : "level1_bt",
+            LEVEL2_BT_TEX.rawValue : "level2_bt",
+            LEVEL3_BT_TEX.rawValue : "level3_bt",
+            PAUSED_TEX.rawValue : "paused",
+            RESUME_BT_TEX.rawValue : "resume_bt",
+            EXIT_BT_TEX.rawValue : "exit_bt",
+            QUIT_BT_TEX.rawValue : "quit_bt",
         ]
         
-        for pair in textureIdxToName {
-            textures[Int(pair.key)] = try! textureLoader.newTexture(URL: Bundle.main.url(forResource: pair.value, withExtension: "png")!, options: textureOptions)
-        }
-        
         for i in 0...9 {
-            textures[Int(ZERO_TEX.rawValue) + i] = try! textureLoader.newTexture(URL: Bundle.main.url(forResource: "\(i)", withExtension: "png")!, options: textureOptions)
+            
+            let tex = try! textureLoader.newTexture(URL: Bundle.main.url(forResource: "\(i)", withExtension: "png")!, options: textureOptions)
+            textures[Int(ZERO_TEX.rawValue) + i] = tex
         }
         
-        for i in 0...2 {
-            textures[Int(GROUND0_TEX.rawValue) + i] = try! textureLoader.newTexture(URL: Bundle.main.url(forResource: "ground\(i)", withExtension: "png")!, options: textureOptions)
+        for pair in textureIdxToName {
+            let tex = try! textureLoader.newTexture(URL: Bundle.main.url(forResource: pair.value, withExtension: "png")!, options: textureOptions)
+            textures[Int(pair.key)] = tex
         }
         
         self.textures = textures.map { $0! }
+        
+        for (i, tex) in self.textures.enumerated() {
+            Neon_UpdateTextureSize(TextureType(UInt32(i)), TexSize(width: Int64(tex.width), height: Int64(tex.height)))
+        }
         
         let samplerDescriptor = MTLSamplerDescriptor()
         samplerDescriptor.normalizedCoordinates = true

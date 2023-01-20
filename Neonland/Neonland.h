@@ -18,6 +18,8 @@ void Neon_UpdateMouseDown(bool down);
 void Neon_UpdateNumberKeyPressed(int num);
 void Neon_EscapePressed();
 
+void Neon_UpdateTextureSize(TextureType tex, TexSize size);
+
 void Neon_Start();
 FrameData Neon_Render(float aspectRatio);
 

@@ -14,6 +14,7 @@ enum class ComponentType {
     hp,
     enemy,
     playerProjectile,
+    button,
     componentTypeCount
 };
 

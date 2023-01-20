@@ -23,6 +23,7 @@
 class NeonScene {
 public:
     GameClock clock;
+    std::array<TexSize, TextureTypeCount> textureSizes;
     
     float2 mouseDelta = {0, 0};
     float2 mousePos = {0, 0};
@@ -30,7 +31,7 @@ public:
     
     bool mouseDown = false;
     bool prevMouseState = false;
-    bool mousePressed = false;
+    bool mouseClicked = false;
     
     int weaponIdx = 0;
     std::array<Weapon, 3> weapons = {
@@ -59,6 +60,8 @@ public:
     
     NeonScene(size_t maxInstanceCount, double timestep, GameClock clock);
     
+    void Start();
+    
     void SelectWeapon(int i);
     void Update(float aspectRatio);
     
@@ -72,7 +75,8 @@ public:
     const Level& CurrentLevel();
     Weapon& CurrentWeapon();
     
-    NumberField CreateField(float2 size, TextureType text, float4 color = {1, 1, 1, 1});
+    NumberField CreateField(float scale, TextureType tex, float4 color = {1, 1, 1, 1});
+    Entity CreateButton(float3 pos, float scale, TextureType tex, std::function<void()> action, bool enabled);
     void UpdateField(const NumberField& field, float3 center);
 private:
     Scene _scene;

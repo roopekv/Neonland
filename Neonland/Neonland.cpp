@@ -11,6 +11,7 @@ auto scene = NeonScene(MAX_INSTANCE_COUNT, TIMESTEP, GameClock(true));
 }
 
 void Neon_Start() {
+    scene.Start();
     scene.clock.Paused(false);
 }
 
@@ -46,5 +47,9 @@ void Neon_UpdateNumberKeyPressed(int num) {
 
 void Neon_EscapePressed() {
     scene.clock.Paused(!scene.clock.Paused());
+}
+
+void Neon_UpdateTextureSize(TextureType tex, TexSize size) {
+    scene.textureSizes[tex] = size;
 }
 

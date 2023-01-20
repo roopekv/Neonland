@@ -6,6 +6,7 @@
 #include <bit>
 
 #include "Material.hpp"
+#include "Button.hpp"
 
 NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
 : _maxInstanceCount{maxInstanceCount}
@@ -16,19 +17,16 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
 , _prevRenderTime{clock.Time()} {
     std::random_device device;
     randomEngine = std::default_random_engine(device());
-    
-    enemiesRemainingField = CreateField({56.0f / 96.0f, 1.0f}, ENEMIES_REMAINING_TEX);
-    _scene.Get<Transform>(enemiesRemainingField.text).scale = float3{832.0f / 96.0f, 1.0f, 1.0f};
-    
-    healthField = CreateField(float2{56.0f / 96.0f, 1.0f} * 0.75f, HP_TEX);
-    _scene.Get<Transform>(healthField.text).scale = float3{112.0f / 96.0f, 1.0f, 1.0f} * 0.75f;
-    
-    waveField = CreateField(float2{56.0f / 96.0f, 1.0f}, WAVE_TEX);
-    _scene.Get<Transform>(waveField.text).scale = float3{288.0f / 96.0f, 1.0f, 1.0f};
+}
+
+void NeonScene::Start() {
+    enemiesRemainingField = CreateField(1, ENEMIES_REMAINING_TEX);
+    healthField = CreateField(0.75f, HP_TEX);
+    waveField = CreateField(1, WAVE_TEX);
     waveField.textFirst = true;
     
     ground = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 0}, float3{0, 0, 1}),
-                                 Mesh(PLANE_MESH, Material(LIT_SHADER, GROUND0_TEX)));
+                                 Mesh(PLANE_MESH, Material(LIT_SHADER, GROUND1_TEX)));
     
     auto playerTf = Transform(float3{0, 0, -0.5f}, float3{0, 0, 0}, float3{1, 1, 1});
     player = _scene.CreateEntity(Physics(playerTf),
@@ -49,24 +47,51 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
     numKeysImg = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{8, 4, 1}),
                                      Mesh(PLANE_MESH, Material(UI_SHADER, NUM_KEYS_TEX)));
     
+    CreateButton(float3{0, 0.1f, 0}, 1, LEVEL1_BT_TEX, [this]{LoadLevel(0);}, false);
+    CreateButton(float3{0, 0, 0}, 1, LEVEL2_BT_TEX, [this]{LoadLevel(1);}, false);
+    CreateButton(float3{0, -0.1f, 0}, 1, LEVEL3_BT_TEX, [this]{LoadLevel(2);}, false);
+    CreateButton(float3{0, -0.2f, 0}, 1, QUIT_BT_TEX, [this]{clock.Paused(false);}, false);
+
+    CreateButton(float3{0, 0, 0}, 1, RESUME_BT_TEX, [this]{clock.Paused(false);}, true);
+    CreateButton(float3{0, -0.1f, 0}, 1, EXIT_BT_TEX, [this]{clock.Paused(false);}, false);
+    
     SelectWeapon(weaponIdx);
     LoadLevel(levelIdx);
 }
 
-NumberField NeonScene::CreateField(float2 size, TextureType text, float4 color) {
+NumberField NeonScene::CreateField(float scale, TextureType tex, float4 color) {
     NumberField field;
+    
+    float numScaleX = (static_cast<float>(textureSizes[ZERO_TEX].width) / textureSizes[ZERO_TEX].height) * scale;
     for (size_t i = 0; i < 10; i++) {
-        field.valueUIEntities[i] = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{size.x, size.y, 1}),
+        field.valueUIEntities[i] = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{numScaleX, scale, 1}),
                                                        Mesh(PLANE_MESH, Material(UI_SHADER, ZERO_TEX, color), true));
     }
-    field.text = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{1, 1, 1}),
-                                       Mesh(PLANE_MESH, Material(UI_SHADER, text, color)));
+    
+    float texScaleX = (static_cast<float>(textureSizes[tex].width) / textureSizes[tex].height) * scale;
+    field.text = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{texScaleX, scale, 1}),
+                                       Mesh(PLANE_MESH, Material(UI_SHADER, tex, color)));
     
     return field;
 }
 
+Entity NeonScene::CreateButton(float3 pos, float scale, TextureType tex, std::function<void()> action, bool enabled) {
+    float scaleX = (static_cast<float>(textureSizes[tex].width) / textureSizes[tex].height) * scale;
+    return _scene.CreateEntity(Button(action, enabled),
+                               Transform(pos, float3{0, 0, 180}, float3{scaleX, scale, 1}),
+                               Mesh(PLANE_MESH, Material(UI_SHADER, tex)));
+}
+
 void NeonScene::LoadLevel(int i) {
     levelIdx = i;
+    
+    _scene.GetGroup<Enemy>()->Update([this](auto entity, auto& enemy) {
+        _scene.DestroyEntity(entity);
+    });
+    
+    _scene.GetGroup<PlayerProjectile>()->Update([this](auto entity, auto& projectile) {
+        _scene.DestroyEntity(entity);
+    });
     
     _scene.Get<Mesh>(ground).material.texture = CurrentLevel().groundTexture;
     _scene.Get<Transform>(ground).scale = {CurrentLevel().mapSize.x, CurrentLevel().mapSize.y, 1};
@@ -178,7 +203,7 @@ void NeonScene::Update(float aspectRatio) {
     moveDir += {directionalInput.x, directionalInput.y, 0};
     moveDir = VecNormalize(moveDir);
     
-    mousePressed |= !prevMouseState && mouseDown;
+    mouseClicked |= prevMouseState && !mouseDown;
     
     bool didTick = time >= _nextTickTime;
     while (time >= _nextTickTime) {
@@ -191,10 +216,10 @@ void NeonScene::Update(float aspectRatio) {
     _prevRenderTime = time;
     mouseDelta = {0, 0};
     
-    if (didTick) {
+    if (didTick || clock.Paused()) {
         moveDir = {0, 0, 0};
         prevMouseState = mouseDown;
-        mousePressed = false;
+        mouseClicked = false;
     }
 }
 
@@ -497,6 +522,42 @@ void NeonScene::RenderUI() {
     
     auto& numKeysTf = _scene.Get<Transform>(numKeysImg);
     numKeysTf.position = camera.ScreenPointToWorld({-1, -1}, 0) + float3{numKeysTf.scale.x / 2 + 0.5f, numKeysTf.scale.y / 2 + 0.5f, 0.0f};
+    
+    float3 mPos = camera.ScreenPointToWorld(mousePos, 0);
+    _scene.GetGroup<Button, Transform, Mesh>()->UpdateParallel([mPos](auto entity,
+                                                                      auto& bt,
+                                                                      auto& tf,
+                                                                      auto& mesh) {
+        if (bt.enabled) {
+            float leftBound = tf.position.x - tf.scale.x / 2;
+            float rightBound = tf.position.x + tf.scale.x / 2;
+            
+            float lowerBound = tf.position.y - tf.scale.y / 2;
+            float upperBound = tf.position.y + tf.scale.y / 2;
+            
+            bt.highlighted = mPos.x > leftBound && mPos.x < rightBound && mPos.y > lowerBound && mPos.y < upperBound;
+        }
+        else {
+            bt.highlighted = false;
+        }
+        
+        if (bt.enabled) {
+            mesh.tint = bt.highlighted ? float4{0.75, 0.75, 0.75, 1} : float4{1, 1, 1, 1};
+        }
+        else {
+            mesh.tint.w = 0;
+        }
+    });
+    
+    
+    if (mouseClicked) {
+        for (auto& bt : *_scene.GetPool<Button>()) {
+            if (bt.highlighted) {
+                bt.onClick();
+                break;
+            }
+        }
+    }
 }
 
 FrameData NeonScene::GetFrameData() {
