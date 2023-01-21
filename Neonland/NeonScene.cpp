@@ -21,7 +21,7 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep, GameClock clock)
 
 void NeonScene::Start() {
     enemiesRemainingField = CreateField(1, ENEMIES_REMAINING_TEX);
-    healthField = CreateField(0.75f, HP_TEX);
+    healthField = CreateField(0.75f, HP_TEX, true);
     waveField = CreateField(1, WAVE_TEX);
     waveField.textFirst = true;
     
@@ -35,8 +35,13 @@ void NeonScene::Start() {
                                  HP(100));
     
     cam = _scene.CreateEntity<Camera>();
-    _scene.Get<Camera>(cam).SetPosition({0, 0, -camDistance});
-    _scene.Get<Camera>(cam).SetFarClipPlane(camDistance + 10);
+    auto& camera = _scene.Get<Camera>(cam);
+    camera.SetPosition({0, 0, -camDistance});
+    camera.SetRotation({camTilt, 0, 0});
+    
+    float farPlane = camTilt == 0 ? (camDistance + 1) : (camDistance + 1) * (std::sin(camera.GetVerticalFoV() * DegToRad) / std::sin(camTilt * DegToRad));
+    
+    camera.SetFarClipPlane(farPlane);
     
     crosshair = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 0}, float3{0.3, 0.3, 0.3}),
                                     Mesh(CROSSHAIR_MESH, Material(UI_SHADER, NO_TEX, float4{1, 1, 1, 1})));
@@ -44,41 +49,44 @@ void NeonScene::Start() {
     spreadCircle = _scene.CreateEntity(Transform(),
                                        Mesh(SPREAD_MESH, Material(UI_SHADER, NO_TEX)));
     
-    numKeysImg = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{8, 4, 1}),
+    numKeysImg = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{-camTilt, 0, 180}, float3{8, 4, 1}),
                                      Mesh(PLANE_MESH, Material(UI_SHADER, NUM_KEYS_TEX)));
     
-    CreateButton(float3{0, 0.1f, 0}, 1, LEVEL1_BT_TEX, [this]{LoadLevel(0);}, false);
-    CreateButton(float3{0, 0, 0}, 1, LEVEL2_BT_TEX, [this]{LoadLevel(1);}, false);
-    CreateButton(float3{0, -0.1f, 0}, 1, LEVEL3_BT_TEX, [this]{LoadLevel(2);}, false);
-    CreateButton(float3{0, -0.2f, 0}, 1, QUIT_BT_TEX, [this]{clock.Paused(false);}, false);
+    CreateButton(float3{0, 0.1f, 0}, 1, LEVEL1_BT_TEX, [this]{LoadLevel(0);}, false, false);
+    CreateButton(float3{0, 0, 0}, 1, LEVEL2_BT_TEX, [this]{LoadLevel(1);}, false, false);
+    CreateButton(float3{0, -0.1f, 0}, 1, LEVEL3_BT_TEX, [this]{LoadLevel(2);}, false, false);
+    CreateButton(float3{0, -0.2f, 0}, 1, QUIT_BT_TEX, [this]{clock.Paused(false);}, false, false);
 
-    CreateButton(float3{0, 0, 0}, 1, RESUME_BT_TEX, [this]{clock.Paused(false);}, true);
-    CreateButton(float3{0, -0.1f, 0}, 1, EXIT_BT_TEX, [this]{clock.Paused(false);}, false);
+    CreateButton(float3{0, 0, 0}, 1, RESUME_BT_TEX, [this]{clock.Paused(false);}, false, true);
+    CreateButton(float3{0, -0.1f, 0}, 1, EXIT_BT_TEX, [this]{clock.Paused(false);}, false, false);
     
     SelectWeapon(weaponIdx);
     LoadLevel(levelIdx);
 }
 
-NumberField NeonScene::CreateField(float scale, TextureType tex, float4 color) {
+NumberField NeonScene::CreateField(float scale, TextureType tex, bool keepCamTilt, float4 color) {
     NumberField field;
+    
+    float rotX = keepCamTilt ? 0 : -camTilt;
     
     float numScaleX = (static_cast<float>(textureSizes[ZERO_TEX].width) / textureSizes[ZERO_TEX].height) * scale;
     for (size_t i = 0; i < 10; i++) {
-        field.valueUIEntities[i] = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{numScaleX, scale, 1}),
+        field.valueUIEntities[i] = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{rotX, 0, 180}, float3{numScaleX, scale, 1}),
                                                        Mesh(PLANE_MESH, Material(UI_SHADER, ZERO_TEX, color), true));
     }
     
     float texScaleX = (static_cast<float>(textureSizes[tex].width) / textureSizes[tex].height) * scale;
-    field.text = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{0, 0, 180}, float3{texScaleX, scale, 1}),
+    field.text = _scene.CreateEntity(Transform(float3{0, 0, 0}, float3{rotX, 0, 180}, float3{texScaleX, scale, 1}),
                                        Mesh(PLANE_MESH, Material(UI_SHADER, tex, color)));
     
     return field;
 }
 
-Entity NeonScene::CreateButton(float3 pos, float scale, TextureType tex, std::function<void()> action, bool enabled) {
+Entity NeonScene::CreateButton(float3 pos, float scale, TextureType tex, std::function<void()> action, bool keepCamTilt, bool enabled) {
+    float rotX = keepCamTilt ? 0 : -camTilt;
     float scaleX = (static_cast<float>(textureSizes[tex].width) / textureSizes[tex].height) * scale;
     return _scene.CreateEntity(Button(action, enabled),
-                               Transform(pos, float3{0, 0, 180}, float3{scaleX, scale, 1}),
+                               Transform(pos, float3{rotX, 0, 180}, float3{scaleX, scale, 1}),
                                Mesh(PLANE_MESH, Material(UI_SHADER, tex)));
 }
 
@@ -96,8 +104,7 @@ void NeonScene::LoadLevel(int i) {
     _scene.Get<Mesh>(ground).material.texture = CurrentLevel().groundTexture;
     _scene.Get<Transform>(ground).scale = {CurrentLevel().mapSize.x, CurrentLevel().mapSize.y, 1};
     
-    gameOver = false;
-    levelWon = false;
+    gameState = GameState::Gameplay;
     
     auto& playerHP = _scene.Get<HP>(player);
     playerHP.Set(playerHP.Max());
@@ -116,7 +123,7 @@ const Level& NeonScene::CurrentLevel() {
 }
 
 void NeonScene::UpdateLevelProgress(double time) {
-    if (levelWon || gameOver) {
+    if (gameState != GameState::Gameplay) {
         return;
     }
     
@@ -133,7 +140,7 @@ void NeonScene::UpdateLevelProgress(double time) {
         currentSubWave = 0;
         
         if (currentWave >= CurrentLevel().waves.size()) {
-            levelWon = true;
+            gameState = GameState::LevelWon;
         }
         else
         {
@@ -193,12 +200,10 @@ Weapon& NeonScene::CurrentWeapon() {
 }
 
 void NeonScene::Update(float aspectRatio) {
+    _scene.Get<Camera>(cam).SetAspectRatio(aspectRatio);
+    
     double time = clock.Time();
     double dt = time - _prevRenderTime;
-    
-    if (aspectRatio != _scene.Get<Camera>(cam).GetAspectRatio()) {
-        _scene.Get<Camera>(cam).SetAspectRatio(aspectRatio);
-    }
     
     moveDir += {directionalInput.x, directionalInput.y, 0};
     moveDir = VecNormalize(moveDir);
@@ -257,19 +262,16 @@ void NeonScene::Tick(double time) {
     
     prevSpreadMult = spreadMult;
     if (mouseDown && CurrentWeapon().cooldownEndTime < time) {
-        float3 playerPos = _scene.Get<Transform>(player).position;
+        float3 playerWorldPos = _scene.Get<Physics>(player).position;
         float3 aimPos = _scene.Get<Transform>(crosshair).position;
         
-        float3 aimDir = aimPos - playerPos;
-        aimDir.z = 0;
-        
+        float2 aimDir = aimPos.xy - playerWorldPos.xy;
         aimDir = VecNormalize(aimDir);
         
-        float3 spawnPos = playerPos + aimDir * 0.5f * CurrentWeapon().projectileSize;
+        float3 spawnPos = playerWorldPos + float3{aimDir.x, aimDir.y, 0} * 0.5f * CurrentWeapon().projectileSize;
         
         for (int i = 0; i < CurrentWeapon().projectilesPerShot; i++) {
-            
-            float3 vel = aimDir + float3{-aimDir.y, aimDir.x, 0.0f} * CurrentWeapon().spread * spreadMult * RandomBetween(-1.0f, 1.0f);
+            float2 vel = aimDir + float2{-aimDir.y, aimDir.x} * CurrentWeapon().spread * spreadMult * RandomBetween(-1.0f, 1.0f);
             vel = VecNormalize(vel);
             
             float r = std::atan2f(vel.y, vel.x) * RadToDeg;
@@ -281,7 +283,10 @@ void NeonScene::Tick(double time) {
             auto mesh = CurrentWeapon().projectileMesh;
             
             auto tf = Transform(spawnPos, float3{0, 0, r}, float3{1.0f, 0.5f, 0.5f} * CurrentWeapon().projectileSize);
-            _scene.CreateEntity(Physics(tf, vel), std::move(tf), std::move(mesh), std::move(projectile));
+            _scene.CreateEntity(Physics(tf, float3{vel.x, vel.y, 0}),
+                                std::move(tf),
+                                std::move(mesh),
+                                std::move(projectile));
             
             CurrentWeapon().cooldownEndTime = time + CurrentWeapon().cooldown;
         }
@@ -307,6 +312,7 @@ void NeonScene::Tick(double time) {
             }
         }
     });
+    
     _scene.Get<HP>(player).Decrease(totalDamage);
     if (totalDamage > 0) {
         auto& playerMesh = _scene.Get<Mesh>(player);
@@ -346,7 +352,7 @@ void NeonScene::Tick(double time) {
         if (hp.Get() <= 0) {
             
             if (entity == player) {
-                gameOver = true;
+                gameState = GameState::GameOver;
             }
             else {
                 _scene.DestroyEntity(entity);
@@ -409,35 +415,32 @@ void NeonScene::Render(double time, double dt) {
     });
     
     {
-        _scene.Get<Camera>(cam).SetPosition({0.0f, 0.0f, -camDistance});
-        float3 topRightPos = _scene.Get<Camera>(cam).ScreenPointToWorld({1.0f, 1.0f}, 0);
+        auto& camera = _scene.Get<Camera>(cam);
+        float3 topRightPos = camera.ScreenPointToWorld({1.0f, 1.0f}, 0);
         float hWidth = topRightPos.x;
-        float hHeight = topRightPos.y;
-        
+
         float2 mapSize = CurrentLevel().mapSize;
         
         float3 playerPos = _scene.Get<Physics>(player).GetInterpolatedPosition(interpolation);
         playerPos.z = 0;
         
-        float3 camPos = playerPos;
+        float3 camPos = playerPos - camera.Forward() * camDistance;
         camPos.x = std::clamp(camPos.x, std::min(-mapSize.x / 2 + hWidth, 0.0f), std::max(mapSize.x / 2 - hWidth, 0.0f));
-        camPos.y = std::clamp(camPos.y, std::min(-mapSize.y / 2 + hHeight, 0.0f), std::max(mapSize.y  / 2 - hHeight, 0.0f));
-        camPos.z -= camDistance;
         
-        _scene.Get<Camera>(cam).SetPosition(camPos);
+        camera.SetPosition(camPos);
     }
     
     {
-        float3 playerPos = _scene.Get<Physics>(player).position;
         float3 crosshairPos = _scene.Get<Camera>(cam).ScreenPointToWorld(mousePos, 0);
         _scene.Get<Transform>(crosshair).position = crosshairPos;
         _scene.Get<Transform>(spreadCircle).position = crosshairPos;
         
-        float3 dir = crosshairPos - playerPos;
-        dir.z = 0;
-        dir = VecNormalize(dir);
-        
         if (!clock.Paused()) {
+            float3 playerPosWorld = _scene.Get<Physics>(player).GetInterpolatedPosition(interpolation);
+            float2 playerPosScreen = _scene.Get<Camera>(cam).WorldPointToScreen(playerPosWorld);
+            
+            float2 dir = mousePos - playerPosScreen;
+            dir = VecNormalize(dir);
             float r = std::atan2f(dir.y, dir.x) * RadToDeg;
             _scene.Get<Transform>(player).SetRotation({0, 0, r});
         }
@@ -468,49 +471,11 @@ void NeonScene::Render(double time, double dt) {
     });
 }
 
-void NeonScene::UpdateField(const NumberField& field, float3 center) {
-    auto& textTf = _scene.Get<Transform>(field.text);
-    float numWidth = _scene.Get<Transform>(field.valueUIEntities[0]).scale.x;
-    
-    float overallWidth = textTf.scale.x + numWidth * field.valueNums.size();
-    
-    float3 left = center;
-    left.x -= overallWidth / 2;
-    
-    textTf.position.y = left.y;
-    if (field.textFirst) {
-        textTf.position.x = left.x + textTf.scale.x / 2;
-        left.x += textTf.scale.x;
-    }
-    else {
-        textTf.position.x = left.x + numWidth * field.valueNums.size() + textTf.scale.x / 2;
-        left.x += numWidth / 4;
-    }
-    
-    for (size_t i = 0; i < field.valueUIEntities.size(); i++) {
-        Mesh& mesh = _scene.Get<Mesh>(field.valueUIEntities[i]);
-        
-        if (i < field.valueNums.size()) {
-            mesh.material.texture = static_cast<TextureType>(ZERO_TEX + field.valueNums[i]);
-            mesh.hidden = false;
-        }
-        else {
-            mesh.hidden = true;
-        }
-    }
-    
-    for (size_t i = 0; i < field.valueNums.size(); i++) {
-        Transform& tf = _scene.Get<Transform>(field.valueUIEntities[i]);
-        float3 pos = left;
-        pos.x += tf.scale.x * i;
-        tf.position = pos;
-    }
-}
-
 void NeonScene::RenderUI() {
     auto& camera = _scene.Get<Camera>(cam);
     float3 center = camera.ScreenPointToWorld({0, 1}, 0);
     center.y -= _scene.Get<Transform>(waveField.text).scale.y;
+    
     UpdateField(waveField, center);
     
     center.y -= _scene.Get<Transform>(enemiesRemainingField.text).scale.y * 1.5f;
@@ -559,6 +524,47 @@ void NeonScene::RenderUI() {
         }
     }
 }
+
+void NeonScene::UpdateField(const NumberField& field, float3 center) {
+    auto& textTf = _scene.Get<Transform>(field.text);
+    float numWidth = _scene.Get<Transform>(field.valueUIEntities[0]).scale.x;
+    
+    float overallWidth = textTf.scale.x + numWidth * field.valueNums.size();
+    
+    float3 left = center;
+    left.x -= overallWidth / 2;
+    
+    textTf.position.y = left.y;
+    textTf.position.z = left.z;
+    if (field.textFirst) {
+        textTf.position.x = left.x + textTf.scale.x / 2;
+        left.x += textTf.scale.x;
+    }
+    else {
+        textTf.position.x = left.x + numWidth * field.valueNums.size() + textTf.scale.x / 2;
+        left.x += numWidth / 4;
+    }
+    
+    for (size_t i = 0; i < field.valueUIEntities.size(); i++) {
+        Mesh& mesh = _scene.Get<Mesh>(field.valueUIEntities[i]);
+        
+        if (i < field.valueNums.size()) {
+            mesh.material.texture = static_cast<TextureType>(ZERO_TEX + field.valueNums[i]);
+            mesh.hidden = false;
+        }
+        else {
+            mesh.hidden = true;
+        }
+    }
+    
+    for (size_t i = 0; i < field.valueNums.size(); i++) {
+        Transform& tf = _scene.Get<Transform>(field.valueUIEntities[i]);
+        float3 pos = left;
+        pos.x += tf.scale.x * i;
+        tf.position = pos;
+    }
+}
+
 
 FrameData NeonScene::GetFrameData() {
     GlobalUniforms uniforms;

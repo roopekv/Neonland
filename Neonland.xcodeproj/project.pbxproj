@@ -201,6 +201,7 @@
 		7AD68D6E296872F6003821A3 /* NeonScene.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = NeonScene.hpp; sourceTree = "<group>"; };
 		7AD68D7029687C01003821A3 /* NeonConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NeonConstants.h; sourceTree = "<group>"; };
 		7AD68D7129687C01003821A3 /* NeonConstants.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NeonConstants.cpp; sourceTree = "<group>"; };
+		7ADF6A30297B0A6B00F04733 /* GameState.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GameState.hpp; sourceTree = "<group>"; };
 		7AE607EE2950F1B300C66EA5 /* Neonland.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neonland.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AE607F12950F1B300C66EA5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7AE607F32950F1B300C66EA5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -357,6 +358,7 @@
 				7AD68D6D296872F6003821A3 /* NeonScene.cpp */,
 				7AD68D7029687C01003821A3 /* NeonConstants.h */,
 				7AD68D7129687C01003821A3 /* NeonConstants.cpp */,
+				7ADF6A30297B0A6B00F04733 /* GameState.hpp */,
 				7A41137929739F11002F116C /* Weapon.hpp */,
 				7A41137829739F11002F116C /* Weapon.cpp */,
 				7A03E6482974882800B3EEC6 /* NumberField.hpp */,

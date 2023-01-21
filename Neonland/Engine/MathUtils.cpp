@@ -99,3 +99,26 @@ float VecDistance(const float3& a, const float3& b) {
 float VecDistance(const float2& a, const float2& b) {
     return simd_distance(a, b);
 }
+
+std::ostream& operator<<(std::ostream &os, const float3& v) {
+    return os << v.x << " " << v.y << " " << v.z;
+}
+
+std::ostream& operator<<(std::ostream &os, const float2& v) {
+    return os << v.x << " " << v.y;
+}
+
+std::ostream& operator<<(std::ostream &os, const float4& v) {
+    return os << v.x << " " << v.y << " " << v.z << " " << v.w;
+}
+
+std::ostream& operator<<(std::ostream &os, const float4x4& m) {
+    for (int y = 0; y < 4; y++) {
+        for (int x = 0; x < 4; x++) {
+            os << m.columns[x][y] << " ";
+        }
+        
+        os << std::endl;
+    }
+    return os;
+}

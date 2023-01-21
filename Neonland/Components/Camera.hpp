@@ -21,6 +21,7 @@ public:
     float3 clearColor;
     
     Camera(float3 pos = {0, 0, 0},
+           float3 rot = {0, 0, 0},
            float3 color = {0, 0, 0},
            float near = 0.1f,
            float far = 100,
@@ -28,9 +29,17 @@ public:
            float aspectRatio = 1.0f);
     
     float3 ScreenPointToWorld(float2 screenPoint, float depth);
+    float2 WorldPointToScreen(float3 worldPoint);
+    
+    float3 Forward();
     
     void SetPosition(float3 pos);
     const float3& GetPosition() const;
+    
+//    const float3 GetLocalPosition();
+    
+    void SetRotation(float3 rot);
+    const float3& GetRotation() const;
     
     void SetClearColor(float3 color);
     const float3& GetClearColor() const;
@@ -47,18 +56,23 @@ public:
     void SetAspectRatio(float ratio);
     float GetAspectRatio() const;
     
-    const float4x4& GetProjectionMatrix();
-    const float4x4& GetViewMatrix();
+    float4x4 GetProjectionMatrix();
+    float4x4 GetTranslationMatrix();
+    float4x4 GetRotationMatrix();
+    float4x4 GetViewMatrix();
 private:
     float3 _position;
+    float3 _rotation;
     float _farClipPlane;
     float _nearClipPlane;
     float _verticalFoV;
     float _aspectRatio;
     
     bool _projChanged;
-    bool _viewChanged;
+    bool _positionChanged;
+    bool _rotationChanged;
     
     float4x4 _projMat;
-    float4x4 _viewMat;
+    float4x4 _translationMatrix;
+    float4x4 _rotationMatrix;
 };
