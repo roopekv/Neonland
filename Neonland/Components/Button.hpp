@@ -22,7 +22,6 @@ public:
     bool highlighted;
     
     std::function<void()> onClick;
-    bool enabled;
     
-    Button(std::function<void()> onClick, bool enabled);
+    Button(std::function<void()> onClick);
 };

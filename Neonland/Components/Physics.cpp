@@ -1,4 +1,5 @@
 #include "Physics.hpp"
+#include <iostream>
 
 Physics::Physics(const Transform& tf, float3 vel, float3 angularVel, float radius)
 : velocity{vel}
@@ -11,8 +12,10 @@ Physics::Physics(const Transform& tf, float3 vel, float3 angularVel, float radiu
 
 bool Physics::Overlapping(const Physics& a, const Physics& b,
                         const Transform& tfA, const Transform& tfB, float epsilon) {
+    float3 aToB = a.position - b.position;
+    aToB.z = 0;
     
-    float dist = VecDistance(tfA.position, tfB.position);
+    float dist = VecLength(aToB);
     float radA = a.GetScaledCollisionRadius(tfA);
     float radB = b.GetScaledCollisionRadius(tfB);
     

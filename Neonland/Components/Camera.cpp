@@ -31,12 +31,6 @@ vector_float3 Camera::ScreenPointToWorld(float2 screenPoint, float depth) {
     return {worldPoint.x, worldPoint.y, worldPoint.z};
 }
 
-float2 Camera::WorldPointToScreen(float3 worldPoint) {
-    float4 screenPoint = GetProjectionMatrix() * GetViewMatrix() * float4{worldPoint.x, worldPoint.y, worldPoint.z, 1};
-    screenPoint /= screenPoint.z;
-    return {screenPoint.x, screenPoint.y};
-}
-
 float3 Camera::Forward(){
     float4 forward = GetRotationMatrix() * float4{0, 0, 1, 1};
     return float3{forward.x, forward.y, forward.z};

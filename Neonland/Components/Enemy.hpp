@@ -25,5 +25,7 @@ public:
     float maxMovementSpeed;
     float acceleration;
     
-    Enemy(int dmg, double cooldown, float maxSpeed, float acceleration = 1.0f);
+    bool blocksPiercing;
+    
+    Enemy(int dmg, double cooldown, float maxSpeed, float acceleration, bool blocksPiercing = false);
 };

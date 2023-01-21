@@ -5,5 +5,5 @@ enum class GameState {
     Paused,
     Gameplay,
     GameOver,
-    LevelWon
+    LevelCleared
 };

@@ -35,9 +35,6 @@ float2 VecNormalize(float2 vec);
 float VecLength(const float3& vec);
 float VecLength(const float2& vec);
 
-float VecDistance(const float3& a, const float3& b);
-float VecDistance(const float2& a, const float2& b);
-
 std::ostream& operator<<(std::ostream &os, const float3& v);
 std::ostream& operator<<(std::ostream &os, const float2& v);
 std::ostream& operator<<(std::ostream &os, const float4& v);

@@ -23,7 +23,6 @@
 
 class NeonScene {
 public:
-    GameClock clock;
     std::array<TexSize, TextureTypeCount> textureSizes;
     
     float2 mouseDelta = {0, 0};
@@ -38,9 +37,15 @@ public:
     
     int weaponIdx = 0;
     
-    NeonScene(size_t maxInstanceCount, double timestep, GameClock clock);
+    NeonScene(size_t maxInstanceCount, double timestep);
+    
+    void TogglePause();
     
     void Start();
+    
+    void ClearLevel();
+    
+    float3 CameraPosition();
     
     void SelectWeapon(int i);
     void Update(float aspectRatio);
@@ -55,11 +60,14 @@ public:
     const Level& CurrentLevel();
     Weapon& CurrentWeapon();
     
-    NumberField CreateField(float scale, TextureType tex, bool keepCamTilt = false, float4 color = {1, 1, 1, 1});
-    Entity CreateButton(float3 pos, float scale, TextureType tex, std::function<void()> action, bool keepCamTilt, bool enabled);
-    void UpdateField(const NumberField& field, float3 center);
+    NumberField CreateField(float2 screenPos, float scale, TextureType tex, bool texFirst, bool keepCamTilt, float4 color = {1, 1, 1, 1});
+    void UpdateField(const NumberField& field, float2 extraMargin = {0, 0});
+    
+    Entity CreateButton(float2 screenPos, float scale, TextureType tex, std::function<void()> action);
+    Entity CreateImage(float2 screenPos, float scale, TextureType tex);
 private:
     Scene _scene;
+    GameClock _clock;
     
     float3 moveDir = {0, 0, 0};
     
@@ -70,13 +78,11 @@ private:
     
     Entity ground;
     
-    Entity numKeysImg;
-    
     float spreadMult = 1.0f;
     float prevSpreadMult = 1.0f;
     
     NumberField enemiesRemainingField;
-    NumberField healthField;
+    NumberField hpField;
     NumberField waveField;
     
     float movementSpeed = 7.0f;
@@ -100,6 +106,12 @@ private:
     std::vector<uint32_t> _groupTextures;
     std::vector<uint32_t> _groupShaders;
     
+    std::vector<Entity> _mainMenuUI;
+    std::vector<Entity> _pauseMenuUI;
+    std::vector<Entity> _gameplayUI;
+    std::vector<Entity> _levelClearedUI;
+    std::vector<Entity> _gameOverUI;
+    
     size_t _maxInstanceCount;
     
     double _timestep;
@@ -107,26 +119,28 @@ private:
     double _prevRenderTime;
     
     std::array<Weapon, 3> weapons = {
-        Weapon(PlayerProjectile(1, 2.0f, 35.0f, true),
+        Weapon(PlayerProjectile(1, 2.0f, 50.0f, true),
                0.1f,
-               0.025f,
+               0.020f,
                1,
                1.0f,
                Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{0, 1, 0, 1}))),
-        Weapon(PlayerProjectile(4, 1.5f, 30.0f, true),
+        Weapon(PlayerProjectile(1, 1.5f, 30.0f, true),
                0.4f,
-               0.1f,
-               5,
+               0.15f,
+               8,
                1.0f,
                Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{1, 0, 0, 1}))),
         
-        Weapon(PlayerProjectile(1, 2.0f, 25.0f, false),
-               0.3f,
-               0.025f,
+        Weapon(PlayerProjectile(3, 2.0f, 25.0f, false),
+               0.8f,
+               0.01f,
                1,
                1.5f,
                Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{0, 0.6, 1, 1})))
     };
+    
+    void SetGameState(GameState state);
     
     void LoadLevel(int i);
     

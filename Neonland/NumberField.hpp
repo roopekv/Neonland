@@ -8,11 +8,15 @@
 
 class NumberField {
 public:
-    std::array<Entity, 10> valueUIEntities;
-    std::vector<int32_t> valueNums;
+    std::array<Entity, 10> digitEntities;
+    Entity tex;
     
-    bool textFirst = false;
-    Entity text;
+    std::vector<int32_t> digits;
+    
+    bool hidden = false;
+    bool texFirst = false;
+    
+    float2 screenPos = {0, 0};
     
     void SetValue(int32_t value);
     int32_t GetValue() const;

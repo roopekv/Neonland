@@ -11,11 +11,11 @@ void NumberField::SetValue(int32_t value) {
     this->value = value;
     auto numString = std::to_string(value);
     
-    valueNums.clear();
+    digits.clear();
     
     for (char c : numString) {
         if (isdigit(c)) {
-            valueNums.push_back(c - '0');
+            digits.push_back(c - '0');
         }
     }
 }

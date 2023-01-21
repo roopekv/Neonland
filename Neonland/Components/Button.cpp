@@ -1,6 +1,5 @@
 #include "Button.hpp"
 
-Button::Button(std::function<void()> onClick, bool enabled)
+Button::Button(std::function<void()> onClick)
 : onClick(onClick)
-, enabled{enabled}
 , highlighted{false} {}

@@ -42,6 +42,8 @@ typedef enum TextureType {
     EXIT_BT_TEX,
     QUIT_BT_TEX,
     NUM_KEYS_TEX,
+    GAME_OVER_TEX,
+    LEVEL_CLEARED_TEX,
     ZERO_TEX,
     ONE_TEX,
     TWO_TEX,

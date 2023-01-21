@@ -29,14 +29,11 @@ public:
            float aspectRatio = 1.0f);
     
     float3 ScreenPointToWorld(float2 screenPoint, float depth);
-    float2 WorldPointToScreen(float3 worldPoint);
     
     float3 Forward();
     
     void SetPosition(float3 pos);
     const float3& GetPosition() const;
-    
-//    const float3 GetLocalPosition();
     
     void SetRotation(float3 rot);
     const float3& GetRotation() const;

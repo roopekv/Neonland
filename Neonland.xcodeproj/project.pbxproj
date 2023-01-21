@@ -85,6 +85,11 @@
 		7AC754862978F3190088A54C /* num_keys.png in Resources */ = {isa = PBXBuildFile; fileRef = 7AC754852978F3190088A54C /* num_keys.png */; };
 		7AD68D6F296872F6003821A3 /* NeonScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AD68D6D296872F6003821A3 /* NeonScene.cpp */; };
 		7AD68D7229687C01003821A3 /* NeonConstants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AD68D7129687C01003821A3 /* NeonConstants.cpp */; };
+		7ADF6A35297C17CC00F04733 /* level_cleared.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ADF6A31297C17CC00F04733 /* level_cleared.png */; };
+		7ADF6A36297C17CC00F04733 /* level_cleared.pxd in Resources */ = {isa = PBXBuildFile; fileRef = 7ADF6A32297C17CC00F04733 /* level_cleared.pxd */; };
+		7ADF6A37297C17CC00F04733 /* game_over.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ADF6A33297C17CC00F04733 /* game_over.png */; };
+		7ADF6A38297C17CC00F04733 /* game_over.pxd in Resources */ = {isa = PBXBuildFile; fileRef = 7ADF6A34297C17CC00F04733 /* game_over.pxd */; };
+		7ADF6A3B297C26C800F04733 /* Anchor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ADF6A39297C26C800F04733 /* Anchor.cpp */; };
 		7AE607F22950F1B300C66EA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE607F12950F1B300C66EA5 /* AppDelegate.swift */; };
 		7AE607F42950F1B300C66EA5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE607F32950F1B300C66EA5 /* ViewController.swift */; };
 		7AE607F62950F1B400C66EA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7AE607F52950F1B400C66EA5 /* Assets.xcassets */; };
@@ -202,6 +207,12 @@
 		7AD68D7029687C01003821A3 /* NeonConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NeonConstants.h; sourceTree = "<group>"; };
 		7AD68D7129687C01003821A3 /* NeonConstants.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NeonConstants.cpp; sourceTree = "<group>"; };
 		7ADF6A30297B0A6B00F04733 /* GameState.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GameState.hpp; sourceTree = "<group>"; };
+		7ADF6A31297C17CC00F04733 /* level_cleared.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = level_cleared.png; sourceTree = "<group>"; };
+		7ADF6A32297C17CC00F04733 /* level_cleared.pxd */ = {isa = PBXFileReference; lastKnownFileType = file; path = level_cleared.pxd; sourceTree = "<group>"; };
+		7ADF6A33297C17CC00F04733 /* game_over.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = game_over.png; sourceTree = "<group>"; };
+		7ADF6A34297C17CC00F04733 /* game_over.pxd */ = {isa = PBXFileReference; lastKnownFileType = file; path = game_over.pxd; sourceTree = "<group>"; };
+		7ADF6A39297C26C800F04733 /* Anchor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Anchor.cpp; sourceTree = "<group>"; };
+		7ADF6A3A297C26C800F04733 /* Anchor.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Anchor.hpp; sourceTree = "<group>"; };
 		7AE607EE2950F1B300C66EA5 /* Neonland.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neonland.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AE607F12950F1B300C66EA5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7AE607F32950F1B300C66EA5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -279,6 +290,10 @@
 		7A7EC4E429759AFF0007BC28 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				7ADF6A33297C17CC00F04733 /* game_over.png */,
+				7ADF6A34297C17CC00F04733 /* game_over.pxd */,
+				7ADF6A31297C17CC00F04733 /* level_cleared.png */,
+				7ADF6A32297C17CC00F04733 /* level_cleared.pxd */,
 				7A500B44297AC81600930711 /* exit_bt.png */,
 				7A500B3F297AC81600930711 /* exit_bt.pxd */,
 				7A500B40297AC81600930711 /* paused.png */,
@@ -402,6 +417,8 @@
 				7A7A5CBF297853B6008F2175 /* Material.cpp */,
 				7A500B28297ABFB200930711 /* Button.hpp */,
 				7A500B27297ABFB200930711 /* Button.cpp */,
+				7ADF6A3A297C26C800F04733 /* Anchor.hpp */,
+				7ADF6A39297C26C800F04733 /* Anchor.cpp */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -489,6 +506,7 @@
 				7A7EC4FB29759AFF0007BC28 /* 2.png in Resources */,
 				7A2A6B1929765EC400798A7E /* plane.obj in Resources */,
 				7A500B34297AC5D800930711 /* level2_bt.pxd in Resources */,
+				7ADF6A38297C17CC00F04733 /* game_over.pxd in Resources */,
 				7A7EC4F929759AFF0007BC28 /* 7.png in Resources */,
 				7A7EC4F729759AFF0007BC28 /* 4.png in Resources */,
 				7A2A6B1829765EC400798A7E /* crosshair.obj in Resources */,
@@ -510,12 +528,14 @@
 				7A94520C29548B8D004CFF4D /* TODO in Resources */,
 				7A7A5CCD2978820B008F2175 /* wave.pxd in Resources */,
 				7A2A6B1E29765EC400798A7E /* plane.blend in Resources */,
+				7ADF6A35297C17CC00F04733 /* level_cleared.png in Resources */,
 				7A7EC4F229759AFF0007BC28 /* num.pxd in Resources */,
 				7A7A5CBB2977DE9D008F2175 /* neonland.png in Resources */,
 				7A7EC4FE29759AFF0007BC28 /* 0.png in Resources */,
 				7A204F252976B5B900A91707 /* ground2.png in Resources */,
 				7A7A5CD12978CAE3008F2175 /* enemies_remaining.png in Resources */,
 				7A2A6B1C29765EC400798A7E /* spread_circle.blend in Resources */,
+				7ADF6A36297C17CC00F04733 /* level_cleared.pxd in Resources */,
 				7A7A5CB52977DE59008F2175 /* shard.obj in Resources */,
 				7A7EC4FA29759AFF0007BC28 /* 6.png in Resources */,
 				7A500B35297AC5D800930711 /* ground3.pxd in Resources */,
@@ -530,6 +550,7 @@
 				7A7A5CB92977DE94008F2175 /* hp.png in Resources */,
 				7A7A5CC92978820B008F2175 /* ground1.pxd in Resources */,
 				7A500B3C297AC5D800930711 /* level2_bt.png in Resources */,
+				7ADF6A37297C17CC00F04733 /* game_over.png in Resources */,
 				7A500B3A297AC5D800930711 /* level3_bt.pxd in Resources */,
 				7A7A5CB72977DE88008F2175 /* wave.png in Resources */,
 				7A204F242976B5B900A91707 /* ground3.png in Resources */,
@@ -574,6 +595,7 @@
 				7A03E64B2974A7EF00B3EEC6 /* SceneView.swift in Sources */,
 				7AA621362975DEBC004D48C8 /* EnemyType.cpp in Sources */,
 				7AA6213C2975E5A2004D48C8 /* Level.cpp in Sources */,
+				7ADF6A3B297C26C800F04733 /* Anchor.cpp in Sources */,
 				7AA621392975E059004D48C8 /* Wave.cpp in Sources */,
 				7A62FC57295FACB6001742A3 /* GameClock.cpp in Sources */,
 				7A445EF02951EFBE007A3A38 /* main.swift in Sources */,

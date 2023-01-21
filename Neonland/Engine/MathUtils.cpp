@@ -92,14 +92,6 @@ float VecLength(const float2& vec) {
     return simd_length(vec);
 }
 
-float VecDistance(const float3& a, const float3& b) {
-    return simd_distance(a, b);
-}
-
-float VecDistance(const float2& a, const float2& b) {
-    return simd_distance(a, b);
-}
-
 std::ostream& operator<<(std::ostream &os, const float3& v) {
     return os << v.x << " " << v.y << " " << v.z;
 }

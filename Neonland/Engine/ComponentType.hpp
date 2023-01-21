@@ -15,6 +15,7 @@ enum class ComponentType {
     enemy,
     playerProjectile,
     button,
+    anchor,
     componentTypeCount
 };
 

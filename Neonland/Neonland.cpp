@@ -6,13 +6,12 @@
 
 namespace {
 
-auto scene = NeonScene(MAX_INSTANCE_COUNT, TIMESTEP, GameClock(true));
+auto scene = NeonScene(MAX_INSTANCE_COUNT, TIMESTEP);
     
 }
 
 void Neon_Start() {
     scene.Start();
-    scene.clock.Paused(false);
 }
 
 FrameData Neon_Render(float aspectRatio) {
@@ -46,7 +45,7 @@ void Neon_UpdateNumberKeyPressed(int num) {
 }
 
 void Neon_EscapePressed() {
-    scene.clock.Paused(!scene.clock.Paused());
+    scene.TogglePause();
 }
 
 void Neon_UpdateTextureSize(TextureType tex, TexSize size) {
