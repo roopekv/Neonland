@@ -19,6 +19,8 @@ typedef enum AudioType {
     GAME_OVER_AUDIO,
     LEVEL_CLEARED_AUDIO,
     MUSIC_AUDIO,
+    POWER_UP_AUDIO,
+    COLLECT_HP_AUDIO,
     AudioTypeCount
 } AudioType;
 

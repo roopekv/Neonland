@@ -15,18 +15,15 @@ class AudioPlayer : NSObject, AVAudioPlayerDelegate {
         MUSIC_AUDIO.rawValue : "neon_beat",
         LOSE_HP_AUDIO.rawValue : "lose_hp",
         GAME_OVER_AUDIO.rawValue : "game_over",
-        LEVEL_CLEARED_AUDIO.rawValue : "level_cleared"
+        LEVEL_CLEARED_AUDIO.rawValue : "level_cleared",
+        COLLECT_HP_AUDIO.rawValue : "collect_hp",
+        POWER_UP_AUDIO.rawValue : "power_up"
     ]
     
     static func createAudioPlayer(_ audio: AudioType) -> AVAudioPlayer {
         let ext = Neon_IsMusic(audio) ? "mp3" : "wav"
         let player = try! AVAudioPlayer(contentsOf: Bundle.main.url(forResource: audioIdToName[audio.rawValue],
                                                                     withExtension: ext)!)
-        if (Neon_IsMusic(audio)) {
-            player.numberOfLoops = -1
-        }
-        
-        player.prepareToPlay()
 
         return player
     }
@@ -46,7 +43,7 @@ class AudioPlayer : NSObject, AVAudioPlayerDelegate {
     func play(_ audio: AudioType) {
         let id = audio.rawValue;
         
-        if (extraAudioPlayers.count > 10) {
+        if (extraAudioPlayers.count > 20) {
             return;
         }
         
@@ -66,17 +63,19 @@ class AudioPlayer : NSObject, AVAudioPlayerDelegate {
         
         if let player {
             if Neon_IsMusic(audio) {
+                player.numberOfLoops = -1
                 player.volume = Neon_MusicVolume()
             }
             else {
                 player.volume = Neon_SFXVolume()
             }
             
+            player.prepareToPlay()
             player.play()
         }
     }
     
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        extraAudioPlayers.remove(at: extraAudioPlayers.firstIndex(of: player)!)
+        extraAudioPlayers.removeAll { $0 == player }
     }
 }

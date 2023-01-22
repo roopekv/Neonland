@@ -56,24 +56,32 @@ void NeonScene::Start() {
     Entity numKeysImg = CreateImage(float2{-1, -1}, 4, NUM_KEYS_TEX);
     _scene.Get<Anchor>(numKeysImg).margin = float3{_scene.Get<Transform>(numKeysImg).scale.x / 2 + 0.5f, _scene.Get<Transform>(numKeysImg).scale.y / 2 + 0.5f, 0};
     
-    _gameplayUI.push_back(spreadCircle);
-    _gameplayUI.push_back(numKeysImg);
-    
-    _gameOverUI.push_back(CreateImage(float2{0, 0.5}, 2.5f, GAME_OVER_TEX));
-    
-    _levelClearedUI.push_back(CreateImage(float2{0, 0.5}, 2.5f, LEVEL_CLEARED_TEX));
+    _gameplayUI = {
+        spreadCircle,
+        numKeysImg
+    };
     
     _mainMenuUI = {
         CreateImage(float2{0, 0.65}, 3.75f, NEONLAND_TEX),
         CreateButton(float2{0, 0.25f}, 2.5f, LEVEL1_BT_TEX, [this]{LoadLevel(0);}),
         CreateButton(float2{0, 0}, 2.5f, LEVEL2_BT_TEX, [this]{LoadLevel(1);}),
         CreateButton(float2{0, -0.25f}, 2.5f, LEVEL3_BT_TEX, [this]{LoadLevel(2);}),
-        CreateButton(float2{0, -0.5f}, 2.5f, QUIT_BT_TEX, [this]{}),
+        CreateButton(float2{0, -0.5f}, 2.5f, QUIT_BT_TEX, [this]{ appShouldQuit = true; })
     };
     
     _pauseMenuUI = {
         CreateImage(float2{0, 0.375}, 2.5f, PAUSED_TEX),
         CreateButton(float2{0, 0.125}, 2.5f, RESUME_BT_TEX, [this]{TogglePause();}),
+        CreateButton(float2{0, -0.125f}, 2.5f, EXIT_BT_TEX, [this]{SetGameState(GameState::Menu);})
+    };
+    
+    _gameOverUI = {
+        CreateImage(float2{0, 0.375}, 2.5f, GAME_OVER_TEX),
+        CreateButton(float2{0, -0.125f}, 2.5f, EXIT_BT_TEX, [this]{SetGameState(GameState::Menu);})
+    };
+    
+    _levelClearedUI = {
+        CreateImage(float2{0, 0.375}, 2.5f, LEVEL_CLEARED_TEX),
         CreateButton(float2{0, -0.125f}, 2.5f, EXIT_BT_TEX, [this]{SetGameState(GameState::Menu);})
     };
     
@@ -123,21 +131,20 @@ Entity NeonScene::CreateButton(float2 screenPos, float scale, TextureType tex, s
 }
 
 void NeonScene::TogglePause() {
-    if (gameState == GameState::Paused) {
+    if (_gameState == GameState::Paused) {
         SetGameState(GameState::Gameplay);
     }
-    else if (gameState == GameState::Gameplay) {
+    else if (_gameState == GameState::Gameplay) {
         SetGameState(GameState::Paused);
     }
 }
 
 void NeonScene::SetGameState(GameState state) {
-    
-    if (gameState == GameState::Paused && state == GameState::Menu) {
+    if (state == GameState::Menu) {
         ClearLevel();
     }
     
-    gameState = state;
+    _gameState = state;
     
     _clock.Paused(state != GameState::Gameplay);
     
@@ -240,7 +247,7 @@ const Level& NeonScene::CurrentLevel() {
 }
 
 void NeonScene::UpdateLevelProgress(double time) {
-    if (gameState != GameState::Gameplay) {
+    if (_gameState != GameState::Gameplay) {
         return;
     }
     
@@ -257,7 +264,7 @@ void NeonScene::UpdateLevelProgress(double time) {
         currentSubWave = 0;
         
         if (currentWave >= CurrentLevel().waves.size()) {
-            gameState = GameState::LevelCleared;
+            SetGameState(GameState::LevelCleared);
             _audios.push_back(LEVEL_CLEARED_AUDIO);
         }
         else
@@ -439,7 +446,6 @@ void NeonScene::Tick(double time) {
                 
                 float r = std::atan2f(vel.y, vel.x) * RadToDeg;
                 
-                
                 PlayerProjectile projectile = CurrentWeapon().projectile;
                 projectile.despawnTime = time + projectile.lifespan;
                 vel *= projectile.speed;
@@ -486,8 +492,8 @@ void NeonScene::Tick(double time) {
             auto& playerMesh = _scene.Get<Mesh>(player);
             playerMesh.tint.x = std::clamp(playerMesh.tint.x - 0.25f * totalDamage, 0.0f, 1.0f);
             
-            if (_scene.Get<HP>(player) < 0) {
-                gameState = GameState::GameOver;
+            if (_scene.Get<HP>(player).Get() <= 0) {
+                SetGameState(GameState::GameOver);
                 _audios.push_back(GAME_OVER_AUDIO);
             }
             else {
@@ -497,6 +503,43 @@ void NeonScene::Tick(double time) {
     }
     
     hpField.SetValue(_scene.Get<HP>(player).Get());
+    
+    {
+        auto& playerTf = _scene.Get<Transform>(player);
+        auto& playerPhysics = _scene.Get<Physics>(player);
+        
+        std::atomic<int> heal = 0;
+        std::atomic<bool> collected360 = false;
+        
+        _scene.GetGroup<Pickup, Physics, Transform>()->UpdateParallel([&, this](auto entity,
+                                                                                auto& pickup,
+                                                                                auto& physics,
+                                                                                auto& tf) {
+            if (Physics::Overlapping(playerPhysics, physics, playerTf, tf, 0.05f)) {
+                
+                if (pickup.type == Pickup::Health) {
+                    heal += 10;
+                }
+                else if (pickup.type == Pickup::ThreeSixtyShots) {
+                    collected360 = true;
+                }
+                
+                _scene.DestroyEntity(entity);
+            }
+        });
+        
+        if (collected360) {
+            threeSixtyShots = true;
+            threeSixtyShotsEndTime = time + 7.5f;
+            _audios.push_back(POWER_UP_AUDIO);
+        }
+        
+        _scene.Get<HP>(player).Increase(heal);
+        
+        if (heal > 0) {
+            _audios.push_back(COLLECT_HP_AUDIO);
+        }
+    }
     
     _scene.GetGroup<Transform, Physics, PlayerProjectile>()->Update([&, t = time](auto projectileEntity,
                                                                                   auto& projectileTf,
@@ -554,37 +597,6 @@ void NeonScene::Tick(double time) {
         Physics::Update(physics, tf, timestep);
     });
     
-    {
-        auto& playerTf = _scene.Get<Transform>(player);
-        auto& playerPhysics = _scene.Get<Physics>(player);
-        
-        std::atomic<int> heal = 0;
-        std::atomic<bool> collected360 = false;
-        
-        _scene.GetGroup<Pickup, Physics, Transform>()->UpdateParallel([&, this](auto entity,
-                                                                                auto& pickup,
-                                                                                auto& physics,
-                                                                                auto& tf) {
-            if (Physics::Overlapping(playerPhysics, physics, playerTf, tf)) {
-                
-                if (pickup.type == Pickup::Health) {
-                    heal += 10;
-                }
-                else if (pickup.type == Pickup::ThreeSixtyShots) {
-                    collected360 = true;
-                }
-                
-                _scene.DestroyEntity(entity);
-            }
-        });
-        
-        if (collected360) {
-            threeSixtyShots = true;
-            threeSixtyShotsEndTime = time + 7.5f;
-        }
-        
-        _scene.Get<HP>(player).Increase(heal);
-    }
     
     auto physicsBodies = _scene.GetGroup<Transform, Physics>(GetComponentMask<PlayerProjectile>())->GetMembers();
     for (size_t i = 0; i < physicsBodies.size(); i++) {

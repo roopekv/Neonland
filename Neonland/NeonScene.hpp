@@ -23,6 +23,8 @@
 
 class NeonScene {
 public:
+    bool appShouldQuit = false;
+    
     std::array<TexSize, TextureTypeCount> textureSizes;
     
     float2 mouseDelta = {0, 0};
@@ -95,7 +97,7 @@ private:
     
     int levelIdx = 0;
 
-    GameState gameState = GameState::Menu;
+    GameState _gameState = GameState::Menu;
     
     int currentWave = 0;
     int currentSubWave = 0;
@@ -134,7 +136,7 @@ private:
                Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{0, 1, 0, 1})),
                LASER1_AUDIO),
         Weapon(PlayerProjectile(1, 1.5f, 30.0f, true),
-               0.4f,
+               0.5f,
                0.15f,
                8,
                1.0f,

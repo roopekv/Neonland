@@ -82,6 +82,8 @@
 		7AA621362975DEBC004D48C8 /* EnemyType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA621342975DEBC004D48C8 /* EnemyType.cpp */; };
 		7AA621392975E059004D48C8 /* Wave.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA621372975E059004D48C8 /* Wave.cpp */; };
 		7AA6213C2975E5A2004D48C8 /* Level.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA6213A2975E5A2004D48C8 /* Level.cpp */; };
+		7AB5CA15297D750F008743BA /* power_up.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7AB5CA13297D750F008743BA /* power_up.wav */; };
+		7AB5CA16297D750F008743BA /* collect_hp.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7AB5CA14297D750F008743BA /* collect_hp.wav */; };
 		7AC754862978F3190088A54C /* num_keys.png in Resources */ = {isa = PBXBuildFile; fileRef = 7AC754852978F3190088A54C /* num_keys.png */; };
 		7AD68D6F296872F6003821A3 /* NeonScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AD68D6D296872F6003821A3 /* NeonScene.cpp */; };
 		7AD68D7229687C01003821A3 /* NeonConstants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AD68D7129687C01003821A3 /* NeonConstants.cpp */; };
@@ -213,6 +215,8 @@
 		7AA621382975E059004D48C8 /* Wave.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Wave.hpp; sourceTree = "<group>"; };
 		7AA6213A2975E5A2004D48C8 /* Level.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Level.cpp; sourceTree = "<group>"; };
 		7AA6213B2975E5A2004D48C8 /* Level.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Level.hpp; sourceTree = "<group>"; };
+		7AB5CA13297D750F008743BA /* power_up.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = power_up.wav; sourceTree = "<group>"; };
+		7AB5CA14297D750F008743BA /* collect_hp.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = collect_hp.wav; sourceTree = "<group>"; };
 		7ABA10F9295A559B00B2BD98 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
 		7AC754852978F3190088A54C /* num_keys.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = num_keys.png; sourceTree = "<group>"; };
 		7AD68D6D296872F6003821A3 /* NeonScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NeonScene.cpp; sourceTree = "<group>"; };
@@ -459,6 +463,8 @@
 		7ADF6A3C297C850A00F04733 /* Audios */ = {
 			isa = PBXGroup;
 			children = (
+				7AB5CA14297D750F008743BA /* collect_hp.wav */,
+				7AB5CA13297D750F008743BA /* power_up.wav */,
 				7ADF6A5B297CD3A400F04733 /* level_cleared.wav */,
 				7ADF6A59297CD2FC00F04733 /* game_over.wav */,
 				7ADF6A57297CD1ED00F04733 /* lose_hp.wav */,
@@ -590,6 +596,7 @@
 				7A2A6B1C29765EC400798A7E /* spread_circle.blend in Resources */,
 				7ADF6A61297CE93E00F04733 /* sphere_heart.png in Resources */,
 				7ADF6A36297C17CC00F04733 /* level_cleared.pxd in Resources */,
+				7AB5CA16297D750F008743BA /* collect_hp.wav in Resources */,
 				7ADF6A55297CD0D500F04733 /* laser1.wav in Resources */,
 				7A7A5CB52977DE59008F2175 /* shard.obj in Resources */,
 				7A7EC4FA29759AFF0007BC28 /* 6.png in Resources */,
@@ -604,6 +611,7 @@
 				7A7A5CCF2978AAFA008F2175 /* sphere.obj in Resources */,
 				7ADF6A58297CD1ED00F04733 /* lose_hp.wav in Resources */,
 				7A7A5CB92977DE94008F2175 /* hp.png in Resources */,
+				7AB5CA15297D750F008743BA /* power_up.wav in Resources */,
 				7A7A5CC92978820B008F2175 /* ground1.pxd in Resources */,
 				7ADF6A4C297CBA3100F04733 /* neon_beat.mp3 in Resources */,
 				7A500B3C297AC5D800930711 /* level2_bt.png in Resources */,
