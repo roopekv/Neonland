@@ -145,14 +145,14 @@ const Level& Level::GetLevel(int i) {
                 {EnemyType::Swarm(), 10, 2.5},
                 {EnemyType::Swarm(), 10, 1.25},
                 {EnemyType::Swarm(), 10, 0.625},
+                {EnemyType::Swarm(), 15, 5.0},
+                {EnemyType::Swarm(), 15, 2.5},
+                {EnemyType::Swarm(), 15, 1.25},
+                {EnemyType::Swarm(), 15, 0.625},
                 {EnemyType::Swarm(), 20, 5.0},
                 {EnemyType::Swarm(), 20, 2.5},
                 {EnemyType::Swarm(), 20, 1.25},
-                {EnemyType::Swarm(), 20, 0.625},
-                {EnemyType::Swarm(), 30, 5.0},
-                {EnemyType::Swarm(), 30, 2.5},
-                {EnemyType::Swarm(), 30, 1.25},
-                {EnemyType::Swarm(), 30, 0.625}
+                {EnemyType::Swarm(), 20, 0.625}
             }),
             Wave({
                 {EnemyType::Heavy(), 3, 0},

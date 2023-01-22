@@ -16,8 +16,9 @@ enum class ComponentType {
     playerProjectile,
     button,
     anchor,
-    componentTypeCount
+    pickup,
+    ComponentTypeCount,
 };
 
-inline constexpr size_t COMPONENT_COUNT = to_underlying(ComponentType::componentTypeCount);
+inline constexpr size_t COMPONENT_COUNT = to_underlying(ComponentType::ComponentTypeCount);
 

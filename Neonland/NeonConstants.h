@@ -43,6 +43,8 @@ typedef enum TextureType {
     GROUND1_TEX,
     GROUND2_TEX,
     GROUND3_TEX,
+    SPHERE_HEART_TEX,
+    SPHERE_360_SHOTS_TEX,
     NEONLAND_TEX,
     WAVE_TEX,
     HP_TEX,

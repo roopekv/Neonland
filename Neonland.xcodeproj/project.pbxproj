@@ -100,6 +100,9 @@
 		7ADF6A58297CD1ED00F04733 /* lose_hp.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7ADF6A57297CD1ED00F04733 /* lose_hp.wav */; };
 		7ADF6A5A297CD2FC00F04733 /* game_over.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7ADF6A59297CD2FC00F04733 /* game_over.wav */; };
 		7ADF6A5C297CD3A400F04733 /* level_cleared.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7ADF6A5B297CD3A400F04733 /* level_cleared.wav */; };
+		7ADF6A5F297CDCEF00F04733 /* Pickup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ADF6A5D297CDCEF00F04733 /* Pickup.cpp */; };
+		7ADF6A61297CE93E00F04733 /* sphere_heart.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ADF6A60297CE93E00F04733 /* sphere_heart.png */; };
+		7ADF6A63297CF78C00F04733 /* sphere_360_shots.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ADF6A62297CF78C00F04733 /* sphere_360_shots.png */; };
 		7AE607F22950F1B300C66EA5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE607F12950F1B300C66EA5 /* AppDelegate.swift */; };
 		7AE607F42950F1B300C66EA5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE607F32950F1B300C66EA5 /* ViewController.swift */; };
 		7AE607F62950F1B400C66EA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7AE607F52950F1B400C66EA5 /* Assets.xcassets */; };
@@ -233,6 +236,10 @@
 		7ADF6A57297CD1ED00F04733 /* lose_hp.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = lose_hp.wav; sourceTree = "<group>"; };
 		7ADF6A59297CD2FC00F04733 /* game_over.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = game_over.wav; sourceTree = "<group>"; };
 		7ADF6A5B297CD3A400F04733 /* level_cleared.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = level_cleared.wav; sourceTree = "<group>"; };
+		7ADF6A5D297CDCEF00F04733 /* Pickup.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Pickup.cpp; sourceTree = "<group>"; };
+		7ADF6A5E297CDCEF00F04733 /* Pickup.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Pickup.hpp; sourceTree = "<group>"; };
+		7ADF6A60297CE93E00F04733 /* sphere_heart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sphere_heart.png; sourceTree = "<group>"; };
+		7ADF6A62297CF78C00F04733 /* sphere_360_shots.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sphere_360_shots.png; sourceTree = "<group>"; };
 		7AE607EE2950F1B300C66EA5 /* Neonland.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neonland.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AE607F12950F1B300C66EA5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7AE607F32950F1B300C66EA5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -310,6 +317,8 @@
 		7A7EC4E429759AFF0007BC28 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				7ADF6A62297CF78C00F04733 /* sphere_360_shots.png */,
+				7ADF6A60297CE93E00F04733 /* sphere_heart.png */,
 				7ADF6A33297C17CC00F04733 /* game_over.png */,
 				7ADF6A34297C17CC00F04733 /* game_over.pxd */,
 				7ADF6A31297C17CC00F04733 /* level_cleared.png */,
@@ -441,6 +450,8 @@
 				7A500B27297ABFB200930711 /* Button.cpp */,
 				7ADF6A3A297C26C800F04733 /* Anchor.hpp */,
 				7ADF6A39297C26C800F04733 /* Anchor.cpp */,
+				7ADF6A5E297CDCEF00F04733 /* Pickup.hpp */,
+				7ADF6A5D297CDCEF00F04733 /* Pickup.cpp */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -577,6 +588,7 @@
 				7A204F252976B5B900A91707 /* ground2.png in Resources */,
 				7A7A5CD12978CAE3008F2175 /* enemies_remaining.png in Resources */,
 				7A2A6B1C29765EC400798A7E /* spread_circle.blend in Resources */,
+				7ADF6A61297CE93E00F04733 /* sphere_heart.png in Resources */,
 				7ADF6A36297C17CC00F04733 /* level_cleared.pxd in Resources */,
 				7ADF6A55297CD0D500F04733 /* laser1.wav in Resources */,
 				7A7A5CB52977DE59008F2175 /* shard.obj in Resources */,
@@ -604,6 +616,7 @@
 				7A7A5CCB2978820B008F2175 /* ground2.pxd in Resources */,
 				7AE607F62950F1B400C66EA5 /* Assets.xcassets in Resources */,
 				7A500B46297AC81600930711 /* paused.pxd in Resources */,
+				7ADF6A63297CF78C00F04733 /* sphere_360_shots.png in Resources */,
 				7ADF6A5C297CD3A400F04733 /* level_cleared.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -633,6 +646,7 @@
 				7AF378522971909200CC8572 /* Enemy.cpp in Sources */,
 				7A94521029548BCD004CFF4D /* Neonland.cpp in Sources */,
 				7A75B1EA2970B1B00087202E /* Transform.cpp in Sources */,
+				7ADF6A5F297CDCEF00F04733 /* Pickup.cpp in Sources */,
 				7A75B1ED2970B4090087202E /* Physics.cpp in Sources */,
 				7AE607F42950F1B300C66EA5 /* ViewController.swift in Sources */,
 				7AD68D6F296872F6003821A3 /* NeonScene.cpp in Sources */,

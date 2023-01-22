@@ -131,7 +131,9 @@ class Renderer : NSObject, MTKViewDelegate {
             EXIT_BT_TEX.rawValue : "exit_bt",
             QUIT_BT_TEX.rawValue : "quit_bt",
             GAME_OVER_TEX.rawValue : "game_over",
-            LEVEL_CLEARED_TEX.rawValue : "level_cleared"
+            LEVEL_CLEARED_TEX.rawValue : "level_cleared",
+            SPHERE_HEART_TEX.rawValue : "sphere_heart",
+            SPHERE_360_SHOTS_TEX.rawValue : "sphere_360_shots"
         ]
         
         for i in 0...9 {

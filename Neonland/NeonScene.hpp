@@ -81,6 +81,9 @@ private:
     float spreadMult = 1.0f;
     float prevSpreadMult = 1.0f;
     
+    bool threeSixtyShots = false;
+    double threeSixtyShotsEndTime = 0;
+    
     NumberField enemiesRemainingField;
     NumberField hpField;
     NumberField waveField;
@@ -123,7 +126,7 @@ private:
     bool _musicPlaying = false;
     
     std::array<Weapon, 3> weapons = {
-        Weapon(PlayerProjectile(1, 2.0f, 50.0f, true),
+        Weapon(PlayerProjectile(1, 1.0f, 50.0f, true),
                0.1f,
                0.02f,
                1,
@@ -148,6 +151,8 @@ private:
     };
     
     void SetGameState(GameState state);
+    
+    Entity CreatePickup(float3 pos);
     
     void LoadLevel(int i);
     

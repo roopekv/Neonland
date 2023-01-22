@@ -17,3 +17,7 @@ int HP::Max() const {
 void HP::Decrease(int dmg) {
     Set(hp - dmg);
 }
+
+void HP::Increase(int heal) {
+    Set(hp + heal);
+}

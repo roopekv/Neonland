@@ -27,6 +27,7 @@ public:
     int Max() const;
     
     void Decrease(int dmg);
+    void Increase(int heal);
     
 private:
     int hp;

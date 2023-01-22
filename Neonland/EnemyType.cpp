@@ -35,8 +35,8 @@ const EnemyType& EnemyType::Heavy() {
     return heavy;
 }
 const EnemyType& EnemyType::UberHeavy() {
-    static const auto uberHeavy = EnemyType(Enemy(3, 0.9f, 1.5f, 1, true),
-                                            Mesh(CUBE_MESH, Material(LIT_SHADER, NO_TEX, float4{0.89, 0.78, 0.27, 1})),
+    static const auto uberHeavy = EnemyType(Enemy(3, 0.9f, 2, 1, true),
+                                            Mesh(CUBE_MESH, Material(LIT_SHADER, NO_TEX, float4{0.6, 0.1, 0.6, 1})),
                                             float3{6, 6, 6},
                                             150);
     return uberHeavy;
