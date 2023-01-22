@@ -2,8 +2,6 @@
 
 #include "NeonScene.hpp"
 
-#include <iostream>
-
 namespace {
 
 auto scene = NeonScene(MAX_INSTANCE_COUNT, TIMESTEP);

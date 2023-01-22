@@ -1,6 +1,7 @@
 #include "NeonScene.hpp"
 
 #include <iostream>
+#include <fstream>
 #include <atomic>
 #include <map>
 #include <bit>
@@ -22,6 +23,21 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep)
 }
 
 void NeonScene::Start() {
+    {
+        auto saveFile = std::ifstream("neon_save.save");
+        
+        if (saveFile) {
+            saveFile >> _unlockLevel;
+            
+            if (saveFile.fail()) {
+                _unlockLevel = 0;
+            }
+        }
+        else {
+            _unlockLevel = 0;
+        }
+    }
+    
     waveField = CreateField(float2{0, 0.9f}, 1, WAVE_TEX, true, false);
     enemiesRemainingField = CreateField(float2{0, 0.8f}, 1, ENEMIES_REMAINING_TEX, false, false);
     hpField = CreateField(float2{0, 0}, 0.75f, HP_TEX, false, true);
@@ -130,7 +146,15 @@ NumberField NeonScene::CreateField(float2 screenPos, float scale, TextureType te
 }
 
 void NeonScene::SetUnlockLevel(int lvl) {
-    _unlockLevel = lvl;
+    
+    if (lvl != _unlockLevel) {
+        _unlockLevel = lvl;
+        auto saveFile = std::ofstream("neon_save.save");
+        
+        if (saveFile) {
+            saveFile << _unlockLevel;
+        }
+    }
     
     if (_gameState == GameState::Menu) {
         for (int i = 0; i < _levelLocks.size(); i++) {
