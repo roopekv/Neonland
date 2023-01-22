@@ -30,7 +30,13 @@ class Renderer : NSObject, MTKViewDelegate {
         mtkView.device = device
         mtkView.colorPixelFormat = .bgra8Unorm_srgb
         mtkView.depthStencilPixelFormat = .depth32Float
-        mtkView.depthStencilStorageMode = .memoryless
+        
+        if #available(macOS 13.0, *) {
+            if device.supportsFamily(.apple2) {
+                mtkView.depthStencilStorageMode = .memoryless
+            }
+        }
+        
         mtkView.clearColor = .init(red: 0, green: 0, blue: 0, alpha: 1)
         mtkView.preferredFramesPerSecond = 120
         

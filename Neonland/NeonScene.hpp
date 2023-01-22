@@ -95,6 +95,8 @@ private:
     float camDistance = 25;
     float camTilt = 0;
     
+    int _destroyedSincePickup = 0;
+    
     int levelIdx = 0;
     
     int _unlockLevel = 0;
@@ -133,14 +135,14 @@ private:
     bool _musicPlaying = false;
     
     std::array<Weapon, 3> weapons = {
-        Weapon(PlayerProjectile(1, 1.0f, 50.0f, true),
+        Weapon(PlayerProjectile(1, 0.75f, 50.0f, true),
                0.1f,
                0.02f,
                1,
                1.0f,
                Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{0, 1, 0, 1})),
                LASER1_AUDIO),
-        Weapon(PlayerProjectile(1, 1.5f, 30.0f, true),
+        Weapon(PlayerProjectile(1, 1.0f, 30.0f, true),
                0.5f,
                0.15f,
                8,
@@ -148,7 +150,7 @@ private:
                Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{1, 0, 0, 1})),
                LASER2_AUDIO),
         
-        Weapon(PlayerProjectile(3, 2.0f, 25.0f, false),
+        Weapon(PlayerProjectile(3, 1.5f, 25.0f, false),
                0.8f,
                0.01f,
                1,

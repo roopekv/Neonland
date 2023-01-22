@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7A03E6492974882800B3EEC6 /* NumberField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A03E6472974882700B3EEC6 /* NumberField.cpp */; };
 		7A03E64B2974A7EF00B3EEC6 /* SceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A03E64A2974A7EF00B3EEC6 /* SceneView.swift */; };
+		7A0D1E07297DAEF600144DDB /* app_icon.pxd in Resources */ = {isa = PBXBuildFile; fileRef = 7A0D1E06297DAEF600144DDB /* app_icon.pxd */; };
 		7A0F89482952223D00A999F2 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F89472952223D00A999F2 /* MenuBar.swift */; };
 		7A204F242976B5B900A91707 /* ground3.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A204F212976B5B900A91707 /* ground3.png */; };
 		7A204F252976B5B900A91707 /* ground2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A204F222976B5B900A91707 /* ground2.png */; };
@@ -121,6 +122,7 @@
 		7A03E6472974882700B3EEC6 /* NumberField.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NumberField.cpp; sourceTree = "<group>"; };
 		7A03E6482974882800B3EEC6 /* NumberField.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = NumberField.hpp; sourceTree = "<group>"; };
 		7A03E64A2974A7EF00B3EEC6 /* SceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneView.swift; sourceTree = "<group>"; };
+		7A0D1E06297DAEF600144DDB /* app_icon.pxd */ = {isa = PBXFileReference; lastKnownFileType = file; path = app_icon.pxd; sourceTree = "<group>"; };
 		7A0F89472952223D00A999F2 /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
 		7A204F212976B5B900A91707 /* ground3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ground3.png; sourceTree = "<group>"; };
 		7A204F222976B5B900A91707 /* ground2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ground2.png; sourceTree = "<group>"; };
@@ -276,6 +278,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7A0D1E05297DAEF600144DDB /* app_icon */ = {
+			isa = PBXGroup;
+			children = (
+				7A0D1E06297DAEF600144DDB /* app_icon.pxd */,
+			);
+			path = app_icon;
+			sourceTree = "<group>";
+		};
 		7A2A6B0C29765EC400798A7E /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -325,6 +335,7 @@
 		7A7EC4E429759AFF0007BC28 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				7A0D1E05297DAEF600144DDB /* app_icon */,
 				7AB5CA19297D8EBC008743BA /* by.png */,
 				7AB5CA17297D8A7B008743BA /* lock.png */,
 				7ADF6A62297CF78C00F04733 /* sphere_360_shots.png */,
@@ -594,6 +605,7 @@
 				7A7A5CCD2978820B008F2175 /* wave.pxd in Resources */,
 				7A2A6B1E29765EC400798A7E /* plane.blend in Resources */,
 				7AB5CA18297D8A7B008743BA /* lock.png in Resources */,
+				7A0D1E07297DAEF600144DDB /* app_icon.pxd in Resources */,
 				7ADF6A35297C17CC00F04733 /* level_cleared.png in Resources */,
 				7A7EC4F229759AFF0007BC28 /* num.pxd in Resources */,
 				7A7A5CBB2977DE9D008F2175 /* neonland.png in Resources */,
@@ -809,6 +821,8 @@
 				DEVELOPMENT_TEAM = TVYCJMMQF7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Neonland;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.arcade-games";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = "";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -816,6 +830,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.arcadeworlds.Neonland;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -839,6 +854,8 @@
 				DEVELOPMENT_TEAM = TVYCJMMQF7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Neonland;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.arcade-games";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = "";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -846,6 +863,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.arcadeworlds.Neonland;
 				PRODUCT_NAME = "$(TARGET_NAME)";

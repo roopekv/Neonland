@@ -237,6 +237,8 @@ void NeonScene::ClearLevel() {
         _scene.DestroyEntity(entity);
     });
     
+    _destroyedSincePickup = 0;
+    
     _scene.Get<Physics>(player).prevPosition = {0, 0, 0};
     _scene.Get<Physics>(player).position = {0, 0, 0};
     _scene.Get<Transform>(player).position = {0, 0, 0};
@@ -469,8 +471,13 @@ void NeonScene::Tick(double time) {
         
         int directionCount = threeSixtyShots ? 12 : 1;
         
+        int perShotCount = CurrentWeapon().projectilesPerShot;
+        if (threeSixtyShots && perShotCount > 6) {
+            perShotCount = 6;
+        }
+        
         for (int n = 0; n < directionCount; n++) {
-            for (int i = 0; i < CurrentWeapon().projectilesPerShot; i++) {
+            for (int i = 0; i < perShotCount; i++) {
                 float2 vel = aimDir + float2{-aimDir.y, aimDir.x} * CurrentWeapon().spread * spreadMult * RandomBetween(-1.0f, 1.0f);
                 vel = VecNormalize(vel);
                 
@@ -492,9 +499,13 @@ void NeonScene::Tick(double time) {
                                     std::move(mesh),
                                     std::move(projectile));
                 
-                CurrentWeapon().cooldownEndTime = time + CurrentWeapon().cooldown;
             }
         }
+        double cooldown = CurrentWeapon().cooldown;
+        if (threeSixtyShots && cooldown < 0.15) {
+            cooldown = 0.15;
+        }
+        CurrentWeapon().cooldownEndTime = time + cooldown;
         
         _audios.push_back(CurrentWeapon().audio);
         
@@ -549,7 +560,7 @@ void NeonScene::Tick(double time) {
                                                                                 auto& pickup,
                                                                                 auto& physics,
                                                                                 auto& tf) {
-            if (Physics::Overlapping(playerPhysics, physics, playerTf, tf, 0.05f)) {
+            if (Physics::Overlapping(playerPhysics, physics, playerTf, tf, 0.1f)) {
                 
                 if (pickup.type == Pickup::Health) {
                     heal += 10;
@@ -614,9 +625,10 @@ void NeonScene::Tick(double time) {
             float3 pos = tf.position;
             _scene.DestroyEntity(entity);
             entitiesDestroyed++;
-            
-            if (RandomBetween(0.0f, 1.0f) > 0.95f) {
+            _destroyedSincePickup++;
+            if (_destroyedSincePickup > 29) {
                 CreatePickup(pos);
+                _destroyedSincePickup = 0;
             }
         }
     });
