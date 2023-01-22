@@ -135,7 +135,6 @@ class Renderer : NSObject, MTKViewDelegate {
         ]
         
         for i in 0...9 {
-            
             let tex = try! textureLoader.newTexture(URL: Bundle.main.url(forResource: "\(i)", withExtension: "png")!, options: textureOptions)
             textures[Int(ZERO_TEX.rawValue) + i] = tex
         }
@@ -150,7 +149,7 @@ class Renderer : NSObject, MTKViewDelegate {
         for (i, tex) in self.textures.enumerated() {
             Neon_UpdateTextureSize(TextureType(UInt32(i)), TexSize(width: Int64(tex.width), height: Int64(tex.height)))
         }
-        
+
         let samplerDescriptor = MTLSamplerDescriptor()
         samplerDescriptor.normalizedCoordinates = true
         samplerDescriptor.magFilter = .linear
@@ -221,6 +220,12 @@ class Renderer : NSObject, MTKViewDelegate {
         
         let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
         var frameData = Neon_Render(aspectRatio)
+        
+        for i in 0..<frameData.audioCount {
+            let audioIndex = frameData.audios.advanced(by: i).pointee
+            AudioPlayer.shared.play(AudioType(audioIndex))
+        }
+        
         updateUniforms(frameData: &frameData)
         view.clearColor = MTLClearColorMake(Double(frameData.clearColor.x),
                                             Double(frameData.clearColor.y),

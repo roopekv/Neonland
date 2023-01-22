@@ -52,3 +52,14 @@ void Neon_UpdateTextureSize(TextureType tex, TexSize size) {
     scene.textureSizes[tex] = size;
 }
 
+bool Neon_IsMusic(AudioType audio) {
+    return audio == MUSIC_AUDIO;
+}
+
+float Neon_MusicVolume() {
+    return 0.1f;
+}
+
+float Neon_SFXVolume() {
+    return scene.RandomBetween(0.1f, 0.15f);
+}

@@ -16,4 +16,7 @@ typedef struct FrameData {
     uint32_t* groupTextures;
     uint32_t* groupShaders;
     
+    size_t audioCount;
+    uint32_t* audios;
+    
 } FrameData;

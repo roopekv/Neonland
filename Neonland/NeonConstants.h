@@ -9,6 +9,19 @@ extern const size_t MAX_ENEMY_COUNT;
 extern const size_t MAX_PROJECTILE_COUNT;
 extern const size_t MAX_INSTANCE_COUNT;
 
+typedef enum AudioType {
+    LASER1_AUDIO,
+    LASER2_AUDIO,
+    LASER3_AUDIO,
+    CLICK_AUDIO,
+    EXPLOSION_AUDIO,
+    LOSE_HP_AUDIO,
+    GAME_OVER_AUDIO,
+    LEVEL_CLEARED_AUDIO,
+    MUSIC_AUDIO,
+    AudioTypeCount
+} AudioType;
+
 typedef enum MeshType {
     SPHERE_MESH,
     CUBE_MESH,

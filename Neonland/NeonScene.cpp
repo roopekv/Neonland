@@ -247,6 +247,7 @@ void NeonScene::UpdateLevelProgress(double time) {
         
         if (currentWave >= CurrentLevel().waves.size()) {
             gameState = GameState::LevelCleared;
+            _audios.push_back(LEVEL_CLEARED_AUDIO);
         }
         else
         {
@@ -307,6 +308,13 @@ Weapon& NeonScene::CurrentWeapon() {
 
 void NeonScene::Update(float aspectRatio) {
     _scene.Get<Camera>(cam).SetAspectRatio(aspectRatio);
+    
+    _audios.clear();
+    
+    if (!_musicPlaying) {
+        _audios.push_back(MUSIC_AUDIO);
+        _musicPlaying = true;
+    }
     
     double time = _clock.Time();
     double dt = time - _prevRenderTime;
@@ -396,6 +404,8 @@ void NeonScene::Tick(double time) {
             CurrentWeapon().cooldownEndTime = time + CurrentWeapon().cooldown;
         }
         
+        _audios.push_back(CurrentWeapon().audio);
+        
         spreadMult = std::clamp(spreadMult += 4 * _timestep, 1.0f, 2.0f);
     }
     else if (CurrentWeapon().cooldownEndTime < time){
@@ -422,6 +432,8 @@ void NeonScene::Tick(double time) {
     if (totalDamage > 0) {
         auto& playerMesh = _scene.Get<Mesh>(player);
         playerMesh.tint.x = std::clamp(playerMesh.tint.x - 0.25f * totalDamage, 0.0f, 1.0f);
+        
+        _audios.push_back(LOSE_HP_AUDIO);
     }
     
     hpField.SetValue(_scene.Get<HP>(player).Get());
@@ -463,6 +475,7 @@ void NeonScene::Tick(double time) {
             
             if (entity == player) {
                 gameState = GameState::GameOver;
+                _audios.push_back(GAME_OVER_AUDIO);
             }
             else {
                 _scene.DestroyEntity(entity);
@@ -470,6 +483,10 @@ void NeonScene::Tick(double time) {
             }
         }
     });
+    
+    if (entitiesDestroyed > 0) {
+        _audios.push_back(EXPLOSION_AUDIO);
+    }
     
     enemiesRemainingField.SetValue(enemiesRemainingField.GetValue() - entitiesDestroyed);
     
@@ -633,6 +650,7 @@ void NeonScene::RenderUI() {
         for (auto& bt : *_scene.GetPool<Button>()) {
             if (bt.highlighted) {
                 bt.onClick();
+                _audios.push_back(CLICK_AUDIO);
                 break;
             }
         }
@@ -754,6 +772,9 @@ FrameData NeonScene::GetFrameData() {
     frameData.groupMeshes = _groupMeshes.data();
     frameData.groupTextures = _groupTextures.data();
     frameData.groupShaders = _groupShaders.data();
+    
+    frameData.audios = _audios.data();
+    frameData.audioCount = _audios.size();
     
     return frameData;
 }

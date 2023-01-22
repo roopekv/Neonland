@@ -106,6 +106,8 @@ private:
     std::vector<uint32_t> _groupTextures;
     std::vector<uint32_t> _groupShaders;
     
+    std::vector<uint32_t> _audios;
+    
     std::vector<Entity> _mainMenuUI;
     std::vector<Entity> _pauseMenuUI;
     std::vector<Entity> _gameplayUI;
@@ -118,26 +120,31 @@ private:
     double _nextTickTime;
     double _prevRenderTime;
     
+    bool _musicPlaying = false;
+    
     std::array<Weapon, 3> weapons = {
         Weapon(PlayerProjectile(1, 2.0f, 50.0f, true),
                0.1f,
-               0.020f,
+               0.02f,
                1,
                1.0f,
-               Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{0, 1, 0, 1}))),
+               Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{0, 1, 0, 1})),
+               LASER1_AUDIO),
         Weapon(PlayerProjectile(1, 1.5f, 30.0f, true),
                0.4f,
                0.15f,
                8,
                1.0f,
-               Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{1, 0, 0, 1}))),
+               Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{1, 0, 0, 1})),
+               LASER2_AUDIO),
         
         Weapon(PlayerProjectile(3, 2.0f, 25.0f, false),
                0.8f,
                0.01f,
                1,
                1.5f,
-               Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{0, 0.6, 1, 1})))
+               Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{0, 0.6, 1, 1})),
+               LASER3_AUDIO)
     };
     
     void SetGameState(GameState state);

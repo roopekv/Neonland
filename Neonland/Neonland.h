@@ -23,6 +23,11 @@ void Neon_UpdateTextureSize(TextureType tex, TexSize size);
 void Neon_Start();
 FrameData Neon_Render(float aspectRatio);
 
+bool Neon_IsMusic(AudioType audio);
+
+float Neon_SFXVolume();
+float Neon_MusicVolume();
+
 #ifdef __cplusplus
 }
 #endif
