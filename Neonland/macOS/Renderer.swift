@@ -133,7 +133,9 @@ class Renderer : NSObject, MTKViewDelegate {
             GAME_OVER_TEX.rawValue : "game_over",
             LEVEL_CLEARED_TEX.rawValue : "level_cleared",
             SPHERE_HEART_TEX.rawValue : "sphere_heart",
-            SPHERE_360_SHOTS_TEX.rawValue : "sphere_360_shots"
+            SPHERE_360_SHOTS_TEX.rawValue : "sphere_360_shots",
+            LOCK_TEX.rawValue : "lock",
+            BY_TEX.rawValue : "by"
         ]
         
         for i in 0...9 {
@@ -217,6 +219,10 @@ class Renderer : NSObject, MTKViewDelegate {
     
     func draw(in view: MTKView) {
         frameSemaphore.wait()
+        
+        if (Neon_AppShouldQuit()) {
+            NSApplication.shared.terminate(self)
+        }
         
         pollMouseInput(view: view)
         

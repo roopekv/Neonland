@@ -61,6 +61,8 @@ typedef enum TextureType {
     NUM_KEYS_TEX,
     GAME_OVER_TEX,
     LEVEL_CLEARED_TEX,
+    BY_TEX,
+    LOCK_TEX,
     ZERO_TEX,
     ONE_TEX,
     TWO_TEX,

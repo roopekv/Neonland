@@ -22,8 +22,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.center()
         window.setFrameAutosaveName("MainWindow")
         window.makeKeyAndOrderFront(nil)
-        
-        
     }
     
     func applicationWillTerminate(_ aNotification: Notification) {

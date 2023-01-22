@@ -2,4 +2,5 @@
 
 Button::Button(std::function<void()> onClick)
 : onClick(onClick)
-, highlighted{false} {}
+, highlighted{false}
+, disabled{false} {}

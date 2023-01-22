@@ -141,6 +141,10 @@ const Level& Level::GetLevel(int i) {
             }),
             Wave({
                 {EnemyType::UberHeavy(), 1, 0},
+                {EnemyType::Swarm(), 5, 5.0},
+                {EnemyType::Swarm(), 5, 2.5},
+                {EnemyType::Swarm(), 5, 1.25},
+                {EnemyType::Swarm(), 5, 0.625},
                 {EnemyType::Swarm(), 10, 5.0},
                 {EnemyType::Swarm(), 10, 2.5},
                 {EnemyType::Swarm(), 10, 1.25},
@@ -148,11 +152,7 @@ const Level& Level::GetLevel(int i) {
                 {EnemyType::Swarm(), 15, 5.0},
                 {EnemyType::Swarm(), 15, 2.5},
                 {EnemyType::Swarm(), 15, 1.25},
-                {EnemyType::Swarm(), 15, 0.625},
-                {EnemyType::Swarm(), 20, 5.0},
-                {EnemyType::Swarm(), 20, 2.5},
-                {EnemyType::Swarm(), 20, 1.25},
-                {EnemyType::Swarm(), 20, 0.625}
+                {EnemyType::Swarm(), 15, 0.625}
             }),
             Wave({
                 {EnemyType::Heavy(), 3, 0},
@@ -193,22 +193,22 @@ const Level& Level::GetLevel(int i) {
                 {EnemyType::Swarm(), 10, 5.0}
             }),
             Wave({
-                {EnemyType::Swarm(), 20, 5.0},
+                {EnemyType::Swarm(), 10, 5.0},
+                {EnemyType::UberHeavy(), 5, 0},
                 {EnemyType::Quick(), 1, 5.0},
-                {EnemyType::Swarm(), 20, 5.0},
+                {EnemyType::Swarm(), 15, 5.0},
                 {EnemyType::Quick(), 1, 5.0},
-                {EnemyType::Swarm(), 20, 5.0},
+                {EnemyType::Swarm(), 15, 5.0},
+                {EnemyType::Swarm(), 15, 2.5},
+                {EnemyType::Quick(), 1, 2.5},
+                {EnemyType::Swarm(), 15, 2.5},
+                {EnemyType::Quick(), 1, 2.5},
+                {EnemyType::Swarm(), 20, 2.5},
                 {EnemyType::Swarm(), 20, 2.5},
                 {EnemyType::Quick(), 1, 2.5},
                 {EnemyType::Swarm(), 20, 2.5},
                 {EnemyType::Quick(), 1, 2.5},
-                {EnemyType::Swarm(), 20, 2.5},
-                {EnemyType::Swarm(), 30, 2.5},
-                {EnemyType::Quick(), 1, 2.5},
-                {EnemyType::Swarm(), 30, 2.5},
-                {EnemyType::Quick(), 1, 2.5},
-                {EnemyType::Swarm(), 30, 2.5},
-                {EnemyType::UberHeavy(), 5, 0}
+                {EnemyType::Swarm(), 20, 2.5}
             })
         }, GROUND3_TEX, float2{20, 20})
     };

@@ -63,3 +63,7 @@ float Neon_MusicVolume() {
 float Neon_SFXVolume() {
     return scene.RandomBetween(0.1f, 0.15f);
 }
+
+bool Neon_AppShouldQuit() {
+    return scene.appShouldQuit;
+}

@@ -85,7 +85,7 @@ fragment auto FragmentUI(FragmentDataUI in [[stage_in]],
     
     float4 baseColor = texMap.sample(texSampler, in.texCoords) * in.tint;
     
-    if (baseColor.a < 0.1f) {
+    if (baseColor.a < 0.25f) {
         discard_fragment();
     }
     

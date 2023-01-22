@@ -84,6 +84,8 @@
 		7AA6213C2975E5A2004D48C8 /* Level.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA6213A2975E5A2004D48C8 /* Level.cpp */; };
 		7AB5CA15297D750F008743BA /* power_up.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7AB5CA13297D750F008743BA /* power_up.wav */; };
 		7AB5CA16297D750F008743BA /* collect_hp.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7AB5CA14297D750F008743BA /* collect_hp.wav */; };
+		7AB5CA18297D8A7B008743BA /* lock.png in Resources */ = {isa = PBXBuildFile; fileRef = 7AB5CA17297D8A7B008743BA /* lock.png */; };
+		7AB5CA1A297D8EBC008743BA /* by.png in Resources */ = {isa = PBXBuildFile; fileRef = 7AB5CA19297D8EBC008743BA /* by.png */; };
 		7AC754862978F3190088A54C /* num_keys.png in Resources */ = {isa = PBXBuildFile; fileRef = 7AC754852978F3190088A54C /* num_keys.png */; };
 		7AD68D6F296872F6003821A3 /* NeonScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AD68D6D296872F6003821A3 /* NeonScene.cpp */; };
 		7AD68D7229687C01003821A3 /* NeonConstants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AD68D7129687C01003821A3 /* NeonConstants.cpp */; };
@@ -217,6 +219,8 @@
 		7AA6213B2975E5A2004D48C8 /* Level.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Level.hpp; sourceTree = "<group>"; };
 		7AB5CA13297D750F008743BA /* power_up.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = power_up.wav; sourceTree = "<group>"; };
 		7AB5CA14297D750F008743BA /* collect_hp.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = collect_hp.wav; sourceTree = "<group>"; };
+		7AB5CA17297D8A7B008743BA /* lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lock.png; sourceTree = "<group>"; };
+		7AB5CA19297D8EBC008743BA /* by.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = by.png; sourceTree = "<group>"; };
 		7ABA10F9295A559B00B2BD98 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
 		7AC754852978F3190088A54C /* num_keys.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = num_keys.png; sourceTree = "<group>"; };
 		7AD68D6D296872F6003821A3 /* NeonScene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NeonScene.cpp; sourceTree = "<group>"; };
@@ -321,6 +325,8 @@
 		7A7EC4E429759AFF0007BC28 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				7AB5CA19297D8EBC008743BA /* by.png */,
+				7AB5CA17297D8A7B008743BA /* lock.png */,
 				7ADF6A62297CF78C00F04733 /* sphere_360_shots.png */,
 				7ADF6A60297CE93E00F04733 /* sphere_heart.png */,
 				7ADF6A33297C17CC00F04733 /* game_over.png */,
@@ -587,6 +593,7 @@
 				7A94520C29548B8D004CFF4D /* TODO in Resources */,
 				7A7A5CCD2978820B008F2175 /* wave.pxd in Resources */,
 				7A2A6B1E29765EC400798A7E /* plane.blend in Resources */,
+				7AB5CA18297D8A7B008743BA /* lock.png in Resources */,
 				7ADF6A35297C17CC00F04733 /* level_cleared.png in Resources */,
 				7A7EC4F229759AFF0007BC28 /* num.pxd in Resources */,
 				7A7A5CBB2977DE9D008F2175 /* neonland.png in Resources */,
@@ -617,6 +624,7 @@
 				7A500B3C297AC5D800930711 /* level2_bt.png in Resources */,
 				7ADF6A37297C17CC00F04733 /* game_over.png in Resources */,
 				7A500B3A297AC5D800930711 /* level3_bt.pxd in Resources */,
+				7AB5CA1A297D8EBC008743BA /* by.png in Resources */,
 				7A7A5CB72977DE88008F2175 /* wave.png in Resources */,
 				7ADF6A56297CD0D500F04733 /* laser3.wav in Resources */,
 				7A204F242976B5B900A91707 /* ground3.png in Resources */,

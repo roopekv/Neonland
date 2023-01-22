@@ -96,6 +96,8 @@ private:
     float camTilt = 0;
     
     int levelIdx = 0;
+    
+    int _unlockLevel = 0;
 
     GameState _gameState = GameState::Menu;
     
@@ -118,6 +120,9 @@ private:
     std::vector<Entity> _gameplayUI;
     std::vector<Entity> _levelClearedUI;
     std::vector<Entity> _gameOverUI;
+    
+    std::vector<Entity> _levelButtons;
+    std::vector<Entity> _levelLocks;
     
     size_t _maxInstanceCount;
     
@@ -151,6 +156,8 @@ private:
                Mesh(SHARD_MESH, Material(LIT_SHADER, NO_TEX, float4{0, 0.6, 1, 1})),
                LASER3_AUDIO)
     };
+    
+    void SetUnlockLevel(int lvl);
     
     void SetGameState(GameState state);
     

@@ -28,6 +28,8 @@ bool Neon_IsMusic(AudioType audio);
 float Neon_SFXVolume();
 float Neon_MusicVolume();
 
+bool Neon_AppShouldQuit();
+
 #ifdef __cplusplus
 }
 #endif

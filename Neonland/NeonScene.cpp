@@ -61,13 +61,29 @@ void NeonScene::Start() {
         numKeysImg
     };
     
-    _mainMenuUI = {
-        CreateImage(float2{0, 0.65}, 3.75f, NEONLAND_TEX),
+    _levelButtons = {
         CreateButton(float2{0, 0.25f}, 2.5f, LEVEL1_BT_TEX, [this]{LoadLevel(0);}),
         CreateButton(float2{0, 0}, 2.5f, LEVEL2_BT_TEX, [this]{LoadLevel(1);}),
         CreateButton(float2{0, -0.25f}, 2.5f, LEVEL3_BT_TEX, [this]{LoadLevel(2);}),
-        CreateButton(float2{0, -0.5f}, 2.5f, QUIT_BT_TEX, [this]{ appShouldQuit = true; })
     };
+    
+    for (auto bt : _levelButtons) {
+        auto lockImg = CreateImage(_scene.Get<Anchor>(bt).screenPosition, 2.0f, LOCK_TEX);
+        _scene.Get<Anchor>(lockImg).margin.x = _scene.Get<Transform>(bt).scale.x / 2 + _scene.Get<Transform>(lockImg).scale.x / 2;
+        _levelLocks.push_back(lockImg);
+    }
+    
+    _mainMenuUI.insert(_mainMenuUI.end(), _levelButtons.begin(), _levelButtons.end());
+    _mainMenuUI.insert(_mainMenuUI.end(), _levelLocks.begin(), _levelLocks.end());
+    
+    _mainMenuUI.push_back(CreateImage(float2{0, 0.65}, 3.75f, NEONLAND_TEX));
+    _mainMenuUI.push_back(CreateButton(float2{0, -0.5f}, 2.5f, QUIT_BT_TEX, [this]{ appShouldQuit = true; }));
+    
+    Entity byImg = CreateImage(float2{1, -1}, 0.5f, BY_TEX);
+    _scene.Get<Anchor>(byImg).margin = float3{-_scene.Get<Transform>(byImg).scale.x / 2 - 0.5f,
+        _scene.Get<Transform>(byImg).scale.y / 2 + 0.5f, 0};
+    
+    _mainMenuUI.push_back(byImg);
     
     _pauseMenuUI = {
         CreateImage(float2{0, 0.375}, 2.5f, PAUSED_TEX),
@@ -111,6 +127,17 @@ NumberField NeonScene::CreateField(float2 screenPos, float scale, TextureType te
     UpdateField(field);
     
     return field;
+}
+
+void NeonScene::SetUnlockLevel(int lvl) {
+    _unlockLevel = lvl;
+    
+    if (_gameState == GameState::Menu) {
+        for (int i = 0; i < _levelLocks.size(); i++) {
+            _scene.Get<Mesh>(_levelLocks[i]).hidden = i <= _unlockLevel;
+            _scene.Get<Button>(_levelButtons[i]).disabled = i > _unlockLevel;
+        }
+    }
 }
 
 Entity NeonScene::CreateImage(float2 screenPos, float scale, TextureType tex) {
@@ -193,6 +220,8 @@ void NeonScene::SetGameState(GameState state) {
             _scene.Get<Mesh>(entity).hidden = false;
         }
     }
+    
+    SetUnlockLevel(_unlockLevel);
 }
 
 void NeonScene::ClearLevel() {
@@ -264,6 +293,11 @@ void NeonScene::UpdateLevelProgress(double time) {
         currentSubWave = 0;
         
         if (currentWave >= CurrentLevel().waves.size()) {
+            
+            if (_unlockLevel <= levelIdx) {
+                SetUnlockLevel(_unlockLevel + 1);
+            }
+            
             SetGameState(GameState::LevelCleared);
             _audios.push_back(LEVEL_CLEARED_AUDIO);
         }
@@ -727,7 +761,7 @@ void NeonScene::RenderUI() {
                                                                       auto& bt,
                                                                       auto& tf,
                                                                       auto& mesh) {
-        if (!mesh.hidden) {
+        if (!mesh.hidden && !bt.disabled) {
             float leftBound = tf.position.x - tf.scale.x / 2;
             float rightBound = tf.position.x + tf.scale.x / 2;
             
@@ -740,11 +774,11 @@ void NeonScene::RenderUI() {
             bt.highlighted = false;
         }
         
-        if (!mesh.hidden) {
+        if (!bt.disabled) {
             mesh.tint = bt.highlighted ? float4{1, 1, 1, 1} : float4{0.6, 0.6, 0.6, 1};
         }
         else {
-            mesh.tint.w = 0;
+            mesh.tint = {0.3, 0.3, 0.3, 1};
         }
     });
     
