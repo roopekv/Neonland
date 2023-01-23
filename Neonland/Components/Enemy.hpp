@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ComponentType.hpp"
-#include "MathUtils.hpp"
+#include "../Engine/ComponentType.hpp"
+#include "../Engine/MathUtils.hpp"
 
 class Enemy {
 public:

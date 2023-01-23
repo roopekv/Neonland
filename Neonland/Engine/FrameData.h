@@ -4,8 +4,13 @@
 
 typedef struct FrameData {
     GlobalUniforms globalUniforms;
+
+#ifdef _WIN64
+    DirectX::XMFLOAT4 clearColor;
+#elif __APPLE__
     vector_float3 clearColor;
-    
+#endif
+
     size_t instanceCount;
     Instance* instances;
     

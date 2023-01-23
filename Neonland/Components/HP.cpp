@@ -1,5 +1,7 @@
 #include "HP.hpp"
 
+#include <algorithm>
+
 HP::HP(int max) : maxHP{max}, hp{max} {}
 
 void HP::Set(int hp) {

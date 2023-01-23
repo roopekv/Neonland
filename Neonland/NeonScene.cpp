@@ -7,9 +7,9 @@
 #include <bit>
 
 #include "Material.hpp"
-#include "Button.hpp"
-#include "Anchor.hpp"
-#include "Pickup.hpp"
+#include "./Components/Button.hpp"
+#include "./Components/Anchor.hpp"
+#include "./Components/Pickup.hpp"
 
 NeonScene::NeonScene(size_t maxInstanceCount, double timestep)
 : _maxInstanceCount{maxInstanceCount}
@@ -484,7 +484,7 @@ void NeonScene::Tick(double time) {
         float3 playerWorldPos = _scene.Get<Physics>(player).position;
         float3 aimPos = _scene.Get<Transform>(crosshair).position;
         
-        float2 aimDir = aimPos.xy - playerWorldPos.xy;
+        float2 aimDir = float2{ aimPos.x, aimPos.y } - float2{ playerWorldPos.x, playerWorldPos.y };
         aimDir = VecNormalize(aimDir);
         
         float3 spawnPos = playerWorldPos;

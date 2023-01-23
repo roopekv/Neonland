@@ -1,7 +1,7 @@
 #pragma once
 
-#include "MathUtils.hpp"
-#include "ComponentType.hpp"
+#include "../Engine/MathUtils.hpp"
+#include "../Engine/ComponentType.hpp"
 #include "NeonConstants.h"
 #include "Material.hpp"
 

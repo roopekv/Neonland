@@ -14,14 +14,12 @@ public:
     IGroup(ComponentMask require, ComponentMask exclude);
     virtual ~IGroup();
     
-    constexpr auto MatchesGroup(ComponentMask mask) const -> bool {
+    auto MatchesGroup(ComponentMask mask) const -> bool {
         return ((mask & requireMask) == requireMask) && ((mask & excludeMask) == 0);
     }
     
     auto GetEntities() const -> const std::vector<Entity>&;
     auto Size() -> size_t;
-    
-    auto GroupLocked() const -> bool;
 protected:
     std::vector<Entity> groupEntities;
 private:

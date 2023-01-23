@@ -1,7 +1,7 @@
 #pragma once
 
-#include "MathUtils.hpp"
-#include "ComponentType.hpp"
+#include "../Engine/MathUtils.hpp"
+#include "../Engine/ComponentType.hpp"
 
 class Camera {
 public:
@@ -37,9 +37,6 @@ public:
     
     void SetRotation(float3 rot);
     const float3& GetRotation() const;
-    
-    void SetClearColor(float3 color);
-    const float3& GetClearColor() const;
     
     void SetFarClipPlane(float far);
     float GetFarClipPlane() const;

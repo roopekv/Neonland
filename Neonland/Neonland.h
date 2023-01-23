@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ShaderTypes.h"
-#include "FrameData.h"
+#include "./Engine/ShaderTypes.h"
+#include "./Engine/FrameData.h"
 
 #include "NeonConstants.h"
 
@@ -11,8 +11,8 @@ extern "C" {
 #include <stdbool.h>
 #endif
 
-void Neon_UpdateCursorPosition(vector_float2 newPos);
-void Neon_UpdateDirectionalInput(vector_float2 newDir);
+void Neon_UpdateCursorPosition(float x, float y);
+void Neon_UpdateDirectionalInput(float x, float y);
 void Neon_UpdateMouseDown(bool down);
 
 void Neon_UpdateNumberKeyPressed(int num);

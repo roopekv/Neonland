@@ -18,11 +18,11 @@ FrameData Neon_Render(float aspectRatio) {
     return scene.GetFrameData();
 }
 
-void Neon_UpdateCursorPosition(vector_float2 newPos) {
+void Neon_UpdateCursorPosition(float x, float y) {
     scene.prevMousePos = scene.mousePos;
     
-    scene.mousePos.x = std::clamp(newPos.x, -1.0f, 1.0f);
-    scene.mousePos.y = std::clamp(newPos.y, -1.0f, 1.0f);
+    scene.mousePos.x = std::clamp(x, -1.0f, 1.0f);
+    scene.mousePos.y = std::clamp(y, -1.0f, 1.0f);
     scene.mouseDelta += scene.mousePos - scene.prevMousePos;
 }
 
@@ -30,8 +30,8 @@ void Neon_UpdateMouseDown(bool down) {
     scene.mouseDown = down;
 }
 
-void Neon_UpdateDirectionalInput(vector_float2 newDir) {
-    scene.directionalInput = VecNormalize(newDir);
+void Neon_UpdateDirectionalInput(float x, float y) {
+    scene.directionalInput = VecNormalize(float2{x, y});
 }
 
 void Neon_UpdateNumberKeyPressed(int num) {

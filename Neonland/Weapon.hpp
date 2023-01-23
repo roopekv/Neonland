@@ -1,7 +1,7 @@
 #pragma once
 
-#include "PlayerProjectile.hpp"
-#include "Mesh.hpp"
+#include "./Components/PlayerProjectile.hpp"
+#include "./Components/Mesh.hpp"
 
 class Weapon {
 public:

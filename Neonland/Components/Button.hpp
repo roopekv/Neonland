@@ -1,8 +1,8 @@
 #pragma once
 
 #include <functional>
-#include "ComponentType.hpp"
-#include "MathUtils.hpp"
+#include "../Engine/ComponentType.hpp"
+#include "../Engine/MathUtils.hpp"
 
 class Button {
 public:

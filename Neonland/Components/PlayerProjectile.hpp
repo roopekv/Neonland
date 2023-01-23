@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ComponentType.hpp"
-#include "Entity.hpp"
+#include "../Engine/ComponentType.hpp"
+#include "../Engine/Entity.hpp"
 
 class PlayerProjectile {
 public:

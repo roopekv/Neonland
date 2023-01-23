@@ -3,20 +3,20 @@
 #include <array>
 #include <random>
 
-#include "Scene.hpp"
-#include "GameClock.hpp"
+#include "./Engine/Scene.hpp"
+#include "./Engine/GameClock.hpp"
 #include "NeonConstants.h"
 
-#include "Transform.hpp"
-#include "Physics.hpp"
-#include "Camera.hpp"
-#include "Mesh.hpp"
-#include "HP.hpp"
-#include "Enemy.hpp"
-#include "PlayerProjectile.hpp"
+#include "./Components/Transform.hpp"
+#include "./Components/Physics.hpp"
+#include "./Components/Camera.hpp"
+#include "./Components/Mesh.hpp"
+#include "./Components/HP.hpp"
+#include "./Components/Enemy.hpp"
+#include "./Components/PlayerProjectile.hpp"
 #include "Weapon.hpp"
 
-#include "FrameData.h"
+#include "./Engine/FrameData.h"
 #include "NumberField.hpp"
 #include "Level.hpp"
 #include "GameState.hpp"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ComponentType.hpp"
+#include "../Engine/ComponentType.hpp"
 
 class HP {
 public:

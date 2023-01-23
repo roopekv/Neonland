@@ -14,7 +14,7 @@ Camera::Camera(float3 pos, float3 rot, float3 color, float near, float far, floa
 , _positionChanged{true}
 , _rotationChanged{true} {}
 
-vector_float3 Camera::ScreenPointToWorld(float2 screenPoint, float depth) {
+float3 Camera::ScreenPointToWorld(float2 screenPoint, float depth) {
     float4x4 proj = GetProjectionMatrix();
     float4x4 view = GetViewMatrix();
     
@@ -23,7 +23,7 @@ vector_float3 Camera::ScreenPointToWorld(float2 screenPoint, float depth) {
     float4 screenSpaceDepth = proj * view * worldSpaceDepth;
     screenSpaceDepth /= screenSpaceDepth.w;
     
-    float4x4 inverse = simd::inverse(proj * view);
+    float4x4 inverse = InverseMatrix(proj * view);
     
     float4 worldPoint = inverse * float4{screenPoint.x, screenPoint.y, screenSpaceDepth.z, 1};
     worldPoint /= worldPoint.w;
@@ -40,11 +40,6 @@ void Camera::SetPosition(float3 pos) {
     _positionChanged = true;
     _position = pos;
 }
-
-//const float3 Camera::GetLocalPosition() {
-//    float4 rPos = simd::inverse(GetRotationMatrix()) * float4{_position.x, _position.y, _position.z, 1};
-//    return {rPos.x, rPos.y, rPos.z};
-//}
 
 const float3& Camera::GetPosition() const {
     return _position;
@@ -128,5 +123,5 @@ float4x4 Camera::GetRotationMatrix() {
 }
 
 float4x4 Camera::GetViewMatrix() {
-    return simd::inverse(GetTranslationMatrix() * GetRotationMatrix());
+    return InverseMatrix(GetTranslationMatrix() * GetRotationMatrix());
 }

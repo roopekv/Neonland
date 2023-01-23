@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Enemy.hpp"
-#include "Mesh.hpp"
+#include "./Components/Enemy.hpp"
+#include "./Components/Mesh.hpp"
 
 class EnemyType {
 public:

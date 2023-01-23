@@ -2,8 +2,8 @@
 
 #include <array>
 #include <vector>
-#include "Entity.hpp"
-#include "MathUtils.hpp"
+#include "./Engine/Entity.hpp"
+#include "./Engine/MathUtils.hpp"
 #include "NeonConstants.h"
 
 class NumberField {
