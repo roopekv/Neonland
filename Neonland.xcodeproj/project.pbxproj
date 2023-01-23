@@ -31,6 +31,7 @@
 		7A52594A2970A1CE00B5152B /* IPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A5259472970A1CE00B5152B /* IPool.cpp */; };
 		7A62FC52295F56D9001742A3 /* MathUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A62FC50295F56D9001742A3 /* MathUtils.cpp */; };
 		7A62FC57295FACB6001742A3 /* GameClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A62FC56295FACB6001742A3 /* GameClock.cpp */; };
+		7A730BAB297E40B000BABF39 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A730BA9297E40B000BABF39 /* Material.cpp */; };
 		7A7323D42952757C0008C92E /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A7323D32952757C0008C92E /* Renderer.swift */; };
 		7A75B1EA2970B1B00087202E /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A75B1E82970B1B00087202E /* Transform.cpp */; };
 		7A75B1ED2970B4090087202E /* Physics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A75B1EB2970B4090087202E /* Physics.cpp */; };
@@ -38,7 +39,6 @@
 		7A7A5CB72977DE88008F2175 /* wave.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A7A5CB62977DE88008F2175 /* wave.png */; };
 		7A7A5CB92977DE94008F2175 /* hp.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A7A5CB82977DE94008F2175 /* hp.png */; };
 		7A7A5CBB2977DE9D008F2175 /* neonland.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A7A5CBA2977DE9D008F2175 /* neonland.png */; };
-		7A7A5CC1297853B6008F2175 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A7A5CBF297853B6008F2175 /* Material.cpp */; };
 		7A7A5CCF2978AAFA008F2175 /* sphere.obj in Resources */ = {isa = PBXBuildFile; fileRef = 7A7A5CCE2978AAFA008F2175 /* sphere.obj */; };
 		7A7A5CD12978CAE3008F2175 /* enemies_remaining.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A7A5CD02978CAE3008F2175 /* enemies_remaining.png */; };
 		7A7EC4F329759AFF0007BC28 /* 8.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A7EC4E629759AFF0007BC28 /* 8.png */; };
@@ -148,6 +148,8 @@
 		7A62FC54295FAB97001742A3 /* GameClock.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = GameClock.hpp; sourceTree = "<group>"; };
 		7A62FC56295FACB6001742A3 /* GameClock.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GameClock.cpp; sourceTree = "<group>"; };
 		7A62FC64295FC12F001742A3 /* FrameData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FrameData.h; sourceTree = "<group>"; };
+		7A730BA9297E40B000BABF39 /* Material.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Material.cpp; sourceTree = "<group>"; };
+		7A730BAA297E40B000BABF39 /* Material.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Material.hpp; sourceTree = "<group>"; };
 		7A7323D32952757C0008C92E /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		7A75B1E82970B1B00087202E /* Transform.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Transform.cpp; sourceTree = "<group>"; };
 		7A75B1E92970B1B00087202E /* Transform.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Transform.hpp; sourceTree = "<group>"; };
@@ -157,8 +159,6 @@
 		7A7A5CB62977DE88008F2175 /* wave.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wave.png; sourceTree = "<group>"; };
 		7A7A5CB82977DE94008F2175 /* hp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hp.png; sourceTree = "<group>"; };
 		7A7A5CBA2977DE9D008F2175 /* neonland.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = neonland.png; sourceTree = "<group>"; };
-		7A7A5CBF297853B6008F2175 /* Material.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Material.cpp; sourceTree = "<group>"; };
-		7A7A5CC0297853B6008F2175 /* Material.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Material.hpp; sourceTree = "<group>"; };
 		7A7A5CC22978820B008F2175 /* hp.pxd */ = {isa = PBXFileReference; lastKnownFileType = file; path = hp.pxd; sourceTree = "<group>"; };
 		7A7A5CC32978820B008F2175 /* ground1.pxd */ = {isa = PBXFileReference; lastKnownFileType = file; path = ground1.pxd; sourceTree = "<group>"; };
 		7A7A5CC52978820B008F2175 /* ground2.pxd */ = {isa = PBXFileReference; lastKnownFileType = file; path = ground2.pxd; sourceTree = "<group>"; };
@@ -179,7 +179,6 @@
 		7A7EC4F129759AFF0007BC28 /* 0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0.png; sourceTree = "<group>"; };
 		7A7EC4FF2975A65A0007BC28 /* blank.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blank.png; sourceTree = "<group>"; };
 		7A82E5032952857300BDB064 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
-		7A94520B29548B8D004CFF4D /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		7A94520D29548BCD004CFF4D /* Neonland-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Neonland-Bridging-Header.h"; sourceTree = "<group>"; };
 		7A94520E29548BCD004CFF4D /* Neonland.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Neonland.cpp; sourceTree = "<group>"; };
 		7A94520F29548BCD004CFF4D /* Neonland.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Neonland.h; sourceTree = "<group>"; };
@@ -395,6 +394,8 @@
 				7A945207295487F8004CFF4D /* macOS */,
 				7A94520F29548BCD004CFF4D /* Neonland.h */,
 				7A94520E29548BCD004CFF4D /* Neonland.cpp */,
+				7A730BA9297E40B000BABF39 /* Material.cpp */,
+				7A730BAA297E40B000BABF39 /* Material.hpp */,
 				7AD68D6E296872F6003821A3 /* NeonScene.hpp */,
 				7AD68D6D296872F6003821A3 /* NeonScene.cpp */,
 				7AD68D7029687C01003821A3 /* NeonConstants.h */,
@@ -417,7 +418,6 @@
 		7A94520A29548B6D004CFF4D /* Windows */ = {
 			isa = PBXGroup;
 			children = (
-				7A94520B29548B8D004CFF4D /* TODO */,
 			);
 			path = Windows;
 			sourceTree = "<group>";
@@ -439,8 +439,6 @@
 				7AF3784D29718DC100CC8572 /* HP.cpp */,
 				7AF378512971909200CC8572 /* Enemy.hpp */,
 				7AF378502971909200CC8572 /* Enemy.cpp */,
-				7A7A5CC0297853B6008F2175 /* Material.hpp */,
-				7A7A5CBF297853B6008F2175 /* Material.cpp */,
 				7A500B28297ABFB200930711 /* Button.hpp */,
 				7A500B27297ABFB200930711 /* Button.cpp */,
 				7ADF6A3A297C26C800F04733 /* Anchor.hpp */,
@@ -612,7 +610,6 @@
 				7A500B29297ABFB200930711 /* Button.cpp in Sources */,
 				7A41137A29739F11002F116C /* Weapon.cpp in Sources */,
 				7AFA6033296268EA004823C6 /* Camera.cpp in Sources */,
-				7A7A5CC1297853B6008F2175 /* Material.cpp in Sources */,
 				7AF37855297191B000CC8572 /* PlayerProjectile.cpp in Sources */,
 				7A5259492970A1CE00B5152B /* IGroup.cpp in Sources */,
 				7ADF6A4A297C9C3D00F04733 /* AudioPlayer.swift in Sources */,
@@ -631,6 +628,7 @@
 				7A0F89482952223D00A999F2 /* MenuBar.swift in Sources */,
 				7A7323D42952757C0008C92E /* Renderer.swift in Sources */,
 				7A03E64B2974A7EF00B3EEC6 /* SceneView.swift in Sources */,
+				7A730BAB297E40B000BABF39 /* Material.cpp in Sources */,
 				7AA621362975DEBC004D48C8 /* EnemyType.cpp in Sources */,
 				7AA6213C2975E5A2004D48C8 /* Level.cpp in Sources */,
 				7ADF6A3B297C26C800F04733 /* Anchor.cpp in Sources */,

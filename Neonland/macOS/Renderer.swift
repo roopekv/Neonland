@@ -332,7 +332,7 @@ class Renderer : NSObject, MTKViewDelegate {
             pos.x = (pos.x / view.bounds.width) * 2 - 1;
             pos.y = (pos.y / view.bounds.height) * 2 - 1;
             
-            Neon_UpdateCursorPosition(SIMD2<Float>(Float(pos.x), Float(pos.y)))
+            Neon_UpdateCursorPosition(Float(pos.x), Float(pos.y))
         }
     }
     
