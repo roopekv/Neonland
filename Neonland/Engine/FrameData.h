@@ -6,7 +6,7 @@ typedef struct FrameData {
     GlobalUniforms globalUniforms;
 
 #ifdef _WIN64
-    DirectX::XMFLOAT4 clearColor;
+    DirectX::XMFLOAT3 clearColor;
 #elif __APPLE__
     vector_float3 clearColor;
 #endif

@@ -505,7 +505,7 @@ void NeonScene::Tick(double time) {
                 float2 vel = aimDir + float2{-aimDir.y, aimDir.x} * CurrentWeapon().spread * spreadMult * RandomBetween(-1.0f, 1.0f);
                 vel = VecNormalize(vel);
                 
-                float4 vel4 = float4{vel.x, vel.y, 0, 1} * RotationMatrix(zAxis, n * 30);
+                float4 vel4 = RotationMatrix(zAxis, n * 30) * float4 { vel.x, vel.y, 0, 1 };
                 
                 vel = {vel4.x, vel4.y};
                 

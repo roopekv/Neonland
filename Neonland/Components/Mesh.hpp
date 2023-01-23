@@ -2,8 +2,8 @@
 
 #include "../Engine/MathUtils.hpp"
 #include "../Engine/ComponentType.hpp"
-#include "NeonConstants.h"
-#include "Material.hpp"
+#include "../NeonConstants.h"
+#include "../Material.hpp"
 
 class Mesh {
 public:

@@ -73,12 +73,12 @@ private:
     
     float3 moveDir = {0, 0, 0};
     
-    Entity player;
-    Entity cam;
-    Entity crosshair;
-    Entity spreadCircle;
+    Entity player = Entity::NULL_ENTITY();
+    Entity cam = Entity::NULL_ENTITY();
+    Entity crosshair = Entity::NULL_ENTITY();
+    Entity spreadCircle = Entity::NULL_ENTITY();
     
-    Entity ground;
+    Entity ground = Entity::NULL_ENTITY();
     
     float spreadMult = 1.0f;
     float prevSpreadMult = 1.0f;

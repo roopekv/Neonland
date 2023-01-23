@@ -172,3 +172,280 @@ std::ostream& operator<<(std::ostream& os, const float4x4& m) {
 	}
 	return os;
 }
+
+#ifdef _WIN64
+
+// float2
+
+float2 operator*(const float2& lhs, const float2& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat2(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat2(&rhs));
+
+	float2 result;
+	XMStoreFloat2(&result, lhs_vec * rhs_vec);
+	return result;
+}
+
+float2 operator*(const float2& lhs, float rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat2(&lhs));
+	float2 result;
+	XMStoreFloat2(&result, lhs_vec * rhs);
+	return result;
+}
+
+float2 operator*(float lhs, const float2& rhs) {
+	return rhs * lhs;
+}
+
+float2 operator+(const float2& lhs, const float2& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat2(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat2(&rhs));
+
+	float2 result;
+	XMStoreFloat2(&result, lhs_vec + rhs_vec);
+	return result;
+}
+
+float2 operator-(const float2& lhs, const float2& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat2(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat2(&rhs));
+
+	float2 result;
+	XMStoreFloat2(&result, lhs_vec - rhs_vec);
+	return result;
+}
+
+float2& operator+=(float2& lhs, const float2& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat2(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat2(&rhs));
+
+	XMStoreFloat2(&lhs, lhs_vec + rhs_vec);
+	return lhs;
+}
+
+float2& operator-=(float2& lhs, const float2& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat2(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat2(&rhs));
+
+	XMStoreFloat2(&lhs, lhs_vec - rhs_vec);
+	return lhs;
+}
+
+float2& operator*=(float2& lhs, const float2& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat2(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat2(&rhs));
+
+	XMStoreFloat2(&lhs, lhs_vec * rhs_vec);
+	return lhs;
+}
+
+float2& operator*=(float2& lhs, float rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat2(&lhs));
+
+	XMStoreFloat2(&lhs, lhs_vec * rhs);
+	return lhs;
+}
+
+float2 operator/(const float2& lhs, float rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat2(&lhs));
+	float2 result;
+	XMStoreFloat2(&result, lhs_vec * rhs);
+	return result;
+}
+
+float2& operator/=(float2& lhs, float rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat2(&lhs));
+
+	XMStoreFloat2(&lhs, lhs_vec / rhs);
+	return lhs;
+}
+
+// float3
+
+float3 operator*(const float3& lhs, const float3& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat3(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat3(&rhs));
+
+	float3 result;
+	XMStoreFloat3(&result, lhs_vec * rhs_vec);
+	return result;
+}
+
+float3 operator*(const float3& lhs, float rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat3(&lhs));
+	float3 result;
+	XMStoreFloat3(&result, lhs_vec * rhs);
+	return result;
+}
+
+float3 operator*(float lhs, const float3& rhs) {
+	return rhs * lhs;
+}
+
+float3 operator+(const float3& lhs, const float3& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat3(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat3(&rhs));
+
+	float3 result;
+	XMStoreFloat3(&result, lhs_vec + rhs_vec);
+	return result;
+}
+
+float3 operator-(const float3& lhs, const float3& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat3(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat3(&rhs));
+
+	float3 result;
+	XMStoreFloat3(&result, lhs_vec - rhs_vec);
+	return result;
+}
+
+float3& operator+=(float3& lhs, const float3& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat3(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat3(&rhs));
+
+	XMStoreFloat3(&lhs, lhs_vec + rhs_vec);
+	return lhs;
+}
+
+float3& operator-=(float3& lhs, const float3& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat3(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat3(&rhs));
+
+	XMStoreFloat3(&lhs, lhs_vec - rhs_vec);
+	return lhs;
+}
+
+float3& operator*=(float3& lhs, const float3& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat3(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat3(&rhs));
+
+	XMStoreFloat3(&lhs, lhs_vec * rhs_vec);
+	return lhs;
+}
+
+float3& operator*=(float3& lhs, float rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat3(&lhs));
+
+	XMStoreFloat3(&lhs, lhs_vec * rhs);
+	return lhs;
+}
+
+float3 operator/(const float3& lhs, float rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat3(&lhs));
+	float3 result;
+	XMStoreFloat3(&result, lhs_vec * rhs);
+	return result;
+}
+
+float3& operator/=(float3& lhs, float rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat3(&lhs));
+
+	XMStoreFloat3(&lhs, lhs_vec / rhs);
+	return lhs;
+}
+
+// float4
+
+float4 operator*(const float4& lhs, const float4& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat4(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat4(&rhs));
+
+	float4 result;
+	XMStoreFloat4(&result, lhs_vec * rhs_vec);
+	return result;
+}
+
+float4 operator*(const float4& lhs, float rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat4(&lhs));
+	float4 result;
+	XMStoreFloat4(&result, lhs_vec * rhs);
+	return result;
+}
+
+float4 operator*(float lhs, const float4& rhs) {
+	return rhs * lhs;
+}
+
+float4 operator+(const float4& lhs, const float4& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat4(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat4(&rhs));
+
+	float4 result;
+	XMStoreFloat4(&result, lhs_vec + rhs_vec);
+	return result;
+}
+
+float4 operator-(const float4& lhs, const float4& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat4(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat4(&rhs));
+
+	float4 result;
+	XMStoreFloat4(&result, lhs_vec - rhs_vec);
+	return result;
+}
+
+float4& operator+=(float4& lhs, const float4& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat4(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat4(&rhs));
+
+	XMStoreFloat4(&lhs, lhs_vec + rhs_vec);
+	return lhs;
+}
+
+float4& operator-=(float4& lhs, const float4& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat4(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat4(&rhs));
+
+	XMStoreFloat4(&lhs, lhs_vec - rhs_vec);
+	return lhs;
+}
+
+float4& operator*=(float4& lhs, const float4& rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat4(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat4(&rhs));
+
+	XMStoreFloat4(&lhs, lhs_vec * rhs_vec);
+	return lhs;
+}
+
+float4& operator*=(float4& lhs, float rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat4(&lhs));
+
+	XMStoreFloat4(&lhs, lhs_vec * rhs);
+	return lhs;
+}
+
+float4 operator/(const float4& lhs, float rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat4(&lhs));
+	float4 result;
+	XMStoreFloat4(&result, lhs_vec * rhs);
+	return result;
+}
+
+float4& operator/=(float4& lhs, float rhs) {
+	XMVECTOR lhs_vec(XMLoadFloat4(&lhs));
+
+	XMStoreFloat4(&lhs, lhs_vec / rhs);
+	return lhs;
+}
+
+// float4x4
+
+float4x4 operator*(const float4x4& lhs, const float4x4 rhs) {
+	XMMATRIX lhs_mat(XMLoadFloat4x4(&lhs));
+	XMMATRIX rhs_mat(XMLoadFloat4x4(&rhs));
+	float4x4 result;
+	XMStoreFloat4x4(&result, lhs_mat * rhs_mat);
+	return result;
+}
+
+float4 operator*(const float4x4& lhs, const float4 rhs) {
+	XMMATRIX lhs_mat(XMLoadFloat4x4(&lhs));
+	XMVECTOR rhs_vec(XMLoadFloat4(&rhs));
+	float4 result;
+	XMStoreFloat4(&result, XMVector4Transform(rhs_vec, lhs_mat));
+	return result;
+}
+
+#endif

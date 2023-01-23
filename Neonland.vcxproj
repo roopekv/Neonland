@@ -110,6 +110,8 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Neonland\Windows\DeviceResources.cpp" />
+    <ClCompile Include="Neonland\Windows\App.cpp" />
     <ClCompile Include="neonland\components\Anchor.cpp" />
     <ClCompile Include="neonland\components\Button.cpp" />
     <ClCompile Include="neonland\components\Camera.cpp" />
@@ -136,8 +138,14 @@
     <ClCompile Include="neonland\Wave.cpp" />
     <ClCompile Include="neonland\Weapon.cpp" />
     <ClCompile Include="Neonland\Windows\main.cpp" />
+    <ClCompile Include="Neonland\Windows\pch.cpp" />
+    <ClCompile Include="Neonland\Windows\NeonMain.cpp" />
+    <ClCompile Include="Neonland\Windows\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Neonland\Windows\d3dx12.h" />
+    <ClInclude Include="Neonland\Windows\DeviceResources.hpp" />
+    <ClInclude Include="Neonland\Windows\App.hpp" />
     <ClInclude Include="neonland\components\Anchor.hpp" />
     <ClInclude Include="neonland\components\Button.hpp" />
     <ClInclude Include="neonland\components\Camera.hpp" />
@@ -172,6 +180,10 @@
     <ClInclude Include="neonland\NumberField.hpp" />
     <ClInclude Include="neonland\Wave.hpp" />
     <ClInclude Include="neonland\Weapon.hpp" />
+    <ClInclude Include="Neonland\Windows\DirectXHelper.h" />
+    <ClInclude Include="Neonland\Windows\pch.h" />
+    <ClInclude Include="Neonland\Windows\NeonMain.hpp" />
+    <ClInclude Include="Neonland\Windows\Renderer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

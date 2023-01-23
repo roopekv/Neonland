@@ -14,6 +14,8 @@ struct Entity {
     
     static constexpr Version NULL_VERSION = std::numeric_limits<Version>::max();
     static constexpr Version LAST_VALID_VERSION = NULL_VERSION - 1;
+
+    static constexpr Entity NULL_ENTITY() { return { NULL_ID, NULL_VERSION }; }
     
     Id id;
     Version version;

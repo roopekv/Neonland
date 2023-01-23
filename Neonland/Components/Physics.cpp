@@ -1,5 +1,6 @@
 #include "Physics.hpp"
 #include <iostream>
+#include <algorithm>
 
 Physics::Physics(const Transform& tf, float3 vel, float3 angularVel, float radius)
 : velocity{vel}

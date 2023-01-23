@@ -6,6 +6,7 @@
 #include <string_view>
 #include <string>
 #include <algorithm>
+#include <cassert>
 
 #include "ComponentMask.hpp"
 #include "Pool.hpp"
@@ -136,7 +137,7 @@ auto Scene::Get(Entity entity) -> T& {
 
 template<Component T>
 auto Scene::GetPool() -> std::shared_ptr<Pool<T>> {
-    auto type = to_underlying(T::componentType);
+    constexpr auto type = to_underlying(T::componentType);
     
     if (pools[type] == nullptr) {
         pools[type] = std::make_shared<Pool<T>>();

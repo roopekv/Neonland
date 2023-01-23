@@ -11,65 +11,47 @@ using float4 = XMFLOAT4;
 
 using float4x4 = XMFLOAT4X4;
 
-float2 operator*(const float2& lhs, const float2& rhs) {
-    XMVECTOR lhs_vec(XMLoadFloat2(&lhs));
-    XMVECTOR rhs_vec(XMLoadFloat2(&rhs));
+float2 operator*(const float2& lhs, const float2& rhs);
+float2 operator*(const float2& lhs, float rhs);
+float2 operator*(float lhs, const float2& rhs);
+float2 operator+(const float2& lhs, const float2& rhs);
+float2 operator-(const float2& lhs, const float2& rhs);
+float2& operator+=(float2& lhs, const float2& rhs);
+float2& operator-=(float2& lhs, const float2& rhs);
+float2& operator*=(float2& lhs, const float2& rhs);
+float2& operator*=(float2& lhs, float rhs);
 
-    float2 result;
-    XMStoreFloat2(&result, lhs_vec * rhs_vec);
-    return result;
-}
+float2 operator/(const float2& lhs, float rhs);
+float2& operator/=(float2& lhs, float rhs);
 
-float2 operator*(const float2& lhs, float rhs) {
-    XMVECTOR lhs_vec(XMLoadFloat2(&lhs));
-    float2 result;
-    XMStoreFloat2(&result, lhs_vec * rhs);
-    return result;
-}
+float3 operator*(const float3& lhs, const float3& rhs);
+float3 operator*(const float3& lhs, float rhs);
+float3 operator*(float lhs, const float3& rhs);
+float3 operator+(const float3& lhs, const float3& rhs);
+float3 operator-(const float3& lhs, const float3& rhs);
+float3& operator+=(float3& lhs, const float3& rhs);
+float3& operator-=(float3& lhs, const float3& rhs);
+float3& operator*=(float3& lhs, const float3& rhs);
+float3& operator*=(float3& lhs, float rhs);
 
-float2 operator*(float lhs, const float2& rhs) {
-    return rhs * lhs;
-}
+float3 operator/(const float3& lhs, float rhs);
+float3& operator/=(float3& lhs, float rhs);
 
-float3 operator*(const float3& lhs, const float3& rhs) {
-    XMVECTOR lhs_vec(XMLoadFloat3(&lhs));
-    XMVECTOR rhs_vec(XMLoadFloat3(&rhs));
+float4 operator*(const float4& lhs, const float4& rhs);
+float4 operator*(const float4& lhs, float rhs);
+float4 operator*(float lhs, const float4& rhs);
+float4 operator+(const float4& lhs, const float4& rhs);
+float4 operator-(const float4& lhs, const float4& rhs);
+float4& operator+=(float4& lhs, const float4& rhs);
+float4& operator-=(float4& lhs, const float4& rhs);
+float4& operator*=(float4& lhs, const float4& rhs);
+float4& operator*=(float4& lhs, float rhs);
 
-    float3 result;
-    XMStoreFloat3(&result, lhs_vec * rhs_vec);
-    return result;
-}
+float4 operator/(const float4& lhs, float rhs);
+float4& operator/=(float4& lhs, float rhs);
 
-float3 operator*(const float3& lhs, float rhs) {
-    XMVECTOR lhs_vec(XMLoadFloat3(&lhs));
-    float3 result;
-    XMStoreFloat3(&result, lhs_vec * rhs);
-    return result;
-}
-
-float3 operator*(float lhs, const float3& rhs) {
-    return rhs * lhs;
-}
-
-float4 operator*(const float4& lhs, const float4& rhs) {
-    XMVECTOR lhs_vec(XMLoadFloat4(&lhs));
-    XMVECTOR rhs_vec(XMLoadFloat4(&rhs));
-
-    float4 result;
-    XMStoreFloat4(&result, lhs_vec * rhs_vec);
-    return result;
-}
-
-float4 operator*(const float4& lhs, float rhs) {
-    XMVECTOR lhs_vec(XMLoadFloat4(&lhs));
-    float4 result;
-    XMStoreFloat4(&result, lhs_vec * rhs);
-    return result;
-}
-
-float4 operator*(float lhs, const float4& rhs) {
-    return rhs * lhs;
-}
+float4x4 operator*(const float4x4& lhs, const float4x4 rhs);
+float4 operator*(const float4x4& lhs, const float4 rhs);
 
 #elif __APPLE__
 #include <simd/simd.h>
