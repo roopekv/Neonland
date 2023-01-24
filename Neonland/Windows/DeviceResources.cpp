@@ -112,7 +112,7 @@ void DeviceResources::CreateDeviceResources()
 
 	// Create descriptor heaps for render target views and depth stencil views.
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
-	rtvHeapDesc.NumDescriptors = c_frameCount;
+	rtvHeapDesc.NumDescriptors = MaxFramesInFlight;
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	winrt::check_hresult(m_d3dDevice->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&m_rtvHeap)));
@@ -125,7 +125,7 @@ void DeviceResources::CreateDeviceResources()
 	dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	winrt::check_hresult(m_d3dDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&m_dsvHeap)));
 
-	for (uint32_t n = 0; n < c_frameCount; n++)
+	for (uint32_t n = 0; n < MaxFramesInFlight; n++)
 	{
 		winrt::check_hresult(
 			m_d3dDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_commandAllocators[n]))
@@ -150,7 +150,7 @@ void DeviceResources::CreateWindowSizeDependentResources()
 	WaitForGpu();
 
 	// Clear the previous window size specific content and update the tracked fence values.
-	for (uint32_t n = 0; n < c_frameCount; n++)
+	for (uint32_t n = 0; n < MaxFramesInFlight; n++)
 	{
 		m_renderTargets[n] = nullptr;
 		m_fenceValues[n] = m_fenceValues[m_currentFrame];
@@ -173,7 +173,7 @@ void DeviceResources::CreateWindowSizeDependentResources()
 	if (m_swapChain != nullptr)
 	{
 		// If the swap chain already exists, resize it.
-		HRESULT hr = m_swapChain->ResizeBuffers(c_frameCount, backBufferWidth, backBufferHeight, m_backBufferFormat, 0);
+		HRESULT hr = m_swapChain->ResizeBuffers(MaxFramesInFlight, backBufferWidth, backBufferHeight, m_backBufferFormat, 0);
 
 		if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
 		{
@@ -200,7 +200,7 @@ void DeviceResources::CreateWindowSizeDependentResources()
 		swapChainDesc.SampleDesc.Count = 1;							// Don't use multi-sampling.
 		swapChainDesc.SampleDesc.Quality = 0;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		swapChainDesc.BufferCount = c_frameCount;					// Use triple-buffering to minimize latency.
+		swapChainDesc.BufferCount = MaxFramesInFlight;					// Use triple-buffering to minimize latency.
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;	// All Windows Universal apps must use _FLIP_ SwapEffects.
 		swapChainDesc.Flags = 0;
 		swapChainDesc.Scaling = DXGI_SCALING_NONE;
@@ -254,7 +254,7 @@ void DeviceResources::CreateWindowSizeDependentResources()
 	{
 		m_currentFrame = m_swapChain->GetCurrentBackBufferIndex();
 		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvDescriptor(m_rtvHeap->GetCPUDescriptorHandleForHeapStart());
-		for (uint32_t n = 0; n < c_frameCount; n++)
+		for (uint32_t n = 0; n < MaxFramesInFlight; n++)
 		{
 			winrt::check_hresult(m_swapChain->GetBuffer(n, IID_PPV_ARGS(&m_renderTargets[n])));
 			m_d3dDevice->CreateRenderTargetView(m_renderTargets[n].get(), nullptr, rtvDescriptor);

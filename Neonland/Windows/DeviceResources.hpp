@@ -12,7 +12,7 @@
 
 #include "d3dx12.h"
 
-constexpr uint32_t c_frameCount = 3;
+constexpr uint32_t MaxFramesInFlight = 3;
 
 interface IDeviceNotify
 {
@@ -73,12 +73,12 @@ private:
 	winrt::com_ptr<ID3D12Device>			m_d3dDevice;
 	winrt::com_ptr<IDXGIFactory4>			m_dxgiFactory;
 	winrt::com_ptr<IDXGISwapChain3>			m_swapChain;
-	winrt::com_ptr<ID3D12Resource>			m_renderTargets[c_frameCount];
+	winrt::com_ptr<ID3D12Resource>			m_renderTargets[MaxFramesInFlight];
 	winrt::com_ptr<ID3D12Resource>			m_depthStencil;
 	winrt::com_ptr<ID3D12DescriptorHeap>	m_rtvHeap;
 	winrt::com_ptr<ID3D12DescriptorHeap>	m_dsvHeap;
 	winrt::com_ptr<ID3D12CommandQueue>		m_commandQueue;
-	winrt::com_ptr<ID3D12CommandAllocator>	m_commandAllocators[c_frameCount];
+	winrt::com_ptr<ID3D12CommandAllocator>	m_commandAllocators[MaxFramesInFlight];
 	DXGI_FORMAT								m_backBufferFormat;
 	DXGI_FORMAT								m_depthBufferFormat;
 	D3D12_VIEWPORT							m_screenViewport;
@@ -87,7 +87,7 @@ private:
 
 	// CPU/GPU Synchronization.
 	winrt::com_ptr<ID3D12Fence>				m_fence;
-	uint64_t								m_fenceValues[c_frameCount];
+	uint64_t								m_fenceValues[MaxFramesInFlight];
 	HANDLE									m_fenceEvent;
 
 	// Cached reference to the Window.

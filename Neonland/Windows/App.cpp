@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "App.hpp"
 
+#include "../Neonland.h"
+
 using namespace winrt::Windows::ApplicationModel;
 using namespace winrt::Windows::ApplicationModel::Activation;
 using namespace winrt::Windows::ApplicationModel::Core;
@@ -19,20 +21,14 @@ IFrameworkView App::CreateView() {
 void App::Initialize(CoreApplicationView const& applicationView)
 {
 	applicationView.Activated({ this, &App::OnActivated });
-
-	_deviceResources = std::make_shared<DeviceResources>();
 }
 
 void App::SetWindow(CoreWindow const& window)
 {
-	window.Activate();
-
 	window.PointerCursor(CoreCursor(CoreCursorType::Arrow, 0));
 	PointerVisualizationSettings visualizationSettings = PointerVisualizationSettings::GetForCurrentView();
 	visualizationSettings.IsContactFeedbackEnabled(false);
 	visualizationSettings.IsBarrelButtonFeedbackEnabled(false);
-
-	_deviceResources->SetWindow(window);
 
 	window.SizeChanged({ this, &App::OnWindowSizeChanged });
 	window.Closed({ this, &App::OnWindowClosed });
@@ -55,21 +51,17 @@ void App::Load(winrt::hstring const&)
 
 void App::Run()
 {
-	while (!_windowClosed)
+	while (!_windowClosed && !Neon_AppShouldQuit())
 	{
 		if (_windowVisible)
 		{
 			CoreWindow::GetForCurrentThread().Dispatcher().ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
 
 			auto commandQueue = GetDeviceResources()->GetCommandQueue();
-			PIXBeginEvent(commandQueue, 0, L"Render");
+			if (_main->Render())
 			{
-				if (_main->Render())
-				{
-					GetDeviceResources()->Present();
-				}
+				GetDeviceResources()->Present();
 			}
-			PIXEndEvent(commandQueue);
 		}
 		else
 		{
@@ -120,6 +112,7 @@ void App::OnDisplayContentsInvalidated(DisplayInformation const&, IInspectable c
 }
 
 std::shared_ptr<DeviceResources> App::GetDeviceResources() {
+	bool wut = (_deviceResources == nullptr);
 	if (_deviceResources != nullptr && _deviceResources->IsDeviceRemoved())
 	{
 		_deviceResources = nullptr;

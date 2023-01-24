@@ -4,6 +4,8 @@
 
 #include <fstream>
 
+#include "../Neonland.h"
+
 using namespace DirectX;
 using namespace winrt::Windows::Foundation;
 using namespace winrt::Windows::Storage;
@@ -15,20 +17,18 @@ struct VertexPositionColor
 };
 
 Renderer::Renderer(const std::shared_ptr<DeviceResources>& deviceResources) :
-	_mappedConstantBuffer(nullptr),
+	_mappedGlobalUniformsBuffer(nullptr),
 	_loadingComplete{ false },
 	_deviceResources(deviceResources)
 {
-	ZeroMemory(&_constantBufferData, sizeof(_constantBufferData));
-
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 }
 
 Renderer::~Renderer()
 {
-	_constantBuffer->Unmap(0, nullptr);
-	_mappedConstantBuffer = nullptr;
+	_globalUniformsBuffer->Unmap(0, nullptr);
+	_mappedGlobalUniformsBuffer = nullptr;
 }
 
 void Renderer::CreateDeviceDependentResources()
@@ -226,28 +226,28 @@ void Renderer::CreateDeviceDependentResources()
 	// Create a descriptor heap for the constant buffers.
 	{
 		D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
-		heapDesc.NumDescriptors = c_frameCount;
+		heapDesc.NumDescriptors = MaxFramesInFlight;
 		heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 		// This flag indicates that this descriptor heap can be bound to the pipeline and that descriptors contained in it can be referenced by a root table.
 		heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 		winrt::check_hresult(d3dDevice->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&_cbvHeap)));
 	}
 
-	CD3DX12_RESOURCE_DESC constantBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(c_frameCount * AlignedConstantBufferSize);
+	CD3DX12_RESOURCE_DESC constantBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(MaxFramesInFlight * AlignedConstantBufferSize);
 	winrt::check_hresult(d3dDevice->CreateCommittedResource(
 		&uploadHeapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&constantBufferDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&_constantBuffer)));
+		IID_PPV_ARGS(&_globalUniformsBuffer)));
 
 	// Create constant buffer views to access the upload buffer.
-	D3D12_GPU_VIRTUAL_ADDRESS cbvGpuAddress = _constantBuffer->GetGPUVirtualAddress();
+	D3D12_GPU_VIRTUAL_ADDRESS cbvGpuAddress = _globalUniformsBuffer->GetGPUVirtualAddress();
 	CD3DX12_CPU_DESCRIPTOR_HANDLE cbvCpuHandle(_cbvHeap->GetCPUDescriptorHandleForHeapStart());
 	_cbvDescriptorSize = d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-	for (int n = 0; n < c_frameCount; n++)
+	for (int n = 0; n < MaxFramesInFlight; n++)
 	{
 		D3D12_CONSTANT_BUFFER_VIEW_DESC desc;
 		desc.BufferLocation = cbvGpuAddress;
@@ -260,8 +260,8 @@ void Renderer::CreateDeviceDependentResources()
 
 	// Map the constant buffers.
 	CD3DX12_RANGE readRange(0, 0);		// We do not intend to read from this resource on the CPU.
-	winrt::check_hresult(_constantBuffer->Map(0, &readRange, reinterpret_cast<void**>(&_mappedConstantBuffer)));
-	ZeroMemory(_mappedConstantBuffer, c_frameCount * AlignedConstantBufferSize);
+	winrt::check_hresult(_globalUniformsBuffer->Map(0, &readRange, reinterpret_cast<void**>(&_mappedGlobalUniformsBuffer)));
+	ZeroMemory(_mappedGlobalUniformsBuffer, MaxFramesInFlight * AlignedConstantBufferSize);
 	// We don't unmap this until the app closes. Keeping things mapped for the lifetime of the resource is okay.
 
 	// Close the command list and execute it to begin the vertex/index buffer copy into the GPU's default heap.
@@ -282,6 +282,7 @@ void Renderer::CreateDeviceDependentResources()
 	_deviceResources->WaitForGpu();
 
 	_loadingComplete = true;
+	Neon_Start();
 }
 
 // Initializes view parameters when the window size changes.
@@ -294,17 +295,6 @@ void Renderer::CreateWindowSizeDependentResources()
 	_scissorRect = { 0, 0, static_cast<int32_t>(viewport.Width), static_cast<int32_t>(viewport.Height) };
 }
 
-// Called once per frame, rotates the cube and calculates the model and view matrices.
-void Renderer::Update()
-{
-	if (_loadingComplete)
-	{
-		// Update the constant buffer resource.
-		uint8_t* destination = _mappedConstantBuffer + (_deviceResources->GetCurrentFrameIndex() * AlignedConstantBufferSize);
-		memcpy(destination, &_constantBufferData, sizeof(_constantBufferData));
-	}
-}
-
 // Renders one frame using the vertex and pixel shaders.
 bool Renderer::Render()
 {
@@ -314,51 +304,56 @@ bool Renderer::Render()
 		return false;
 	}
 
+	Size outputSize = _deviceResources->GetOutputSize();
+	float aspectRatio = outputSize.Width / outputSize.Height;
+	FrameData frameData = Neon_Render(aspectRatio);
+
+	uint8_t* destination = _mappedGlobalUniformsBuffer + (_deviceResources->GetCurrentFrameIndex() * AlignedConstantBufferSize);
+	memcpy(destination, &frameData.globalUniforms, sizeof(frameData.globalUniforms));
+
 	winrt::check_hresult(_deviceResources->GetCommandAllocator()->Reset());
 
 	// The command list can be reset anytime after ExecuteCommandList() is called.
 	winrt::check_hresult(_commandList->Reset(_deviceResources->GetCommandAllocator(), _pipelineState.get()));
 
-	PIXBeginEvent(_commandList.get(), 0, L"Draw the cube");
-	{
-		// Set the graphics root signature and descriptor heaps to be used by this frame.
-		_commandList->SetGraphicsRootSignature(_rootSignature.get());
-		ID3D12DescriptorHeap* ppHeaps[] = { _cbvHeap.get() };
-		_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+	// Set the graphics root signature and descriptor heaps to be used by this frame.
+	_commandList->SetGraphicsRootSignature(_rootSignature.get());
+	ID3D12DescriptorHeap* ppHeaps[] = { _cbvHeap.get() };
+	_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
-		// Bind the current frame's constant buffer to the pipeline.
-		CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle(_cbvHeap->GetGPUDescriptorHandleForHeapStart(), _deviceResources->GetCurrentFrameIndex(), _cbvDescriptorSize);
-		_commandList->SetGraphicsRootDescriptorTable(0, gpuHandle);
+	// Bind the current frame's constant buffer to the pipeline.
+	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle(_cbvHeap->GetGPUDescriptorHandleForHeapStart(), _deviceResources->GetCurrentFrameIndex(), _cbvDescriptorSize);
+	_commandList->SetGraphicsRootDescriptorTable(0, gpuHandle);
 
-		// Set the viewport and scissor rectangle.
-		D3D12_VIEWPORT viewport = _deviceResources->GetScreenViewport();
-		_commandList->RSSetViewports(1, &viewport);
-		_commandList->RSSetScissorRects(1, &_scissorRect);
+	// Set the viewport and scissor rectangle.
+	D3D12_VIEWPORT viewport = _deviceResources->GetScreenViewport();
+	_commandList->RSSetViewports(1, &viewport);
+	_commandList->RSSetScissorRects(1, &_scissorRect);
 
-		// Indicate this resource will be in use as a render target.
-		CD3DX12_RESOURCE_BARRIER renderTargetResourceBarrier =
-			CD3DX12_RESOURCE_BARRIER::Transition(_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-		_commandList->ResourceBarrier(1, &renderTargetResourceBarrier);
+	// Indicate this resource will be in use as a render target.
+	CD3DX12_RESOURCE_BARRIER renderTargetResourceBarrier =
+		CD3DX12_RESOURCE_BARRIER::Transition(_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	_commandList->ResourceBarrier(1, &renderTargetResourceBarrier);
 
-		// Record drawing commands.
-		D3D12_CPU_DESCRIPTOR_HANDLE renderTargetView = _deviceResources->GetRenderTargetView();
-		D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = _deviceResources->GetDepthStencilView();
-		_commandList->ClearRenderTargetView(renderTargetView, DirectX::Colors::CornflowerBlue, 0, nullptr);
-		_commandList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	// Record drawing commands.
+	D3D12_CPU_DESCRIPTOR_HANDLE renderTargetView = _deviceResources->GetRenderTargetView();
+	D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = _deviceResources->GetDepthStencilView();
 
-		_commandList->OMSetRenderTargets(1, &renderTargetView, false, &depthStencilView);
+	XMVECTORF32 clearColor = { frameData.clearColor.x, frameData.clearColor.y, frameData.clearColor.z, 1 };
+	_commandList->ClearRenderTargetView(renderTargetView, clearColor, 0, nullptr);
+	_commandList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-		_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		_commandList->IASetVertexBuffers(0, 1, &_vertexBufferView);
-		_commandList->IASetIndexBuffer(&_indexBufferView);
-		_commandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
+	_commandList->OMSetRenderTargets(1, &renderTargetView, false, &depthStencilView);
 
-		// Indicate that the render target will now be used to present when the command list is done executing.
-		CD3DX12_RESOURCE_BARRIER presentResourceBarrier =
-			CD3DX12_RESOURCE_BARRIER::Transition(_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-		_commandList->ResourceBarrier(1, &presentResourceBarrier);
-	}
-	PIXEndEvent(_commandList.get());
+	_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	_commandList->IASetVertexBuffers(0, 1, &_vertexBufferView);
+	_commandList->IASetIndexBuffer(&_indexBufferView);
+	_commandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
+
+	// Indicate that the render target will now be used to present when the command list is done executing.
+	CD3DX12_RESOURCE_BARRIER presentResourceBarrier =
+		CD3DX12_RESOURCE_BARRIER::Transition(_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+	_commandList->ResourceBarrier(1, &presentResourceBarrier);
 
 	winrt::check_hresult(_commandList->Close());
 

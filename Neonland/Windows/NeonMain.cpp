@@ -10,7 +10,7 @@ NeonMain::NeonMain() {}
 
 void NeonMain::CreateRenderers(const std::shared_ptr<DeviceResources>& deviceResources)
 {
-	_sceneRenderer = std::unique_ptr<Renderer>(new Renderer(deviceResources));
+	_sceneRenderer = std::make_unique<Renderer>(deviceResources);
 	OnWindowSizeChanged();
 }
 

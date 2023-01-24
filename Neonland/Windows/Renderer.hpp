@@ -3,7 +3,6 @@
 #include <memory>
 #include <dxgi1_4.h>
 #include <d3d12.h>
-#include <pix.h>
 #include <DirectXColors.h>
 #include <DirectXMath.h>
 #include <winrt/base.h>
@@ -20,7 +19,6 @@ public:
 
 	void CreateDeviceDependentResources();
 	void CreateWindowSizeDependentResources();
-	void Update();
 	bool Render();
 
 private:
@@ -39,9 +37,8 @@ private:
 	winrt::com_ptr<ID3D12DescriptorHeap>		_cbvHeap;
 	winrt::com_ptr<ID3D12Resource>				_vertexBuffer;
 	winrt::com_ptr<ID3D12Resource>				_indexBuffer;
-	winrt::com_ptr<ID3D12Resource>				_constantBuffer;
-	GlobalUniforms								_constantBufferData;
-	uint8_t*									_mappedConstantBuffer;
+	winrt::com_ptr<ID3D12Resource>				_globalUniformsBuffer;
+	uint8_t*									_mappedGlobalUniformsBuffer;
 	uint32_t									_cbvDescriptorSize;
 	D3D12_RECT									_scissorRect;
 	std::vector<char>							_vertexShader;
