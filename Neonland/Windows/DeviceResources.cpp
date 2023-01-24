@@ -1,8 +1,7 @@
-#include "DeviceResources.hpp"
-
 #include "pch.h"
 #include "DeviceResources.hpp"
-#include "DirectXHelper.h"
+
+#include <algorithm>
 
 using namespace DirectX;
 using namespace winrt::Windows::Foundation;
@@ -211,7 +210,7 @@ void DeviceResources::CreateWindowSizeDependentResources()
 		winrt::check_hresult(
 			m_dxgiFactory->CreateSwapChainForCoreWindow(
 				m_commandQueue.get(),								// Swap chains need a reference to the command queue in DirectX 12.
-				winrt::get_unknown(m_window.Get()),
+				winrt::get_unknown(m_window.get()),
 				&swapChainDesc,
 				nullptr,
 				swapChain.put()
@@ -297,12 +296,13 @@ void DeviceResources::CreateWindowSizeDependentResources()
 void DeviceResources::UpdateRenderTargetSize()
 {
 	// Calculate the necessary render target size in pixels.
-	m_outputSize.Width = DX::ConvertDipsToPixels(m_logicalSize.Width, m_dpi);
-	m_outputSize.Height = DX::ConvertDipsToPixels(m_logicalSize.Height, m_dpi);
+	static constexpr float dipsPerInch = 96.0f;
 
+	m_outputSize.Width = std::floor(m_logicalSize.Width * m_dpi / dipsPerInch + 0.5f);
+	m_outputSize.Height = std::floor(m_logicalSize.Height * m_dpi / dipsPerInch + 0.5f);
 	// Prevent zero size DirectX content from being created.
-	m_outputSize.Width = max(m_outputSize.Width, 1);
-	m_outputSize.Height = max(m_outputSize.Height, 1);
+	m_outputSize.Width = max(m_outputSize.Width, 1.0f);
+	m_outputSize.Height = max(m_outputSize.Height, 1.0f);
 }
 
 // This method is called when the CoreWindow is created (or re-created).
@@ -337,7 +337,7 @@ void DeviceResources::SetDpi(float dpi)
 		m_dpi = dpi;
 
 		// When the display DPI changes, the logical size of the window (measured in Dips) also changes and needs to be updated.
-		m_logicalSize = winrt::Windows::Foundation::Size(m_window->Bounds.Width, m_window->Bounds.Height);
+		m_logicalSize = winrt::Windows::Foundation::Size(m_window.get().Bounds().Width, m_window.get().Bounds().Height);
 
 		CreateWindowSizeDependentResources();
 	}
