@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Neonland\Components\Anchor.cpp" />
+    <ClCompile Include="Neonland\Components\Button.cpp" />
+    <ClCompile Include="Neonland\Components\Camera.cpp" />
+    <ClCompile Include="Neonland\Components\Enemy.cpp" />
+    <ClCompile Include="Neonland\Components\HP.cpp" />
+    <ClCompile Include="Neonland\Components\Mesh.cpp" />
+    <ClCompile Include="Neonland\Components\Physics.cpp" />
+    <ClCompile Include="Neonland\Components\Pickup.cpp" />
+    <ClCompile Include="Neonland\Components\PlayerProjectile.cpp" />
+    <ClCompile Include="Neonland\Components\Transform.cpp" />
+    <ClCompile Include="Neonland\EnemyType.cpp" />
+    <ClCompile Include="Neonland\Engine\GameClock.cpp" />
+    <ClCompile Include="Neonland\Engine\IGroup.cpp" />
+    <ClCompile Include="Neonland\Engine\IPool.cpp" />
+    <ClCompile Include="Neonland\Engine\MathUtils.cpp" />
+    <ClCompile Include="Neonland\Engine\Scene.cpp" />
+    <ClCompile Include="Neonland\Engine\ThreadPool.cpp" />
+    <ClCompile Include="Neonland\Level.cpp" />
+    <ClCompile Include="Neonland\Material.cpp" />
+    <ClCompile Include="Neonland\NeonConstants.cpp" />
+    <ClCompile Include="Neonland\Neonland.cpp" />
+    <ClCompile Include="Neonland\NeonScene.cpp" />
+    <ClCompile Include="Neonland\NumberField.cpp" />
+    <ClCompile Include="Neonland\Wave.cpp" />
+    <ClCompile Include="Neonland\Weapon.cpp" />
+    <ClCompile Include="Neonland\Windows\App.cpp" />
+    <ClCompile Include="Neonland\Windows\DeviceResources.cpp" />
+    <ClCompile Include="Neonland\Windows\main.cpp" />
+    <ClCompile Include="Neonland\Windows\NeonMain.cpp" />
+    <ClCompile Include="Neonland\Windows\pch.cpp" />
+    <ClCompile Include="Neonland\Windows\Renderer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Neonland\Components\Anchor.hpp" />
+    <ClInclude Include="Neonland\Components\Button.hpp" />
+    <ClInclude Include="Neonland\Components\Camera.hpp" />
+    <ClInclude Include="Neonland\Components\Enemy.hpp" />
+    <ClInclude Include="Neonland\Components\HP.hpp" />
+    <ClInclude Include="Neonland\Components\Mesh.hpp" />
+    <ClInclude Include="Neonland\Components\Physics.hpp" />
+    <ClInclude Include="Neonland\Components\Pickup.hpp" />
+    <ClInclude Include="Neonland\Components\PlayerProjectile.hpp" />
+    <ClInclude Include="Neonland\Components\Transform.hpp" />
+    <ClInclude Include="Neonland\EnemyType.hpp" />
+    <ClInclude Include="Neonland\Engine\Component.hpp" />
+    <ClInclude Include="Neonland\Engine\ComponentMask.hpp" />
+    <ClInclude Include="Neonland\Engine\ComponentType.hpp" />
+    <ClInclude Include="Neonland\Engine\Entity.hpp" />
+    <ClInclude Include="Neonland\Engine\FrameData.h" />
+    <ClInclude Include="Neonland\Engine\GameClock.hpp" />
+    <ClInclude Include="Neonland\Engine\Group.hpp" />
+    <ClInclude Include="Neonland\Engine\IGroup.hpp" />
+    <ClInclude Include="Neonland\Engine\IPool.hpp" />
+    <ClInclude Include="Neonland\Engine\MathUtils.hpp" />
+    <ClInclude Include="Neonland\Engine\Pool.hpp" />
+    <ClInclude Include="Neonland\Engine\Scene.hpp" />
+    <ClInclude Include="Neonland\Engine\ShaderTypes.h" />
+    <ClInclude Include="Neonland\Engine\ThreadPool.hpp" />
+    <ClInclude Include="Neonland\GameState.hpp" />
+    <ClInclude Include="Neonland\Level.hpp" />
+    <ClInclude Include="Neonland\macOS\Neonland-Bridging-Header.h" />
+    <ClInclude Include="Neonland\Material.hpp" />
+    <ClInclude Include="Neonland\NeonConstants.h" />
+    <ClInclude Include="Neonland\Neonland.h" />
+    <ClInclude Include="Neonland\NeonScene.hpp" />
+    <ClInclude Include="Neonland\NumberField.hpp" />
+    <ClInclude Include="Neonland\Wave.hpp" />
+    <ClInclude Include="Neonland\Weapon.hpp" />
+    <ClInclude Include="Neonland\Windows\App.hpp" />
+    <ClInclude Include="Neonland\Windows\d3dx12.h" />
+    <ClInclude Include="Neonland\Windows\DeviceResources.hpp" />
+    <ClInclude Include="Neonland\Windows\NeonMain.hpp" />
+    <ClInclude Include="Neonland\Windows\pch.h" />
+    <ClInclude Include="Neonland\Windows\Renderer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="PropertySheet.props" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{93415d18-5d44-4ef7-8cae-13450e8852f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Neonland">
+      <UniqueIdentifier>{fc419ed8-61e3-413a-914b-45fad6b39bcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Neonland\Windows">
+      <UniqueIdentifier>{437f97da-3fcb-4856-b52b-9299e20ba6b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Neonland\Windows\Assets">
+      <UniqueIdentifier>{34f73956-8bdc-44ba-aea5-ce5b00c498b0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-125.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-150.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-400.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-16.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-24.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-32.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-48.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-256.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-16.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-24.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-32.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-48.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-256.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-16.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-24.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-32.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-48.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-256.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-100.png">
+      <Filter>Neonland\Windows\Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-125.png">
+      <Filter>Neonland\Windows\Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-150.png">
+      <Filter>Neonland\Windows\Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-200.png">
+      <Filter>Neonland\Windows\Assets</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-400.png">
+      <Filter>Neonland\Windows\Assets</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

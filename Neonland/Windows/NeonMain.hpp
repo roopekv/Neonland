@@ -12,7 +12,6 @@ public:
 
 	void OnWindowSizeChanged();
 	void OnDeviceRemoved();
-
 private:
-	std::unique_ptr<Renderer> m_sceneRenderer;
+	std::unique_ptr<Renderer> _sceneRenderer;
 };

@@ -32,9 +32,9 @@ protected:
 private:
     std::shared_ptr<DeviceResources> GetDeviceResources();
 
-    std::shared_ptr<DeviceResources> m_deviceResources;
-    std::unique_ptr<NeonMain> m_main;
+    std::shared_ptr<DeviceResources> _deviceResources;
+    std::unique_ptr<NeonMain> _main;
 
-    bool m_windowClosed;
-    bool m_windowVisible;
+    bool _windowClosed;
+    bool _windowVisible;
 };

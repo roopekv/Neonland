@@ -6,10 +6,11 @@ using namespace winrt::Windows::ApplicationModel::Activation;
 using namespace winrt::Windows::ApplicationModel::Core;
 using namespace winrt::Windows::Graphics::Display;
 using namespace winrt::Windows::UI::Core;
+using namespace winrt::Windows::UI::Input;
 
 App::App()
-	: m_windowClosed{ false }
-	, m_windowVisible{ true } {}
+	: _windowClosed{ false }
+	, _windowVisible{ true } {}
 
 IFrameworkView App::CreateView() {
 	return *this;
@@ -19,14 +20,19 @@ void App::Initialize(CoreApplicationView const& applicationView)
 {
 	applicationView.Activated({ this, &App::OnActivated });
 
-	m_deviceResources = std::make_shared<DeviceResources>();
+	_deviceResources = std::make_shared<DeviceResources>();
 }
 
 void App::SetWindow(CoreWindow const& window)
 {
-	window.PointerCursor(CoreCursor(CoreCursorType::Arrow, 0));
+	window.Activate();
 
-	m_deviceResources->SetWindow(window);
+	window.PointerCursor(CoreCursor(CoreCursorType::Arrow, 0));
+	PointerVisualizationSettings visualizationSettings = PointerVisualizationSettings::GetForCurrentView();
+	visualizationSettings.IsContactFeedbackEnabled(false);
+	visualizationSettings.IsBarrelButtonFeedbackEnabled(false);
+
+	_deviceResources->SetWindow(window);
 
 	window.SizeChanged({ this, &App::OnWindowSizeChanged });
 	window.Closed({ this, &App::OnWindowClosed });
@@ -41,24 +47,24 @@ void App::SetWindow(CoreWindow const& window)
 
 void App::Load(winrt::hstring const&)
 {
-	if (m_main == nullptr)
+	if (_main == nullptr)
 	{
-		m_main = std::make_unique<NeonMain>();
+		_main = std::make_unique<NeonMain>();
 	}
 }
 
 void App::Run()
 {
-	while (!m_windowClosed)
+	while (!_windowClosed)
 	{
-		if (m_windowVisible)
+		if (_windowVisible)
 		{
 			CoreWindow::GetForCurrentThread().Dispatcher().ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
 
 			auto commandQueue = GetDeviceResources()->GetCommandQueue();
 			PIXBeginEvent(commandQueue, 0, L"Render");
 			{
-				if (m_main->Render())
+				if (_main->Render())
 				{
 					GetDeviceResources()->Present();
 				}
@@ -82,30 +88,30 @@ void App::OnActivated(CoreApplicationView const&, IActivatedEventArgs const&)
 
 void App::OnWindowSizeChanged(CoreWindow const&, WindowSizeChangedEventArgs const& args)
 {
-	m_deviceResources->SetLogicalSize(args.Size());
-	m_main->OnWindowSizeChanged();
+	_deviceResources->SetLogicalSize(args.Size());
+	_main->OnWindowSizeChanged();
 }
 
 void App::OnVisibilityChanged(CoreWindow const&, VisibilityChangedEventArgs const& args)
 {
-	m_windowVisible = args.Visible();
+	_windowVisible = args.Visible();
 }
 
 void App::OnWindowClosed(CoreWindow const&, CoreWindowEventArgs const&)
 {
-	m_windowClosed = true;
+	_windowClosed = true;
 }
 
 void App::OnDpiChanged(DisplayInformation const& sender, IInspectable const&)
 {
 	GetDeviceResources()->SetDpi(sender.LogicalDpi());
-	m_main->OnWindowSizeChanged();
+	_main->OnWindowSizeChanged();
 }
 
 void App::OnOrientationChanged(DisplayInformation const& sender, IInspectable const&)
 {
-	m_deviceResources->SetCurrentOrientation(sender.CurrentOrientation());
-	m_main->OnWindowSizeChanged();
+	_deviceResources->SetCurrentOrientation(sender.CurrentOrientation());
+	_main->OnWindowSizeChanged();
 }
 
 void App::OnDisplayContentsInvalidated(DisplayInformation const&, IInspectable const&)
@@ -114,19 +120,19 @@ void App::OnDisplayContentsInvalidated(DisplayInformation const&, IInspectable c
 }
 
 std::shared_ptr<DeviceResources> App::GetDeviceResources() {
-	if (m_deviceResources != nullptr && m_deviceResources->IsDeviceRemoved())
+	if (_deviceResources != nullptr && _deviceResources->IsDeviceRemoved())
 	{
-		m_deviceResources = nullptr;
-		m_main->OnDeviceRemoved();
+		_deviceResources = nullptr;
+		_main->OnDeviceRemoved();
 	}
 
-	if (m_deviceResources == nullptr)
+	if (_deviceResources == nullptr)
 	{
-		m_deviceResources = std::make_shared<DeviceResources>();
-		m_deviceResources->SetWindow(CoreWindow::GetForCurrentThread());
-		m_main->CreateRenderers(m_deviceResources);
+		_deviceResources = std::make_shared<DeviceResources>();
+		_deviceResources->SetWindow(CoreWindow::GetForCurrentThread());
+		_main->CreateRenderers(_deviceResources);
 	}
-	return m_deviceResources;
+	return _deviceResources;
 }
 
 void App::OnPointerPressed(IInspectable const&, PointerEventArgs const& args)

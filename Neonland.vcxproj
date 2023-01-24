@@ -442,6 +442,33 @@
     <None Include="packages.config" />
     <None Include="PropertySheet.props" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-16.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-24.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-256.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-32.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-48.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-16.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-24.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-256.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-32.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-48.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-100.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-125.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-150.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-200.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-400.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-16.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-24.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-256.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-32.png" />
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-48.png" />
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-100.png" />
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-125.png" />
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-150.png" />
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-200.png" />
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-400.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="packages\Microsoft.Windows.CppWinRT.2.0.221121.5\build\native\Microsoft.Windows.CppWinRT.targets" Condition="Exists('packages\Microsoft.Windows.CppWinRT.2.0.221121.5\build\native\Microsoft.Windows.CppWinRT.targets')" />

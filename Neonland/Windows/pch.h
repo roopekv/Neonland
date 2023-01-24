@@ -10,6 +10,7 @@
 #include <winrt/Windows.Graphics.Display.h>
 #include <winrt/Windows.Storage.Streams.h>
 #include <winrt/Windows.System.Threading.h>
+#include <winrt/Windows.UI.Input.h>
 
 
 #include <dxgi1_4.h>

@@ -25,27 +25,27 @@ public:
 
 private:
 	// Constant buffers must be 256-byte aligned.
-	static const uint32_t c_alignedConstantBufferSize = (sizeof(GlobalUniforms) + 255) & ~255;
+	static constexpr uint32_t AlignedConstantBufferSize = (sizeof(GlobalUniforms) + 255) & ~255;
 
 	// Cached pointer to device resources.
-	std::shared_ptr<DeviceResources> m_deviceResources;
+	std::shared_ptr<DeviceResources> _deviceResources;
 
-	bool m_loadingComplete;
+	bool _loadingComplete;
 
 	// Direct3D resources for cube geometry.
-	winrt::com_ptr<ID3D12GraphicsCommandList>	m_commandList;
-	winrt::com_ptr<ID3D12RootSignature>			m_rootSignature;
-	winrt::com_ptr<ID3D12PipelineState>			m_pipelineState;
-	winrt::com_ptr<ID3D12DescriptorHeap>		m_cbvHeap;
-	winrt::com_ptr<ID3D12Resource>				m_vertexBuffer;
-	winrt::com_ptr<ID3D12Resource>				m_indexBuffer;
-	winrt::com_ptr<ID3D12Resource>				m_constantBuffer;
-	GlobalUniforms								m_constantBufferData;
-	uint8_t* m_mappedConstantBuffer;
-	uint32_t									m_cbvDescriptorSize;
-	D3D12_RECT									m_scissorRect;
-	std::vector<char>							m_vertexShader;
-	std::vector<char>							m_fragmentShader;
-	D3D12_VERTEX_BUFFER_VIEW					m_vertexBufferView;
-	D3D12_INDEX_BUFFER_VIEW						m_indexBufferView;
+	winrt::com_ptr<ID3D12GraphicsCommandList>	_commandList;
+	winrt::com_ptr<ID3D12RootSignature>			_rootSignature;
+	winrt::com_ptr<ID3D12PipelineState>			_pipelineState;
+	winrt::com_ptr<ID3D12DescriptorHeap>		_cbvHeap;
+	winrt::com_ptr<ID3D12Resource>				_vertexBuffer;
+	winrt::com_ptr<ID3D12Resource>				_indexBuffer;
+	winrt::com_ptr<ID3D12Resource>				_constantBuffer;
+	GlobalUniforms								_constantBufferData;
+	uint8_t*									_mappedConstantBuffer;
+	uint32_t									_cbvDescriptorSize;
+	D3D12_RECT									_scissorRect;
+	std::vector<char>							_vertexShader;
+	std::vector<char>							_fragmentShader;
+	D3D12_VERTEX_BUFFER_VIEW					_vertexBufferView;
+	D3D12_INDEX_BUFFER_VIEW						_indexBufferView;
 };
