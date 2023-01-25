@@ -6,10 +6,14 @@
 #include <DirectXColors.h>
 #include <DirectXMath.h>
 #include <winrt/base.h>
+#include <array>
+#include <map>
+#include <string>
 
 #include "DeviceResources.hpp"
 
 #include "../Engine/ShaderTypes.h"
+#include "../NeonConstants.h"
 
 class Renderer
 {
@@ -20,6 +24,9 @@ public:
 	void CreateDeviceDependentResources();
 	void CreateWindowSizeDependentResources();
 	bool Render();
+
+	void LoadMesh(char* meshData, ID3D12Resource** vertexBuffer, ID3D12Resource** indexBuffer, uint32_t& vertexCount, uint32_t& indexCount);
+	void LoadTexture();
 
 private:
 	// Constant buffers must be 256-byte aligned.
@@ -35,14 +42,15 @@ private:
 	winrt::com_ptr<ID3D12RootSignature>			_rootSignature;
 	winrt::com_ptr<ID3D12PipelineState>			_pipelineState;
 	winrt::com_ptr<ID3D12DescriptorHeap>		_cbvHeap;
-	winrt::com_ptr<ID3D12Resource>				_vertexBuffer;
-	winrt::com_ptr<ID3D12Resource>				_indexBuffer;
 	winrt::com_ptr<ID3D12Resource>				_globalUniformsBuffer;
-	uint8_t*									_mappedGlobalUniformsBuffer;
 	uint32_t									_cbvDescriptorSize;
 	D3D12_RECT									_scissorRect;
-	std::vector<char>							_vertexShader;
-	std::vector<char>							_fragmentShader;
-	D3D12_VERTEX_BUFFER_VIEW					_vertexBufferView;
-	D3D12_INDEX_BUFFER_VIEW						_indexBufferView;
+
+	uint8_t* _mappedGlobalUniformsBuffer;
+
+	std::array<D3D12_VERTEX_BUFFER_VIEW, MeshTypeCount> _vertexBufferViews;
+	std::array<winrt::com_ptr<ID3D12Resource>, MeshTypeCount> _vertexBuffers;
+
+	std::array<D3D12_INDEX_BUFFER_VIEW, MeshTypeCount> _indexBufferViews;
+	std::array<winrt::com_ptr<ID3D12Resource>, MeshTypeCount> _indexBuffers;
 };

@@ -17,6 +17,7 @@
 #include <d3d12.h>
 #include <DirectXColors.h>
 #include <DirectXMath.h>
+#include <wincodec.h>
 #include <memory>
 #include <vector>
 
