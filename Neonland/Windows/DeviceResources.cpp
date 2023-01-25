@@ -301,8 +301,8 @@ void DeviceResources::UpdateRenderTargetSize()
 	m_outputSize.Width = std::floor(m_logicalSize.Width * m_dpi / dipsPerInch + 0.5f);
 	m_outputSize.Height = std::floor(m_logicalSize.Height * m_dpi / dipsPerInch + 0.5f);
 	// Prevent zero size DirectX content from being created.
-	m_outputSize.Width = max(m_outputSize.Width, 1.0f);
-	m_outputSize.Height = max(m_outputSize.Height, 1.0f);
+	m_outputSize.Width = std::max(m_outputSize.Width, 1.0f);
+	m_outputSize.Height = std::max(m_outputSize.Height, 1.0f);
 }
 
 // This method is called when the CoreWindow is created (or re-created).

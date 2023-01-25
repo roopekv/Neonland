@@ -1,5 +1,6 @@
 #pragma once
 
+#define NOMINMAX
 #include <windows.h>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Foundation.Collections.h>
@@ -12,7 +13,6 @@
 #include <winrt/Windows.System.Threading.h>
 #include <winrt/Windows.UI.Input.h>
 
-
 #include <dxgi1_4.h>
 #include <d3d12.h>
 #include <DirectXColors.h>
@@ -22,3 +22,5 @@
 #include <vector>
 
 #include "d3dx12.h"
+
+#include "WaveFrontReader.h"

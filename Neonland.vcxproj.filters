@@ -174,4 +174,50 @@
       <Filter>Neonland\Windows\Assets</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Neonland\Windows\FragmentShader.hlsl" />
+    <FxCompile Include="Neonland\Windows\VertexShader.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="Neonland\Textures\0.png" />
+    <ImageContentTask Include="Neonland\Textures\1.png" />
+    <ImageContentTask Include="Neonland\Textures\2.png" />
+    <ImageContentTask Include="Neonland\Textures\3.png" />
+    <ImageContentTask Include="Neonland\Textures\4.png" />
+    <ImageContentTask Include="Neonland\Textures\5.png" />
+    <ImageContentTask Include="Neonland\Textures\6.png" />
+    <ImageContentTask Include="Neonland\Textures\7.png" />
+    <ImageContentTask Include="Neonland\Textures\8.png" />
+    <ImageContentTask Include="Neonland\Textures\9.png" />
+    <ImageContentTask Include="Neonland\Textures\blank.png" />
+    <ImageContentTask Include="Neonland\Textures\by.png" />
+    <ImageContentTask Include="Neonland\Textures\enemies_remaining.png" />
+    <ImageContentTask Include="Neonland\Textures\exit_bt.png" />
+    <ImageContentTask Include="Neonland\Textures\game_over.png" />
+    <ImageContentTask Include="Neonland\Textures\ground1.png" />
+    <ImageContentTask Include="Neonland\Textures\ground2.png" />
+    <ImageContentTask Include="Neonland\Textures\ground3.png" />
+    <ImageContentTask Include="Neonland\Textures\hp.png" />
+    <ImageContentTask Include="Neonland\Textures\level_cleared.png" />
+    <ImageContentTask Include="Neonland\Textures\level1_bt.png" />
+    <ImageContentTask Include="Neonland\Textures\level2_bt.png" />
+    <ImageContentTask Include="Neonland\Textures\level3_bt.png" />
+    <ImageContentTask Include="Neonland\Textures\lock.png" />
+    <ImageContentTask Include="Neonland\Textures\neonland.png" />
+    <ImageContentTask Include="Neonland\Textures\num_keys.png" />
+    <ImageContentTask Include="Neonland\Textures\paused.png" />
+    <ImageContentTask Include="Neonland\Textures\quit_bt.png" />
+    <ImageContentTask Include="Neonland\Textures\resume_bt.png" />
+    <ImageContentTask Include="Neonland\Textures\sphere_360_shots.png" />
+    <ImageContentTask Include="Neonland\Textures\sphere_heart.png" />
+    <ImageContentTask Include="Neonland\Textures\wave.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Neonland\Models\crosshair.obj" />
+    <CopyFileToFolders Include="Neonland\Models\cube.obj" />
+    <CopyFileToFolders Include="Neonland\Models\plane.obj" />
+    <CopyFileToFolders Include="Neonland\Models\sphere.obj" />
+    <CopyFileToFolders Include="Neonland\Models\shard.obj" />
+    <CopyFileToFolders Include="Neonland\Models\spread_circle.obj" />
+  </ItemGroup>
 </Project>

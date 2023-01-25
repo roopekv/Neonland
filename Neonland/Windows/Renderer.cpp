@@ -32,18 +32,33 @@ struct Vertex {
 	float2 texCoords;
 };
 
-void Renderer::LoadMesh(char* meshData, ID3D12Resource** vertexBuffer, ID3D12Resource** indexBuffer, uint32_t& vertexCount, uint32_t& indexCount) {
-	// The first 4 bytes of the BasicMesh format define the number of vertices in the mesh.
-	vertexCount = *reinterpret_cast<uint32_t*>(meshData);
+void Renderer::LoadMesh(MeshType type, ID3D12Resource** vertexBuffer, ID3D12Resource** indexBuffer, uint32_t& vertexCount, uint32_t& indexCount) {
 
-	// The following 4 bytes define the number of indices in the mesh.
-	indexCount = *reinterpret_cast<uint32_t*>(meshData + sizeof(uint32_t));
+	static const std::map<MeshType, std::wstring> meshIdxToName = {
+		{PLANE_MESH, L"plane"},
+		{CROSSHAIR_MESH, L"crosshair"},
+		{SPREAD_MESH, L"spread_circle"},
+		{CUBE_MESH, L"cube"},
+		{SHARD_MESH, L"shard"},
+		{SPHERE_MESH, L"sphere"}
+	};
 
-	// The next segment of the BasicMesh format contains the vertices of the mesh.
-	Vertex* vertices = reinterpret_cast<Vertex*>(meshData + sizeof(uint32_t) * 2);
+	std::wstring filename = L"" + meshIdxToName.at(type) + L".obj";
 
-	// The last segment of the BasicMesh format contains the indices of the mesh.
-	uint16_t* indices = reinterpret_cast<uint16_t*>(meshData + sizeof(uint32_t) * 2 + sizeof(Vertex) * vertexCount);
+	std::ifstream file(filename, std::ios::ate);
+	std::string temp;
+
+	file >> temp;
+
+
+	WaveFrontReader<uint16_t> wfReader;
+	HRESULT hr = wfReader.Load(filename.c_str());
+	if (FAILED(hr)) {
+		std::abort();
+	}
+
+	vertexCount = wfReader.vertices.size();
+	indexCount = wfReader.indices.size();
 
 	// Create the vertex and index buffers with the mesh data.
 
@@ -75,7 +90,7 @@ void Renderer::LoadMesh(char* meshData, ID3D12Resource** vertexBuffer, ID3D12Res
 	// Upload the vertex buffer to the GPU.
 	{
 		D3D12_SUBRESOURCE_DATA vertexData = {};
-		vertexData.pData = vertices;
+		vertexData.pData = wfReader.vertices.data();
 		vertexData.RowPitch = sizeof(Vertex) * vertexCount;
 		vertexData.SlicePitch = vertexData.RowPitch;
 
@@ -109,7 +124,7 @@ void Renderer::LoadMesh(char* meshData, ID3D12Resource** vertexBuffer, ID3D12Res
 
 	// Upload the index buffer to the GPU.
 	D3D12_SUBRESOURCE_DATA indexData = {};
-	indexData.pData = indices;
+	indexData.pData = wfReader.vertices.data();
 	indexData.RowPitch = indexCount * sizeof(uint16_t);
 	indexData.SlicePitch = indexData.RowPitch;
 
@@ -173,7 +188,7 @@ void Renderer::CreateDeviceDependentResources()
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TEX_COORDS", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC state = {};
@@ -244,48 +259,37 @@ void Renderer::CreateDeviceDependentResources()
 
 	// Create vertex/index buffer views.
 
-	const std::map<MeshType, std::string> meshIdxToName = {
-		{PLANE_MESH, "plane"},
-		{CROSSHAIR_MESH, "crosshair"},
-		{SPREAD_MESH, "spread_circle"},
-		{CUBE_MESH, "cube"},
-		{SHARD_MESH, "shard"},
-		{SPHERE_MESH, "sphere"}
-	};
-
-	const std::map<TextureType, std::string> textureIdxToName = {
-		{NO_TEX, "blank"},
-		{ENEMIES_REMAINING_TEX, "enemies_remaining"},
-		{HP_TEX, "hp"},
-		{WAVE_TEX, "wave"},
-		{NEONLAND_TEX, "neonland"},
-		{NUM_KEYS_TEX, "num_keys"},
-		{GROUND1_TEX, "ground1"},
-		{GROUND2_TEX, "ground2"},
-		{GROUND3_TEX, "ground3"},
-		{LEVEL1_BT_TEX, "level1_bt"},
-		{LEVEL2_BT_TEX, "level2_bt"},
-		{LEVEL3_BT_TEX, "level3_bt"},
-		{PAUSED_TEX, "paused"},
-		{RESUME_BT_TEX, "resume_bt"},
-		{EXIT_BT_TEX, "exit_bt"},
-		{QUIT_BT_TEX, "quit_bt"},
-		{GAME_OVER_TEX, "game_over"},
-		{LEVEL_CLEARED_TEX, "level_cleared"},
-		{SPHERE_HEART_TEX, "sphere_heart"},
-		{SPHERE_360_SHOTS_TEX, "sphere_360_shots"},
-		{LOCK_TEX, "lock"},
-		{BY_TEX, "by"}
+	const std::map<TextureType, std::wstring> textureIdxToName = {
+		{NO_TEX, L"blank"},
+		{ENEMIES_REMAINING_TEX, L"enemies_remaining"},
+		{HP_TEX, L"hp"},
+		{WAVE_TEX, L"wave"},
+		{NEONLAND_TEX, L"neonland"},
+		{NUM_KEYS_TEX, L"num_keys"},
+		{GROUND1_TEX, L"ground1"},
+		{GROUND2_TEX, L"ground2"},
+		{GROUND3_TEX, L"ground3"},
+		{LEVEL1_BT_TEX, L"level1_bt"},
+		{LEVEL2_BT_TEX, L"level2_bt"},
+		{LEVEL3_BT_TEX, L"level3_bt"},
+		{PAUSED_TEX, L"paused"},
+		{RESUME_BT_TEX, L"resume_bt"},
+		{EXIT_BT_TEX, L"exit_bt"},
+		{QUIT_BT_TEX, L"quit_bt"},
+		{GAME_OVER_TEX, L"game_over"},
+		{LEVEL_CLEARED_TEX, L"level_cleared"},
+		{SPHERE_HEART_TEX, L"sphere_heart"},
+		{SPHERE_360_SHOTS_TEX, L"sphere_360_shots"},
+		{LOCK_TEX, L"lock"},
+		{BY_TEX, L"by"}
 	};
 
 	for (uint32_t i = 0; i < MeshTypeCount; i++)
 	{
-		auto data = loadFile(meshIdxToName.at(static_cast<MeshType>(i)));
-
 		uint32_t vertexCount;
 		uint32_t indexCount;
 
-		LoadMesh(data.data(), _vertexBuffers[i].put(), _indexBuffers[i].put(), vertexCount, indexCount);
+		LoadMesh(static_cast<MeshType>(i), _vertexBuffers[i].put(), _indexBuffers[i].put(), vertexCount, indexCount);
 
 		_vertexBufferViews[i].BufferLocation = _vertexBuffers[i]->GetGPUVirtualAddress();
 		_vertexBufferViews[i].StrideInBytes = sizeof(Vertex);

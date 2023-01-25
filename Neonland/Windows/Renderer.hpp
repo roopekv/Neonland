@@ -1,11 +1,7 @@
 #pragma once
 
+#include "pch.h"
 #include <memory>
-#include <dxgi1_4.h>
-#include <d3d12.h>
-#include <DirectXColors.h>
-#include <DirectXMath.h>
-#include <winrt/base.h>
 #include <array>
 #include <map>
 #include <string>
@@ -25,7 +21,7 @@ public:
 	void CreateWindowSizeDependentResources();
 	bool Render();
 
-	void LoadMesh(char* meshData, ID3D12Resource** vertexBuffer, ID3D12Resource** indexBuffer, uint32_t& vertexCount, uint32_t& indexCount);
+	void LoadMesh(MeshType type, ID3D12Resource** vertexBuffer, ID3D12Resource** indexBuffer, uint32_t& vertexCount, uint32_t& indexCount);
 	void LoadTexture();
 
 private:
