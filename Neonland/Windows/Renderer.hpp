@@ -16,7 +16,7 @@ public:
 	bool Render();
 
 	void LoadMesh(MeshType type, uint32_t& vertexCount, uint32_t& indexCount, ID3D12Resource* vertexUploadBuffer, ID3D12Resource* indexUploadBuffer);
-	void LoadTexture();
+	void LoadTexture(TextureType type, ID3D12Resource* uploadBuffer);
 
 private:
 	// Constant buffers must be 256-byte aligned.
@@ -36,6 +36,11 @@ private:
 
 	winrt::com_ptr<ID3D12DescriptorHeap>		_globalUniformsVHeap;
 	uint32_t									_globalUniformsVDescriptorSize;
+
+	winrt::com_ptr<ID3D12DescriptorHeap>		_textureVHeap;
+	uint32_t									_textureVDescriptorSize;
+
+
 	winrt::com_ptr<ID3D12Resource> _globalUniformsBuffer;
 	uint8_t* _mappedGlobalUniformsBuffer;
 
@@ -47,4 +52,9 @@ private:
 
 	std::array<D3D12_INDEX_BUFFER_VIEW, MeshTypeCount> _indexBufferViews;
 	std::array<winrt::com_ptr<ID3D12Resource>, MeshTypeCount> _indexBuffers;
+
+	std::array<D3D12_VERTEX_BUFFER_VIEW, TextureTypeCount> _textureBufferViews;
+	std::array<winrt::com_ptr<ID3D12Resource>, TextureTypeCount> _textureBuffers;
+
+	std::array<TexMetadata, TextureTypeCount> _textureMetadata;
 };

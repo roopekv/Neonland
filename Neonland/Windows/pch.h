@@ -28,6 +28,7 @@
 #include "d3dx12.h"
 
 #include "WaveFrontReader.h"
+#include "DirectXTex.h"
 
 #if defined(DEBUG) || defined(_DEBUG)
 #include "d3d12sdklayers.h"

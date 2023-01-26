@@ -11,13 +11,6 @@ using namespace winrt::Windows::Storage;
 
 const uint32_t Renderer::AlignedInstanceBufferSize = (sizeof(Instance) * MAX_INSTANCE_COUNT + 255) & ~255;
 
-
-struct VertexPositionColor
-{
-	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT3 color;
-};
-
 Renderer::Renderer(const std::shared_ptr<DeviceResources>& deviceResources) :
 	_mappedGlobalUniformsBuffer(nullptr),
 	_mappedInstanceBuffer(nullptr),
@@ -53,7 +46,7 @@ void Renderer::LoadMesh(MeshType type, uint32_t& vertexCount, uint32_t& indexCou
 		{SPHERE_MESH, L"sphere"}
 	};
 
-	std::wstring filename = L"" + meshIdxToName.at(type) + L".obj";
+	std::wstring filename = meshIdxToName.at(type) + L".obj";
 
 	WaveFrontReader<uint16_t> wfReader;
 	HRESULT hr = wfReader.Load(filename.c_str());
@@ -125,19 +118,116 @@ void Renderer::LoadMesh(MeshType type, uint32_t& vertexCount, uint32_t& indexCou
 	_commandList->ResourceBarrier(1, &indexBufferResourceBarrier);
 }
 
-void Renderer::LoadTexture() {
+void Renderer::LoadTexture(TextureType type, ID3D12Resource* uploadBuffer) {
 
+	const std::map<TextureType, std::wstring> textureIdxToName = {
+		{NO_TEX, L"blank"},
+		{ENEMIES_REMAINING_TEX, L"enemies_remaining"},
+		{HP_TEX, L"hp"},
+		{WAVE_TEX, L"wave"},
+		{NEONLAND_TEX, L"neonland"},
+		{NUM_KEYS_TEX, L"num_keys"},
+		{GROUND1_TEX, L"ground1"},
+		{GROUND2_TEX, L"ground2"},
+		{GROUND3_TEX, L"ground3"},
+		{LEVEL1_BT_TEX, L"level1_bt"},
+		{LEVEL2_BT_TEX, L"level2_bt"},
+		{LEVEL3_BT_TEX, L"level3_bt"},
+		{PAUSED_TEX, L"paused"},
+		{RESUME_BT_TEX, L"resume_bt"},
+		{EXIT_BT_TEX, L"exit_bt"},
+		{QUIT_BT_TEX, L"quit_bt"},
+		{GAME_OVER_TEX, L"game_over"},
+		{LEVEL_CLEARED_TEX, L"level_cleared"},
+		{SPHERE_HEART_TEX, L"sphere_heart"},
+		{SPHERE_360_SHOTS_TEX, L"sphere_360_shots"},
+		{LOCK_TEX, L"lock"},
+		{BY_TEX, L"by"}
+	};
+
+	std::wstring filename = textureIdxToName.at(type) + L".dds";
+
+	TexMetadata metadata;
+	ScratchImage img;
+	LoadFromDDSFile(filename.c_str(), DDS_FLAGS_NONE, &metadata, img);
+
+	D3D12_RESOURCE_DESC desc = {};
+	desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	desc.Alignment = 0;
+	desc.Width = metadata.width;
+	desc.Height = metadata.height;
+	desc.DepthOrArraySize = 1;
+	desc.MipLevels = 1;
+	desc.Format = metadata.format;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+	desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	desc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+	auto device = _deviceResources->GetD3DDevice();
+
+	CD3DX12_HEAP_PROPERTIES defaultHeapProperties(D3D12_HEAP_TYPE_DEFAULT);
+	winrt::check_hresult(device->CreateCommittedResource(
+		&defaultHeapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&desc,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		nullptr,
+		IID_PPV_ARGS(_textureBuffers[type].put())));
+
+	uint64_t textureUploadBufferSize;
+	uint64_t rowSizeInBytes;
+	device->GetCopyableFootprints(&desc, 0, 1, 0, nullptr, nullptr, &rowSizeInBytes, &textureUploadBufferSize);
+
+	CD3DX12_HEAP_PROPERTIES uploadHeapProperties(D3D12_HEAP_TYPE_UPLOAD);
+	winrt::check_hresult(device->CreateCommittedResource(
+		&uploadHeapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(textureUploadBufferSize),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&uploadBuffer)));
+
+	D3D12_SUBRESOURCE_DATA textureData = {};
+	textureData.pData = img.GetPixels();
+	textureData.RowPitch = rowSizeInBytes;
+	textureData.SlicePitch = rowSizeInBytes * desc.Height;
+
+	UpdateSubresources(_commandList.get(), _textureBuffers[type].get(), uploadBuffer, 0, 0, 1, &textureData);
+
+	CD3DX12_RESOURCE_BARRIER resourceBarrier = CD3DX12_RESOURCE_BARRIER::Transition(_textureBuffers[type].get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	_commandList->ResourceBarrier(1, &resourceBarrier);
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format = _textureMetadata[0].format;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+	device->CreateShaderResourceView(_textureBuffers[type].get(), &srvDesc, _textureVHeap->GetCPUDescriptorHandleForHeapStart());
+
+	_textureMetadata[type] = metadata;
+
+	TexSize texSize;
+	texSize.width = metadata.width;
+	texSize.height = metadata.height;
+	Neon_UpdateTextureSize(type, texSize);
 }
 
 void Renderer::CreateDeviceDependentResources()
 {
 	auto device = _deviceResources->GetD3DDevice();
 
-	CD3DX12_DESCRIPTOR_RANGE range;
-	CD3DX12_ROOT_PARAMETER parameter;
+	CD3DX12_DESCRIPTOR_RANGE uniformsRange;
+	CD3DX12_ROOT_PARAMETER uniformsParameter;
 
-	range.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
-	parameter.InitAsDescriptorTable(1, &range, D3D12_SHADER_VISIBILITY_VERTEX);
+	uniformsRange.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+	uniformsParameter.InitAsDescriptorTable(1, &uniformsRange, D3D12_SHADER_VISIBILITY_VERTEX);
+
+	CD3DX12_DESCRIPTOR_RANGE texturesRange;
+	CD3DX12_ROOT_PARAMETER texturesParameter;
+
+	texturesRange.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	texturesParameter.InitAsDescriptorTable(1, &texturesRange, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags =
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
@@ -146,8 +236,14 @@ void Renderer::CreateDeviceDependentResources()
 		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
 		D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
 
+	std::array<CD3DX12_ROOT_PARAMETER, 2> rootParameters = { uniformsParameter, texturesParameter };
+
+	CD3DX12_STATIC_SAMPLER_DESC staticSampler;
+	staticSampler.Init(0);
+	staticSampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
 	CD3DX12_ROOT_SIGNATURE_DESC descRootSignature;
-	descRootSignature.Init(1, &parameter, 0, nullptr, rootSignatureFlags);
+	descRootSignature.Init(2, rootParameters.data(), 1, &staticSampler, rootSignatureFlags);
 
 	winrt::com_ptr<ID3DBlob> pSignature;
 	winrt::com_ptr<ID3DBlob> pError;
@@ -203,31 +299,6 @@ void Renderer::CreateDeviceDependentResources()
 
 	winrt::check_hresult(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _deviceResources->GetCommandAllocator(), _pipelineState.get(), IID_PPV_ARGS(&_commandList)));
 
-	const std::map<TextureType, std::wstring> textureIdxToName = {
-		{NO_TEX, L"blank"},
-		{ENEMIES_REMAINING_TEX, L"enemies_remaining"},
-		{HP_TEX, L"hp"},
-		{WAVE_TEX, L"wave"},
-		{NEONLAND_TEX, L"neonland"},
-		{NUM_KEYS_TEX, L"num_keys"},
-		{GROUND1_TEX, L"ground1"},
-		{GROUND2_TEX, L"ground2"},
-		{GROUND3_TEX, L"ground3"},
-		{LEVEL1_BT_TEX, L"level1_bt"},
-		{LEVEL2_BT_TEX, L"level2_bt"},
-		{LEVEL3_BT_TEX, L"level3_bt"},
-		{PAUSED_TEX, L"paused"},
-		{RESUME_BT_TEX, L"resume_bt"},
-		{EXIT_BT_TEX, L"exit_bt"},
-		{QUIT_BT_TEX, L"quit_bt"},
-		{GAME_OVER_TEX, L"game_over"},
-		{LEVEL_CLEARED_TEX, L"level_cleared"},
-		{SPHERE_HEART_TEX, L"sphere_heart"},
-		{SPHERE_360_SHOTS_TEX, L"sphere_360_shots"},
-		{LOCK_TEX, L"lock"},
-		{BY_TEX, L"by"}
-	};
-
 	std::array<winrt::com_ptr<ID3D12Resource>, MeshTypeCount> vertexUploadBuffers;
 	std::array<winrt::com_ptr<ID3D12Resource>, MeshTypeCount> indexUploadBuffers;
 
@@ -247,11 +318,17 @@ void Renderer::CreateDeviceDependentResources()
 		_indexBufferViews[i].Format = DXGI_FORMAT_R16_UINT;
 	}
 
-	D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
-	heapDesc.NumDescriptors = MaxFramesInFlight;
-	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	winrt::check_hresult(device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&_globalUniformsVHeap)));
+	D3D12_DESCRIPTOR_HEAP_DESC textureHeapDesc = {};
+	textureHeapDesc.NumDescriptors = 1;
+	textureHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	textureHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	winrt::check_hresult(device->CreateDescriptorHeap(&textureHeapDesc, IID_PPV_ARGS(&_textureVHeap)));
+
+	D3D12_DESCRIPTOR_HEAP_DESC uniformsHeapDesc = {};
+	uniformsHeapDesc.NumDescriptors = MaxFramesInFlight;
+	uniformsHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	uniformsHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	winrt::check_hresult(device->CreateDescriptorHeap(&uniformsHeapDesc, IID_PPV_ARGS(&_globalUniformsVHeap)));
 
 	CD3DX12_HEAP_PROPERTIES uploadHeapProperties(D3D12_HEAP_TYPE_UPLOAD);
 
@@ -367,16 +444,26 @@ bool Renderer::Render()
 	instanceBufferView.SizeInBytes = AlignedInstanceBufferSize;
 
 	_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	auto device = _deviceResources->GetD3DDevice();
 	for (size_t groupIdx = 0; groupIdx < frameData.groupCount; groupIdx++)
 	{
 		uint32_t instanceCount = frameData.groupSizes[groupIdx];
 		uint32_t meshIdx = frameData.groupMeshes[groupIdx];
+
+		uint32_t texIdx = frameData.groupTextures[groupIdx];
 
 		if (meshIdx != prevMeshIdx) {
 			_commandList->IASetVertexBuffers(0, 1, &_vertexBufferViews[meshIdx]);
 			_commandList->IASetVertexBuffers(1, 1, &instanceBufferView);
 			_commandList->IASetIndexBuffer(&_indexBufferViews[meshIdx]);
 			prevMeshIdx = meshIdx;
+		}
+
+		if (texIdx != prevTexIdx) {
+
+
+			prevTexIdx = texIdx;
 		}
 
 		uint32_t indexCount = _indexBufferViews[meshIdx].SizeInBytes / sizeof(uint16_t);

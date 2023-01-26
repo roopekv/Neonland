@@ -898,6 +898,7 @@
   <ImportGroup Label="ExtensionTargets">
     <Import Project="packages\Microsoft.Windows.CppWinRT.2.0.221121.5\build\native\Microsoft.Windows.CppWinRT.targets" Condition="Exists('packages\Microsoft.Windows.CppWinRT.2.0.221121.5\build\native\Microsoft.Windows.CppWinRT.targets')" />
     <Import Project="packages\directxmesh_uwp.2022.12.18.1\build\native\directxmesh_uwp.targets" Condition="Exists('packages\directxmesh_uwp.2022.12.18.1\build\native\directxmesh_uwp.targets')" />
+    <Import Project="packages\directxtex_uwp.2022.12.18.1\build\native\directxtex_uwp.targets" Condition="Exists('packages\directxtex_uwp.2022.12.18.1\build\native\directxtex_uwp.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -906,5 +907,6 @@
     <Error Condition="!Exists('packages\Microsoft.Windows.CppWinRT.2.0.221121.5\build\native\Microsoft.Windows.CppWinRT.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.CppWinRT.2.0.221121.5\build\native\Microsoft.Windows.CppWinRT.props'))" />
     <Error Condition="!Exists('packages\Microsoft.Windows.CppWinRT.2.0.221121.5\build\native\Microsoft.Windows.CppWinRT.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Windows.CppWinRT.2.0.221121.5\build\native\Microsoft.Windows.CppWinRT.targets'))" />
     <Error Condition="!Exists('packages\directxmesh_uwp.2022.12.18.1\build\native\directxmesh_uwp.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\directxmesh_uwp.2022.12.18.1\build\native\directxmesh_uwp.targets'))" />
+    <Error Condition="!Exists('packages\directxtex_uwp.2022.12.18.1\build\native\directxtex_uwp.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\directxtex_uwp.2022.12.18.1\build\native\directxtex_uwp.targets'))" />
   </Target>
 </Project>
