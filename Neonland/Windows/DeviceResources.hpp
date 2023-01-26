@@ -91,5 +91,4 @@ private:
 
 	// Transforms used for display orientation.
 	DirectX::XMFLOAT4X4	m_orientationTransform3D;
-
 };

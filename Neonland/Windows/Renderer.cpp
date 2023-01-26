@@ -11,6 +11,13 @@ using namespace winrt::Windows::Storage;
 
 const uint32_t Renderer::AlignedInstanceBufferSize = (sizeof(Instance) * MAX_INSTANCE_COUNT + 255) & ~255;
 
+
+struct VertexPositionColor
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 color;
+};
+
 Renderer::Renderer(const std::shared_ptr<DeviceResources>& deviceResources) :
 	_mappedGlobalUniformsBuffer(nullptr),
 	_mappedInstanceBuffer(nullptr),
@@ -57,12 +64,7 @@ void Renderer::LoadMesh(MeshType type, uint32_t& vertexCount, uint32_t& indexCou
 	vertexCount = wfReader.vertices.size();
 	indexCount = wfReader.indices.size();
 
-	// Create the vertex and index buffers with the mesh data.
-
 	auto device = _deviceResources->GetD3DDevice();
-
-	// Create the vertex buffer resource in the GPU's default heap and copy vertex data into it using the upload heap.
-	// The upload resource must not be released until after the GPU has finished using it.
 
 	CD3DX12_HEAP_PROPERTIES defaultHeapProperties(D3D12_HEAP_TYPE_DEFAULT);
 	CD3DX12_RESOURCE_DESC vertexBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertex) * vertexCount);
@@ -83,7 +85,6 @@ void Renderer::LoadMesh(MeshType type, uint32_t& vertexCount, uint32_t& indexCou
 		nullptr,
 		IID_PPV_ARGS(&vertexUploadBuffer)));
 
-	// Upload the vertex buffer to the GPU.
 	D3D12_SUBRESOURCE_DATA vertexData = {};
 	vertexData.pData = wfReader.vertices.data();
 	vertexData.RowPitch = sizeof(Vertex) * vertexCount;
@@ -94,9 +95,6 @@ void Renderer::LoadMesh(MeshType type, uint32_t& vertexCount, uint32_t& indexCou
 	CD3DX12_RESOURCE_BARRIER vertexBufferResourceBarrier =
 		CD3DX12_RESOURCE_BARRIER::Transition(_vertexBuffers[type].get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
 	_commandList->ResourceBarrier(1, &vertexBufferResourceBarrier);
-
-	// Create the index buffer resource in the GPU's default heap and copy index data into it using the upload heap.
-	// The upload resource must not be released until after the GPU has finished using it.
 
 	CD3DX12_RESOURCE_DESC indexBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(indexCount * sizeof(uint16_t));
 	winrt::check_hresult(device->CreateCommittedResource(
@@ -115,9 +113,8 @@ void Renderer::LoadMesh(MeshType type, uint32_t& vertexCount, uint32_t& indexCou
 		nullptr,
 		IID_PPV_ARGS(&indexUploadBuffer)));
 
-	// Upload the index buffer to the GPU.
 	D3D12_SUBRESOURCE_DATA indexData = {};
-	indexData.pData = wfReader.vertices.data();
+	indexData.pData = wfReader.indices.data();
 	indexData.RowPitch = indexCount * sizeof(uint16_t);
 	indexData.SlicePitch = indexData.RowPitch;
 
@@ -136,7 +133,6 @@ void Renderer::CreateDeviceDependentResources()
 {
 	auto device = _deviceResources->GetD3DDevice();
 
-	// Create a root signature with a single constant buffer slot.
 	CD3DX12_DESCRIPTOR_RANGE range;
 	CD3DX12_ROOT_PARAMETER parameter;
 
@@ -144,7 +140,7 @@ void Renderer::CreateDeviceDependentResources()
 	parameter.InitAsDescriptorTable(1, &range, D3D12_SHADER_VISIBILITY_VERTEX);
 
 	D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags =
-		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | // Only the input assembler stage needs access to the constant buffer.
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
 		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
 		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
 		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
@@ -205,7 +201,6 @@ void Renderer::CreateDeviceDependentResources()
 
 	winrt::check_hresult(_deviceResources->GetD3DDevice()->CreateGraphicsPipelineState(&state, IID_PPV_ARGS(&_pipelineState)));
 
-	// Create a command list.
 	winrt::check_hresult(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _deviceResources->GetCommandAllocator(), _pipelineState.get(), IID_PPV_ARGS(&_commandList)));
 
 	const std::map<TextureType, std::wstring> textureIdxToName = {
@@ -252,11 +247,9 @@ void Renderer::CreateDeviceDependentResources()
 		_indexBufferViews[i].Format = DXGI_FORMAT_R16_UINT;
 	}
 
-	// Create a descriptor heap for the constant buffers.
 	D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
 	heapDesc.NumDescriptors = MaxFramesInFlight;
 	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	// This flag indicates that this descriptor heap can be bound to the pipeline and that descriptors contained in it can be referenced by a root table.
 	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	winrt::check_hresult(device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&_globalUniformsVHeap)));
 
@@ -270,8 +263,6 @@ void Renderer::CreateDeviceDependentResources()
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&_globalUniformsBuffer)));
-
-	// Create constant buffer views to access the upload buffer.
 
 	D3D12_GPU_VIRTUAL_ADDRESS globalUniformsBufferVGpuAddress = _globalUniformsBuffer->GetGPUVirtualAddress();
 	CD3DX12_CPU_DESCRIPTOR_HANDLE globalUniformsVCpuHandle(_globalUniformsVHeap->GetCPUDescriptorHandleForHeapStart());
@@ -288,11 +279,9 @@ void Renderer::CreateDeviceDependentResources()
 		globalUniformsVCpuHandle.Offset(_globalUniformsVDescriptorSize);
 	}
 
-	// Map the constant buffers.
-	CD3DX12_RANGE readRange(0, 0);		// We do not intend to read from this resource on the CPU.
+	CD3DX12_RANGE readRange(0, 0);
 	winrt::check_hresult(_globalUniformsBuffer->Map(0, &readRange, reinterpret_cast<void**>(&_mappedGlobalUniformsBuffer)));
 	ZeroMemory(_mappedGlobalUniformsBuffer, MaxFramesInFlight * AlignedGlobalUnformsBufferSize);
-	// We don't unmap this until the app closes. Keeping things mapped for the lifetime of the resource is okay.
 
 	CD3DX12_RESOURCE_DESC instanceBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(MaxFramesInFlight * AlignedInstanceBufferSize);
 	winrt::check_hresult(device->CreateCommittedResource(
@@ -306,29 +295,150 @@ void Renderer::CreateDeviceDependentResources()
 	winrt::check_hresult(_instanceBuffer->Map(0, &readRange, reinterpret_cast<void**>(&_mappedInstanceBuffer)));
 	ZeroMemory(_mappedInstanceBuffer, MaxFramesInFlight * AlignedInstanceBufferSize);
 
-	// Close the command list and execute it to begin the vertex/index buffer copy into the GPU's default heap.
+	// TEMP
+
+
+	// Cube vertices. Each vertex has a position and a color.
+	VertexPositionColor cubeVertices[] =
+	{
+		{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
+		{ XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f) },
+		{ XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f) },
+		{ XMFLOAT3(0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f) },
+	};
+
+	const UINT vertexBufferSize = sizeof(cubeVertices);
+
+	// Create the vertex buffer resource in the GPU's default heap and copy vertex data into it using the upload heap.
+	// The upload resource must not be released until after the GPU has finished using it.
+	winrt::com_ptr<ID3D12Resource> vertexBufferUpload;
+
+	CD3DX12_HEAP_PROPERTIES defaultHeapProperties(D3D12_HEAP_TYPE_DEFAULT);
+	CD3DX12_RESOURCE_DESC vertexBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize);
+	winrt::check_hresult(device->CreateCommittedResource(
+		&defaultHeapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&vertexBufferDesc,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		nullptr,
+		IID_PPV_ARGS(&m_vertexBuffer)));
+
+	winrt::check_hresult(device->CreateCommittedResource(
+		&uploadHeapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&vertexBufferDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&vertexBufferUpload)));
+
+	// Upload the vertex buffer to the GPU.
+	{
+		D3D12_SUBRESOURCE_DATA vertexData = {};
+		vertexData.pData = reinterpret_cast<BYTE*>(cubeVertices);
+		vertexData.RowPitch = vertexBufferSize;
+		vertexData.SlicePitch = vertexData.RowPitch;
+
+		UpdateSubresources(_commandList.get(), m_vertexBuffer.get(), vertexBufferUpload.get(), 0, 0, 1, &vertexData);
+
+		CD3DX12_RESOURCE_BARRIER vertexBufferResourceBarrier =
+			CD3DX12_RESOURCE_BARRIER::Transition(m_vertexBuffer.get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+		_commandList->ResourceBarrier(1, &vertexBufferResourceBarrier);
+	}
+
+	// Load mesh indices. Each trio of indices represents a triangle to be rendered on the screen.
+	// For example: 0,2,1 means that the vertices with indexes 0, 2 and 1 from the vertex buffer compose the
+	// first triangle of this mesh.
+	unsigned short cubeIndices[] =
+	{
+		0, 2, 1, // -x
+		1, 2, 3,
+
+		4, 5, 6, // +x
+		5, 7, 6,
+
+		0, 1, 5, // -y
+		0, 5, 4,
+
+		2, 6, 7, // +y
+		2, 7, 3,
+
+		0, 4, 6, // -z
+		0, 6, 2,
+
+		1, 3, 7, // +z
+		1, 7, 5,
+	};
+
+	const UINT indexBufferSize = sizeof(cubeIndices);
+
+	// Create the index buffer resource in the GPU's default heap and copy index data into it using the upload heap.
+	// The upload resource must not be released until after the GPU has finished using it.
+	winrt::com_ptr<ID3D12Resource> indexBufferUpload;
+
+	CD3DX12_RESOURCE_DESC indexBufferDesc = CD3DX12_RESOURCE_DESC::Buffer(indexBufferSize);
+	winrt::check_hresult(device->CreateCommittedResource(
+		&defaultHeapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&indexBufferDesc,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		nullptr,
+		IID_PPV_ARGS(&m_indexBuffer)));
+
+	winrt::check_hresult(device->CreateCommittedResource(
+		&uploadHeapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&indexBufferDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&indexBufferUpload)));
+
+	// Upload the index buffer to the GPU.
+	{
+		D3D12_SUBRESOURCE_DATA indexData = {};
+		indexData.pData = reinterpret_cast<BYTE*>(cubeIndices);
+		indexData.RowPitch = indexBufferSize;
+		indexData.SlicePitch = indexData.RowPitch;
+
+		UpdateSubresources(_commandList.get(), m_indexBuffer.get(), indexBufferUpload.get(), 0, 0, 1, &indexData);
+
+		CD3DX12_RESOURCE_BARRIER indexBufferResourceBarrier =
+			CD3DX12_RESOURCE_BARRIER::Transition(m_indexBuffer.get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_INDEX_BUFFER);
+		_commandList->ResourceBarrier(1, &indexBufferResourceBarrier);
+	}
+
+	m_vertexBufferView.BufferLocation = m_vertexBuffer->GetGPUVirtualAddress();
+	m_vertexBufferView.StrideInBytes = sizeof(VertexPositionColor);
+	m_vertexBufferView.SizeInBytes = sizeof(cubeVertices);
+
+	m_indexBufferView.BufferLocation = m_indexBuffer->GetGPUVirtualAddress();
+	m_indexBufferView.SizeInBytes = sizeof(cubeIndices);
+	m_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
+
+	// TEMP
+
+
 	winrt::check_hresult(_commandList->Close());
 	ID3D12CommandList* ppCommandLists[] = { _commandList.get() };
 	_deviceResources->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 
-	// Wait for the command list to finish executing; the vertex/index buffers need to be uploaded to the GPU before the upload resources go out of scope.
 	_deviceResources->WaitForGpu();
 
 	_loadingComplete = true;
 	Neon_Start();
 }
 
-// Initializes view parameters when the window size changes.
 void Renderer::CreateWindowSizeDependentResources()
 {
 	D3D12_VIEWPORT viewport = _deviceResources->GetScreenViewport();
 	_scissorRect = { 0, 0, static_cast<int32_t>(viewport.Width), static_cast<int32_t>(viewport.Height) };
 }
 
-// Renders one frame using the vertex and pixel shaders.
 bool Renderer::Render()
 {
-	// Loading is asynchronous. Only draw geometry after it's loaded.
 	if (!_loadingComplete)
 	{
 		return false;
@@ -346,29 +456,23 @@ bool Renderer::Render()
 
 	winrt::check_hresult(_deviceResources->GetCommandAllocator()->Reset());
 
-	// The command list can be reset anytime after ExecuteCommandList() is called.
 	winrt::check_hresult(_commandList->Reset(_deviceResources->GetCommandAllocator(), _pipelineState.get()));
 
-	// Set the graphics root signature and descriptor heaps to be used by this frame.
 	_commandList->SetGraphicsRootSignature(_rootSignature.get());
 	ID3D12DescriptorHeap* ppHeaps[] = { _globalUniformsVHeap.get() };
 	_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
-	// Bind the current frame's constant buffer to the pipeline.
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle(_globalUniformsVHeap->GetGPUDescriptorHandleForHeapStart(), _deviceResources->GetCurrentFrameIndex(), _globalUniformsVDescriptorSize);
 	_commandList->SetGraphicsRootDescriptorTable(0, gpuHandle);
 
-	// Set the viewport and scissor rectangle.
 	D3D12_VIEWPORT viewport = _deviceResources->GetScreenViewport();
 	_commandList->RSSetViewports(1, &viewport);
 	_commandList->RSSetScissorRects(1, &_scissorRect);
 
-	// Indicate this resource will be in use as a render target.
 	CD3DX12_RESOURCE_BARRIER renderTargetResourceBarrier =
 		CD3DX12_RESOURCE_BARRIER::Transition(_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	_commandList->ResourceBarrier(1, &renderTargetResourceBarrier);
 
-	// Record drawing commands.
 	D3D12_CPU_DESCRIPTOR_HANDLE renderTargetView = _deviceResources->GetRenderTargetView();
 	D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = _deviceResources->GetDepthStencilView();
 
@@ -384,9 +488,9 @@ bool Renderer::Render()
 	uint32_t prevMeshIdx = MeshTypeCount;
 
 	D3D12_VERTEX_BUFFER_VIEW instanceBufferView;
-	instanceBufferView.BufferLocation = _instanceBuffer->GetGPUVirtualAddress() + AlignedGlobalUnformsBufferSize * _deviceResources->GetCurrentFrameIndex();;
+	instanceBufferView.BufferLocation = _instanceBuffer->GetGPUVirtualAddress() + AlignedInstanceBufferSize * _deviceResources->GetCurrentFrameIndex();
 	instanceBufferView.StrideInBytes = sizeof(Instance);
-	instanceBufferView.SizeInBytes = sizeof(Instance) * frameData.instanceCount;
+	instanceBufferView.SizeInBytes = AlignedInstanceBufferSize;
 
 	_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	for (size_t groupIdx = 0; groupIdx < frameData.groupCount; groupIdx++)
@@ -406,14 +510,16 @@ bool Renderer::Render()
 		startOffset += instanceCount;
 	}
 
-	// Indicate that the render target will now be used to present when the command list is done executing.
+	_commandList->IASetVertexBuffers(0, 1, &m_vertexBufferView);
+	_commandList->IASetIndexBuffer(&m_indexBufferView);
+	_commandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
+
 	CD3DX12_RESOURCE_BARRIER presentResourceBarrier =
 		CD3DX12_RESOURCE_BARRIER::Transition(_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	_commandList->ResourceBarrier(1, &presentResourceBarrier);
 
 	winrt::check_hresult(_commandList->Close());
 
-	// Execute the command list.
 	ID3D12CommandList* ppCommandLists[] = { _commandList.get() };
 	_deviceResources->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 

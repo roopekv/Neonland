@@ -16,22 +16,21 @@ struct VertexShaderInput
 struct FragmentShaderInput
 {
 	float4 position : SV_POSITION;
-	float3 color : COLOR0;
+	float4 color : COLOR0;
 };
 
 FragmentShaderInput main(VertexShaderInput input)
 {
 	float4 pos = float4(input.position, 1.0f);
 
-	pos = mul(pos, input.instanceTf);
+	//pos = mul(pos, input.instanceTf);
 	pos = mul(pos, viewMatrix);
-	pos = mul(pos, projectionMatrix);
+	//pos = mul(pos, projectionMatrix);
 
 	FragmentShaderInput output;
 	output.position = pos;
 	output.color = input.instanceColor;
-
-	output.color = float4(1, 1, 1, 1);
+	//output.color = float4(1, 1, 1, 1);
 
 	return output;
 }

@@ -110,7 +110,6 @@ void App::OnDisplayContentsInvalidated(DisplayInformation const&, IInspectable c
 }
 
 std::shared_ptr<DeviceResources> App::GetDeviceResources() {
-
 	if (_deviceResources != nullptr && _deviceResources->IsDeviceRemoved())
 	{
 		_deviceResources = nullptr;
