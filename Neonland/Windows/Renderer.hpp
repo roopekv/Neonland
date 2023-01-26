@@ -18,11 +18,6 @@ public:
 	void LoadMesh(MeshType type, uint32_t& vertexCount, uint32_t& indexCount, ID3D12Resource* vertexUploadBuffer, ID3D12Resource* indexUploadBuffer);
 	void LoadTexture();
 
-	winrt::com_ptr<ID3D12Resource> m_vertexBuffer;
-	winrt::com_ptr<ID3D12Resource> m_indexBuffer;
-	D3D12_VERTEX_BUFFER_VIEW m_vertexBufferView;
-	D3D12_INDEX_BUFFER_VIEW m_indexBufferView;
-
 private:
 	// Constant buffers must be 256-byte aligned.
 	static constexpr uint32_t AlignedGlobalUnformsBufferSize = (sizeof(GlobalUniforms) + 255) & ~255;

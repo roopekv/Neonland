@@ -887,6 +887,11 @@ FrameData NeonScene::GetFrameData() {
     GlobalUniforms uniforms;
     uniforms.projMatrix = _scene.Get<Camera>(cam).GetProjectionMatrix();
     uniforms.viewMatrix = _scene.Get<Camera>(cam).GetViewMatrix();
+
+#ifdef _WIN64
+    XMStoreFloat4x4(&uniforms.projMatrix, XMMatrixTranspose(XMLoadFloat4x4(&uniforms.projMatrix)));
+    XMStoreFloat4x4(&uniforms.viewMatrix, XMMatrixTranspose(XMLoadFloat4x4(&uniforms.viewMatrix)));
+#endif
     
     FrameData frameData;
     frameData.globalUniforms = uniforms;
@@ -917,6 +922,11 @@ FrameData NeonScene::GetFrameData() {
             
             Instance instance;
             instance.transform = mesh.modelMatrix;
+
+#ifdef _WIN64
+            XMStoreFloat4x4(&instance.transform, XMMatrixTranspose(XMLoadFloat4x4(&instance.transform)));
+#endif
+
             instance.color = mesh.material.color * mesh.tint;
             _instances.emplace_back(instance);
             

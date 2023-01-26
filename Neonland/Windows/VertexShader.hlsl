@@ -23,9 +23,9 @@ FragmentShaderInput main(VertexShaderInput input)
 {
 	float4 pos = float4(input.position, 1.0f);
 
-	//pos = mul(pos, input.instanceTf);
+	pos = mul(pos, input.instanceTf);
 	pos = mul(pos, viewMatrix);
-	//pos = mul(pos, projectionMatrix);
+	pos = mul(pos, projectionMatrix);
 
 	FragmentShaderInput output;
 	output.position = pos;
