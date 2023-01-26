@@ -1,17 +1,5 @@
 #pragma once
 
-#include <dxgi1_4.h>
-#include <d3d12.h>
-#include <pix.h>
-#include <DirectXColors.h>
-#include <DirectXMath.h>
-
-#include <winrt/Windows.Foundation.Collections.h>
-#include <winrt/Windows.UI.Core.h>
-#include <winrt/Windows.Graphics.Display.h>
-
-#include "d3dx12.h"
-
 constexpr uint32_t MaxFramesInFlight = 3;
 
 interface IDeviceNotify
@@ -71,7 +59,7 @@ private:
 
 	// Direct3D objects.
 	winrt::com_ptr<ID3D12Device>			m_d3dDevice;
-	winrt::com_ptr<IDXGIFactory4>			m_dxgiFactory;
+	winrt::com_ptr<IDXGIFactory7>			m_dxgiFactory;
 	winrt::com_ptr<IDXGISwapChain3>			m_swapChain;
 	winrt::com_ptr<ID3D12Resource>			m_renderTargets[MaxFramesInFlight];
 	winrt::com_ptr<ID3D12Resource>			m_depthStencil;

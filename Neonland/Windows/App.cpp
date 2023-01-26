@@ -51,13 +51,11 @@ void App::Load(winrt::hstring const&)
 
 void App::Run()
 {
-	while (!_windowClosed && !Neon_AppShouldQuit())
+	while (!_windowClosed && !Neon_AppShouldQuit() && GetDeviceResources() != nullptr)
 	{
 		if (_windowVisible)
 		{
 			CoreWindow::GetForCurrentThread().Dispatcher().ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
-
-			auto commandQueue = GetDeviceResources()->GetCommandQueue();
 			if (_main->Render())
 			{
 				GetDeviceResources()->Present();
@@ -112,6 +110,7 @@ void App::OnDisplayContentsInvalidated(DisplayInformation const&, IInspectable c
 }
 
 std::shared_ptr<DeviceResources> App::GetDeviceResources() {
+
 	if (_deviceResources != nullptr && _deviceResources->IsDeviceRemoved())
 	{
 		_deviceResources = nullptr;

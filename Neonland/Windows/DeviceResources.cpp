@@ -73,11 +73,23 @@ void DeviceResources::CreateDeviceIndependentResources()
 // Configures the Direct3D device, and stores handles to it and the device context.
 void DeviceResources::CreateDeviceResources()
 {
-	winrt::check_hresult(CreateDXGIFactory1(IID_PPV_ARGS(&m_dxgiFactory)));
 
-	winrt::com_ptr<IDXGIAdapter1> adapter;
+#if defined(_DEBUG)
+	// If the project is in a debug build, enable debugging via SDK Layers.
+	{
+		winrt::com_ptr<ID3D12Debug6> debugController;
+		if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
+		{
+			debugController->EnableDebugLayer();
+		}
+	}
+	winrt::check_hresult(CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(&m_dxgiFactory)));
+#else
+	winrt::check_hresult(CreateDXGIFactory2(0, IID_PPV_ARGS(&m_dxgiFactory)));
+#endif
 
-	for (uint32_t adapterIndex = 0; DXGI_ERROR_NOT_FOUND != m_dxgiFactory->EnumAdapters1(adapterIndex, adapter.put()); adapterIndex++)
+	winrt::com_ptr<IDXGIAdapter4> adapter;
+	for (uint32_t adapterIndex = 0; DXGI_ERROR_NOT_FOUND != m_dxgiFactory->EnumAdapterByGpuPreference(adapterIndex, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(adapter.put())); adapterIndex++)
 	{
 		DXGI_ADAPTER_DESC1 desc;
 		adapter->GetDesc1(&desc);
