@@ -1,223 +1,431 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Neonland\Components\Anchor.cpp" />
-    <ClCompile Include="Neonland\Components\Button.cpp" />
-    <ClCompile Include="Neonland\Components\Camera.cpp" />
-    <ClCompile Include="Neonland\Components\Enemy.cpp" />
-    <ClCompile Include="Neonland\Components\HP.cpp" />
-    <ClCompile Include="Neonland\Components\Mesh.cpp" />
-    <ClCompile Include="Neonland\Components\Physics.cpp" />
-    <ClCompile Include="Neonland\Components\Pickup.cpp" />
-    <ClCompile Include="Neonland\Components\PlayerProjectile.cpp" />
-    <ClCompile Include="Neonland\Components\Transform.cpp" />
-    <ClCompile Include="Neonland\EnemyType.cpp" />
-    <ClCompile Include="Neonland\Engine\GameClock.cpp" />
-    <ClCompile Include="Neonland\Engine\IGroup.cpp" />
-    <ClCompile Include="Neonland\Engine\IPool.cpp" />
-    <ClCompile Include="Neonland\Engine\MathUtils.cpp" />
-    <ClCompile Include="Neonland\Engine\Scene.cpp" />
-    <ClCompile Include="Neonland\Engine\ThreadPool.cpp" />
-    <ClCompile Include="Neonland\Level.cpp" />
-    <ClCompile Include="Neonland\Material.cpp" />
-    <ClCompile Include="Neonland\NeonConstants.cpp" />
-    <ClCompile Include="Neonland\Neonland.cpp" />
-    <ClCompile Include="Neonland\NeonScene.cpp" />
-    <ClCompile Include="Neonland\NumberField.cpp" />
-    <ClCompile Include="Neonland\Wave.cpp" />
-    <ClCompile Include="Neonland\Weapon.cpp" />
-    <ClCompile Include="Neonland\Windows\App.cpp" />
-    <ClCompile Include="Neonland\Windows\DeviceResources.cpp" />
-    <ClCompile Include="Neonland\Windows\main.cpp" />
-    <ClCompile Include="Neonland\Windows\NeonMain.cpp" />
-    <ClCompile Include="Neonland\Windows\pch.cpp" />
-    <ClCompile Include="Neonland\Windows\Renderer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Neonland\Components\Anchor.hpp" />
-    <ClInclude Include="Neonland\Components\Button.hpp" />
-    <ClInclude Include="Neonland\Components\Camera.hpp" />
-    <ClInclude Include="Neonland\Components\Enemy.hpp" />
-    <ClInclude Include="Neonland\Components\HP.hpp" />
-    <ClInclude Include="Neonland\Components\Mesh.hpp" />
-    <ClInclude Include="Neonland\Components\Physics.hpp" />
-    <ClInclude Include="Neonland\Components\Pickup.hpp" />
-    <ClInclude Include="Neonland\Components\PlayerProjectile.hpp" />
-    <ClInclude Include="Neonland\Components\Transform.hpp" />
-    <ClInclude Include="Neonland\EnemyType.hpp" />
-    <ClInclude Include="Neonland\Engine\Component.hpp" />
-    <ClInclude Include="Neonland\Engine\ComponentMask.hpp" />
-    <ClInclude Include="Neonland\Engine\ComponentType.hpp" />
-    <ClInclude Include="Neonland\Engine\Entity.hpp" />
-    <ClInclude Include="Neonland\Engine\FrameData.h" />
-    <ClInclude Include="Neonland\Engine\GameClock.hpp" />
-    <ClInclude Include="Neonland\Engine\Group.hpp" />
-    <ClInclude Include="Neonland\Engine\IGroup.hpp" />
-    <ClInclude Include="Neonland\Engine\IPool.hpp" />
-    <ClInclude Include="Neonland\Engine\MathUtils.hpp" />
-    <ClInclude Include="Neonland\Engine\Pool.hpp" />
-    <ClInclude Include="Neonland\Engine\Scene.hpp" />
-    <ClInclude Include="Neonland\Engine\ShaderTypes.h" />
-    <ClInclude Include="Neonland\Engine\ThreadPool.hpp" />
-    <ClInclude Include="Neonland\GameState.hpp" />
-    <ClInclude Include="Neonland\Level.hpp" />
-    <ClInclude Include="Neonland\macOS\Neonland-Bridging-Header.h" />
-    <ClInclude Include="Neonland\Material.hpp" />
-    <ClInclude Include="Neonland\NeonConstants.h" />
-    <ClInclude Include="Neonland\Neonland.h" />
-    <ClInclude Include="Neonland\NeonScene.hpp" />
-    <ClInclude Include="Neonland\NumberField.hpp" />
-    <ClInclude Include="Neonland\Wave.hpp" />
-    <ClInclude Include="Neonland\Weapon.hpp" />
-    <ClInclude Include="Neonland\Windows\App.hpp" />
-    <ClInclude Include="Neonland\Windows\d3dx12.h" />
-    <ClInclude Include="Neonland\Windows\DeviceResources.hpp" />
-    <ClInclude Include="Neonland\Windows\NeonMain.hpp" />
-    <ClInclude Include="Neonland\Windows\pch.h" />
-    <ClInclude Include="Neonland\Windows\Renderer.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <AppxManifest Include="Package.appxmanifest" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="PropertySheet.props" />
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="Assets">
-      <UniqueIdentifier>{93415d18-5d44-4ef7-8cae-13450e8852f7}</UniqueIdentifier>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Neonland">
-      <UniqueIdentifier>{fc419ed8-61e3-413a-914b-45fad6b39bcf}</UniqueIdentifier>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Neonland\Windows">
-      <UniqueIdentifier>{437f97da-3fcb-4856-b52b-9299e20ba6b8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Neonland\Windows\Assets">
-      <UniqueIdentifier>{34f73956-8bdc-44ba-aea5-ce5b00c498b0}</UniqueIdentifier>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Neonland\Windows\Assets\app_icon.scale-100.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.scale-125.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.scale-150.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.scale-200.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.scale-400.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-16.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-24.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-32.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-48.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-256.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-16.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-24.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-32.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-48.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-256.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-16.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-24.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-32.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-48.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-256.png">
-      <Filter>Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-100.png">
-      <Filter>Neonland\Windows\Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-125.png">
-      <Filter>Neonland\Windows\Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-150.png">
-      <Filter>Neonland\Windows\Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-200.png">
-      <Filter>Neonland\Windows\Assets</Filter>
-    </Image>
-    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-400.png">
-      <Filter>Neonland\Windows\Assets</Filter>
-    </Image>
+    <ImageContentTask Include="Neonland\Textures\0.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\1.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\2.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\3.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\4.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\5.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\6.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\7.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\8.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\9.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\blank.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\by.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\enemies_remaining.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\exit_bt.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\game_over.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\ground1.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\ground2.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\ground3.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\hp.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\level1_bt.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\level2_bt.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\level3_bt.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\level_cleared.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\lock.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\neonland.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\num_keys.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\paused.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\quit_bt.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\resume_bt.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\sphere_360_shots.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\sphere_heart.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Neonland\Textures\wave.png">
+      <Filter>Resource Files</Filter>
+    </ImageContentTask>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Neonland\Windows\FragmentShader.hlsl" />
     <FxCompile Include="Neonland\Windows\VertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ImageContentTask Include="Neonland\Textures\0.png" />
-    <ImageContentTask Include="Neonland\Textures\1.png" />
-    <ImageContentTask Include="Neonland\Textures\2.png" />
-    <ImageContentTask Include="Neonland\Textures\3.png" />
-    <ImageContentTask Include="Neonland\Textures\4.png" />
-    <ImageContentTask Include="Neonland\Textures\5.png" />
-    <ImageContentTask Include="Neonland\Textures\6.png" />
-    <ImageContentTask Include="Neonland\Textures\7.png" />
-    <ImageContentTask Include="Neonland\Textures\8.png" />
-    <ImageContentTask Include="Neonland\Textures\9.png" />
-    <ImageContentTask Include="Neonland\Textures\blank.png" />
-    <ImageContentTask Include="Neonland\Textures\by.png" />
-    <ImageContentTask Include="Neonland\Textures\enemies_remaining.png" />
-    <ImageContentTask Include="Neonland\Textures\exit_bt.png" />
-    <ImageContentTask Include="Neonland\Textures\game_over.png" />
-    <ImageContentTask Include="Neonland\Textures\ground1.png" />
-    <ImageContentTask Include="Neonland\Textures\ground2.png" />
-    <ImageContentTask Include="Neonland\Textures\ground3.png" />
-    <ImageContentTask Include="Neonland\Textures\hp.png" />
-    <ImageContentTask Include="Neonland\Textures\level_cleared.png" />
-    <ImageContentTask Include="Neonland\Textures\level1_bt.png" />
-    <ImageContentTask Include="Neonland\Textures\level2_bt.png" />
-    <ImageContentTask Include="Neonland\Textures\level3_bt.png" />
-    <ImageContentTask Include="Neonland\Textures\lock.png" />
-    <ImageContentTask Include="Neonland\Textures\neonland.png" />
-    <ImageContentTask Include="Neonland\Textures\num_keys.png" />
-    <ImageContentTask Include="Neonland\Textures\paused.png" />
-    <ImageContentTask Include="Neonland\Textures\quit_bt.png" />
-    <ImageContentTask Include="Neonland\Textures\resume_bt.png" />
-    <ImageContentTask Include="Neonland\Textures\sphere_360_shots.png" />
-    <ImageContentTask Include="Neonland\Textures\sphere_heart.png" />
-    <ImageContentTask Include="Neonland\Textures\wave.png" />
+    <ClCompile Include="Neonland\Components\Anchor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Components\Button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Components\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Components\Enemy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Components\HP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Components\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Components\Physics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Components\Pickup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Components\PlayerProjectile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Components\Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\EnemyType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Engine\GameClock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Engine\IGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Engine\IPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Engine\MathUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Engine\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Engine\ThreadPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\NeonConstants.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Neonland.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\NeonScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\NumberField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Wave.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Weapon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Windows\App.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Windows\DeviceResources.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Windows\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Windows\NeonMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Windows\pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Neonland\Windows\Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Neonland\Components\Anchor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Components\Button.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Components\Camera.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Components\Enemy.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Components\HP.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Components\Mesh.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Components\Physics.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Components\Pickup.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Components\PlayerProjectile.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Components\Transform.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\EnemyType.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Engine\Component.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Engine\ComponentMask.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Engine\ComponentType.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Engine\Entity.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Engine\FrameData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Engine\GameClock.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Engine\Group.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Engine\IGroup.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Engine\IPool.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Engine\MathUtils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Engine\Pool.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Engine\Scene.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Engine\ShaderTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Engine\ThreadPool.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\GameState.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Level.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\macOS\Neonland-Bridging-Header.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Material.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\NeonConstants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Neonland.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\NeonScene.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\NumberField.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Wave.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Weapon.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Windows\App.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Windows\d3dx12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Windows\DeviceResources.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Windows\NeonMain.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Windows\pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Neonland\Windows\Renderer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-16.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-24.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-256.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-32.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-48.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-16.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-24.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-256.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-32.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-48.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-100.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-125.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-150.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-200.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.scale-400.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-16.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-24.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-256.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-32.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\app_icon.targetsize-48.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-100.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-125.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-150.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-200.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Neonland\Windows\Assets\SplashScreen.scale-400.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Neonland\Models\crosshair.obj" />
     <CopyFileToFolders Include="Neonland\Models\cube.obj" />
     <CopyFileToFolders Include="Neonland\Models\plane.obj" />
-    <CopyFileToFolders Include="Neonland\Models\sphere.obj" />
     <CopyFileToFolders Include="Neonland\Models\shard.obj" />
+    <CopyFileToFolders Include="Neonland\Models\sphere.obj" />
     <CopyFileToFolders Include="Neonland\Models\spread_circle.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="PropertySheet.props" />
   </ItemGroup>
 </Project>

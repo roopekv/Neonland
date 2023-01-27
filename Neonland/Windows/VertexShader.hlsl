@@ -1,4 +1,4 @@
-cbuffer ModelViewProjectionConstantBuffer : register(b0)
+cbuffer GlobalUniformsBuffer : register(b0)
 {
 	matrix viewMatrix;
 	matrix projectionMatrix;
@@ -16,7 +16,7 @@ struct VertexShaderInput
 struct FragmentShaderInput
 {
 	float4 position : SV_POSITION;
-	float4 color : COLOR0;
+	float2 texCoord : TEXCOORD;
 };
 
 FragmentShaderInput main(VertexShaderInput input)
@@ -29,7 +29,7 @@ FragmentShaderInput main(VertexShaderInput input)
 
 	FragmentShaderInput output;
 	output.position = pos;
-	output.color = input.instanceColor;
+	output.texCoord = input.texCoord;
 	//output.color = float4(1, 1, 1, 1);
 
 	return output;

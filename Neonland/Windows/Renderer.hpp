@@ -15,7 +15,7 @@ public:
 	void CreateWindowSizeDependentResources();
 	bool Render();
 
-	void LoadMesh(MeshType type, uint32_t& vertexCount, uint32_t& indexCount, ID3D12Resource* vertexUploadBuffer, ID3D12Resource* indexUploadBuffer);
+	void LoadMesh(MeshType type, ID3D12Resource* vertexUploadBuffer, ID3D12Resource* indexUploadBuffer);
 	void LoadTexture(TextureType type, ID3D12Resource* uploadBuffer);
 
 private:
@@ -34,12 +34,9 @@ private:
 	winrt::com_ptr<ID3D12PipelineState>			_pipelineState;
 	D3D12_RECT									_scissorRect;
 
-	winrt::com_ptr<ID3D12DescriptorHeap>		_globalUniformsVHeap;
-	uint32_t									_globalUniformsVDescriptorSize;
+	winrt::com_ptr<ID3D12DescriptorHeap> _descHeap;
 
-	winrt::com_ptr<ID3D12DescriptorHeap>		_textureVHeap;
-	uint32_t									_textureVDescriptorSize;
-
+	uint32_t _CBV_SRV_UAV_ViewDescriptorSize;
 
 	winrt::com_ptr<ID3D12Resource> _globalUniformsBuffer;
 	uint8_t* _mappedGlobalUniformsBuffer;
@@ -53,8 +50,5 @@ private:
 	std::array<D3D12_INDEX_BUFFER_VIEW, MeshTypeCount> _indexBufferViews;
 	std::array<winrt::com_ptr<ID3D12Resource>, MeshTypeCount> _indexBuffers;
 
-	std::array<D3D12_VERTEX_BUFFER_VIEW, TextureTypeCount> _textureBufferViews;
 	std::array<winrt::com_ptr<ID3D12Resource>, TextureTypeCount> _textureBuffers;
-
-	std::array<TexMetadata, TextureTypeCount> _textureMetadata;
 };
