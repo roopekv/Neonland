@@ -19,20 +19,18 @@ public:
 	void LoadTexture(TextureType type, ID3D12Resource* uploadBuffer);
 
 private:
-	// Constant buffers must be 256-byte aligned.
 	static constexpr uint32_t AlignedGlobalUnformsBufferSize = (sizeof(GlobalUniforms) + 255) & ~255;
 	static const uint32_t AlignedInstanceBufferSize;
 
-	// Cached pointer to device resources.
 	std::shared_ptr<DeviceResources> _deviceResources;
 
 	bool _loadingComplete;
 
-	// Direct3D resources for cube geometry.
 	winrt::com_ptr<ID3D12GraphicsCommandList>	_commandList;
 	winrt::com_ptr<ID3D12RootSignature>			_rootSignature;
-	winrt::com_ptr<ID3D12PipelineState>			_pipelineState;
 	D3D12_RECT									_scissorRect;
+
+	std::array<winrt::com_ptr<ID3D12PipelineState>, ShaderTypeCount> _pipelineStates;
 
 	winrt::com_ptr<ID3D12DescriptorHeap> _descHeap;
 

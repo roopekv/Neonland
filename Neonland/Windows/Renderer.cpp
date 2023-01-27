@@ -127,7 +127,7 @@ void Renderer::LoadMesh(MeshType type, ID3D12Resource* vertexUploadBuffer, ID3D1
 
 void Renderer::LoadTexture(TextureType type, ID3D12Resource* uploadBuffer) {
 
-	const std::map<TextureType, std::wstring> textureIdxToName = {
+	static const std::unordered_map<TextureType, std::wstring> textureIdxToName = {
 		{NO_TEX, L"blank"},
 		{ENEMIES_REMAINING_TEX, L"enemies_remaining"},
 		{HP_TEX, L"hp"},
@@ -149,7 +149,17 @@ void Renderer::LoadTexture(TextureType type, ID3D12Resource* uploadBuffer) {
 		{SPHERE_HEART_TEX, L"sphere_heart"},
 		{SPHERE_360_SHOTS_TEX, L"sphere_360_shots"},
 		{LOCK_TEX, L"lock"},
-		{BY_TEX, L"by"}
+		{BY_TEX, L"by"},
+		{ZERO_TEX, L"0"},
+		{ONE_TEX, L"1"},
+		{TWO_TEX, L"2"},
+		{THREE_TEX, L"3"},
+		{FOUR_TEX, L"4"},
+		{FIVE_TEX, L"5"},
+		{SIX_TEX, L"6"},
+		{SEVEN_TEX, L"7"},
+		{EIGHT_TEX, L"8"},
+		{NINE_TEX, L"9"},
 	};
 
 	std::wstring filename = textureIdxToName.at(type) + L".dds";
@@ -229,7 +239,7 @@ void Renderer::CreateDeviceDependentResources()
 	CD3DX12_ROOT_PARAMETER uniformsParam;
 	uniformsParam.InitAsDescriptorTable(1, &uniformsRange, D3D12_SHADER_VISIBILITY_VERTEX);
 
-	CD3DX12_DESCRIPTOR_RANGE textureRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0, 3);
+	CD3DX12_DESCRIPTOR_RANGE textureRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0, 0);
 	CD3DX12_ROOT_PARAMETER textureParam;
 	textureParam.InitAsDescriptorTable(1, &textureRange, D3D12_SHADER_VISIBILITY_PIXEL);
 
@@ -269,8 +279,11 @@ void Renderer::CreateDeviceDependentResources()
 		return buffer;
 	};
 
-	std::vector<char> vertexShader = loadFile("VertexShader.cso");
-	std::vector<char> fragmentShader = loadFile("FragmentShader.cso");
+	std::vector<char> litVertexShader = loadFile("LitVertexShader.cso");
+	std::vector<char> litFragmentShader = loadFile("LitFragmentShader.cso");
+
+	std::vector<char> uiVertexShader = loadFile("UIVertexShader.cso");
+	std::vector<char> uiFragmentShader = loadFile("UIFragmentShader.cso");
 
 	static const std::array<D3D12_INPUT_ELEMENT_DESC, 8> inputLayout =
 	{
@@ -285,24 +298,29 @@ void Renderer::CreateDeviceDependentResources()
 		D3D12_INPUT_ELEMENT_DESC{ "INSTANCECOLOR",  0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 },
 	};
 
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC state = {};
-	state.InputLayout = { inputLayout.data(), inputLayout.size()};
-	state.pRootSignature = _rootSignature.get();
-	state.VS = CD3DX12_SHADER_BYTECODE(vertexShader.data(), vertexShader.size());
-	state.PS = CD3DX12_SHADER_BYTECODE(fragmentShader.data(), fragmentShader.size());
-	state.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	state.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-	state.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-	state.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-	state.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	state.NumRenderTargets = 1;
-	state.RTVFormats[0] = _deviceResources->GetBackBufferFormat();
-	state.DSVFormat = _deviceResources->GetDepthBufferFormat();
-	state.SampleDesc.Count = 1;
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC litState = {};
+	litState.InputLayout = { inputLayout.data(), inputLayout.size() };
+	litState.pRootSignature = _rootSignature.get();
+	litState.VS = CD3DX12_SHADER_BYTECODE(litVertexShader.data(), litVertexShader.size());
+	litState.PS = CD3DX12_SHADER_BYTECODE(litFragmentShader.data(), litFragmentShader.size());
+	litState.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	litState.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+	litState.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+	litState.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+	litState.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	litState.NumRenderTargets = 1;
+	litState.RTVFormats[0] = _deviceResources->GetBackBufferFormat();
+	litState.DSVFormat = _deviceResources->GetDepthBufferFormat();
+	litState.SampleDesc.Count = 1;
 
-	winrt::check_hresult(_deviceResources->GetD3DDevice()->CreateGraphicsPipelineState(&state, IID_PPV_ARGS(&_pipelineState)));
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC uiState = litState;
+	uiState.VS = CD3DX12_SHADER_BYTECODE(uiVertexShader.data(), uiVertexShader.size());
+	uiState.PS = CD3DX12_SHADER_BYTECODE(uiFragmentShader.data(), uiFragmentShader.size());
 
-	winrt::check_hresult(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _deviceResources->GetCommandAllocator(), _pipelineState.get(), IID_PPV_ARGS(&_commandList)));
+	winrt::check_hresult(_deviceResources->GetD3DDevice()->CreateGraphicsPipelineState(&litState, IID_PPV_ARGS(&_pipelineStates[LIT_SHADER])));
+	winrt::check_hresult(_deviceResources->GetD3DDevice()->CreateGraphicsPipelineState(&uiState, IID_PPV_ARGS(&_pipelineStates[UI_SHADER])));
+
+	winrt::check_hresult(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _deviceResources->GetCommandAllocator(), _pipelineStates[LIT_SHADER].get(), IID_PPV_ARGS(&_commandList)));
 
 	std::array<winrt::com_ptr<ID3D12Resource>, MeshTypeCount> vertexUploadBuffers;
 	std::array<winrt::com_ptr<ID3D12Resource>, MeshTypeCount> indexUploadBuffers;
@@ -360,7 +378,7 @@ void Renderer::CreateDeviceDependentResources()
 	ZeroMemory(_mappedInstanceBuffer, MaxFramesInFlight * AlignedInstanceBufferSize);
 
 	std::array<winrt::com_ptr<ID3D12Resource>, TextureTypeCount> textureUploadBuffers;
-	for (uint32_t i = 0; i < MeshTypeCount; i++)
+	for (uint32_t i = 0; i < TextureTypeCount; i++)
 	{
 		LoadTexture(static_cast<TextureType>(i), textureUploadBuffers[i].get());
 	}
@@ -401,7 +419,7 @@ bool Renderer::Render()
 
 	// Prepare for rendering
 	winrt::check_hresult(_deviceResources->GetCommandAllocator()->Reset());
-	winrt::check_hresult(_commandList->Reset(_deviceResources->GetCommandAllocator(), _pipelineState.get()));
+	winrt::check_hresult(_commandList->Reset(_deviceResources->GetCommandAllocator(), _pipelineStates[LIT_SHADER].get()));
 
 	_commandList->SetGraphicsRootSignature(_rootSignature.get());
 
@@ -427,11 +445,6 @@ bool Renderer::Render()
 	_commandList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	_commandList->OMSetRenderTargets(1, &renderTargetView, false, &depthStencilView);
 
-	uint32_t startOffset = 0;
-	uint32_t prevTexIdx = TextureTypeCount;
-	uint32_t prevShaderIdx = ShaderTypeCount;
-	uint32_t prevMeshIdx = MeshTypeCount;
-
 	D3D12_VERTEX_BUFFER_VIEW instanceBufferView;
 	instanceBufferView.BufferLocation = _instanceBuffer->GetGPUVirtualAddress() + AlignedInstanceBufferSize * _deviceResources->GetCurrentFrameIndex();
 	instanceBufferView.StrideInBytes = sizeof(Instance);
@@ -439,24 +452,36 @@ bool Renderer::Render()
 
 	_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	uint32_t startOffset = 0;
+	uint32_t prevTexIdx = TextureTypeCount;
+	uint32_t prevMeshIdx = MeshTypeCount;
+	uint32_t prevShaderIdx = LIT_SHADER;
+
 	auto device = _deviceResources->GetD3DDevice();
 	for (size_t groupIdx = 0; groupIdx < frameData.groupCount; groupIdx++)
 	{
 		size_t instanceCount = frameData.groupSizes[groupIdx];
 		uint32_t meshIdx = frameData.groupMeshes[groupIdx];
 		uint32_t texIdx = frameData.groupTextures[groupIdx];
+		uint32_t shaderIdx = frameData.groupShaders[groupIdx];
 
-		if (meshIdx != prevMeshIdx) {
-			_commandList->IASetVertexBuffers(0, 1, &_vertexBufferViews[meshIdx]);
-			_commandList->IASetVertexBuffers(1, 1, &instanceBufferView);
-			_commandList->IASetIndexBuffer(&_indexBufferViews[meshIdx]);
-			prevMeshIdx = meshIdx;
+		if (shaderIdx != prevShaderIdx) 
+		{
+			_commandList->SetPipelineState(_pipelineStates[shaderIdx].get());
+			prevShaderIdx = shaderIdx;
 		}
 
 		if (texIdx != prevTexIdx) {
 			CD3DX12_GPU_DESCRIPTOR_HANDLE texGpuHandle(_descHeap->GetGPUDescriptorHandleForHeapStart(), MaxFramesInFlight + texIdx, _CBV_SRV_UAV_ViewDescriptorSize);
 			_commandList->SetGraphicsRootDescriptorTable(1, texGpuHandle);
 			prevTexIdx = texIdx;
+		}
+
+		if (meshIdx != prevMeshIdx) {
+			_commandList->IASetVertexBuffers(0, 1, &_vertexBufferViews[meshIdx]);
+			_commandList->IASetVertexBuffers(1, 1, &instanceBufferView);
+			_commandList->IASetIndexBuffer(&_indexBufferViews[meshIdx]);
+			prevMeshIdx = meshIdx;
 		}
 
 		size_t indexCount = _indexBufferViews[meshIdx].SizeInBytes / sizeof(uint16_t);

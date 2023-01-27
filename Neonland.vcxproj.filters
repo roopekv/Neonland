@@ -113,8 +113,10 @@
     </ImageContentTask>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Neonland\Windows\FragmentShader.hlsl" />
-    <FxCompile Include="Neonland\Windows\VertexShader.hlsl" />
+    <FxCompile Include="Neonland\Windows\LitFragmentShader.hlsl" />
+    <FxCompile Include="Neonland\Windows\LitVertexShader.hlsl" />
+    <FxCompile Include="Neonland\Windows\UIFragmentShader.hlsl" />
+    <FxCompile Include="Neonland\Windows\UIVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Neonland\Components\Anchor.cpp">
