@@ -26,13 +26,11 @@ IFrameworkView App::CreateView() {
 	return *this;
 }
 
-void App::Initialize(CoreApplicationView const& applicationView)
-{
+void App::Initialize(CoreApplicationView const& applicationView) {
 	applicationView.Activated({ this, &App::OnActivated });
 }
 
-void App::SetWindow(CoreWindow const& window)
-{
+void App::SetWindow(CoreWindow const& window) {
 	window.PointerCursor(CoreCursor(CoreCursorType::Arrow, 0));
 	PointerVisualizationSettings visualizationSettings = PointerVisualizationSettings::GetForCurrentView();
 	visualizationSettings.IsContactFeedbackEnabled(false);
@@ -58,16 +56,14 @@ void App::SetWindow(CoreWindow const& window)
 	window.PointerCursor(nullptr);
 }
 
-void App::Load(winrt::hstring const&)
-{
+void App::Load(winrt::hstring const&) {
 	if (_main == nullptr)
 	{
 		_main = std::make_unique<NeonMain>();
 	}
 }
 
-void App::Run()
-{
+void App::Run() {
 	while (!_windowClosed && !Neon_AppShouldQuit() && GetDeviceResources() != nullptr)
 	{
 		if (_windowVisible)
@@ -87,43 +83,36 @@ void App::Run()
 
 void App::Uninitialize() {}
 
-void App::OnActivated(CoreApplicationView const&, IActivatedEventArgs const&)
-{
+void App::OnActivated(CoreApplicationView const&, IActivatedEventArgs const&) {
 	CoreWindow window = CoreWindow::GetForCurrentThread();
 	window.Activate();
 	window.PointerCursor(nullptr);
 }
 
-void App::OnWindowSizeChanged(CoreWindow const&, WindowSizeChangedEventArgs const& args)
-{
+void App::OnWindowSizeChanged(CoreWindow const&, WindowSizeChangedEventArgs const& args) {
 	_deviceResources->SetLogicalSize(args.Size());
 	_main->OnWindowSizeChanged();
 }
 
-void App::OnVisibilityChanged(CoreWindow const&, VisibilityChangedEventArgs const& args)
-{
+void App::OnVisibilityChanged(CoreWindow const&, VisibilityChangedEventArgs const& args) {
 	_windowVisible = args.Visible();
 }
 
-void App::OnWindowClosed(CoreWindow const&, CoreWindowEventArgs const&)
-{
+void App::OnWindowClosed(CoreWindow const&, CoreWindowEventArgs const&) {
 	_windowClosed = true;
 }
 
-void App::OnDpiChanged(DisplayInformation const& sender, IInspectable const&)
-{
+void App::OnDpiChanged(DisplayInformation const& sender, IInspectable const&) {
 	GetDeviceResources()->SetDpi(sender.LogicalDpi());
 	_main->OnWindowSizeChanged();
 }
 
-void App::OnOrientationChanged(DisplayInformation const& sender, IInspectable const&)
-{
+void App::OnOrientationChanged(DisplayInformation const& sender, IInspectable const&) {
 	_deviceResources->SetCurrentOrientation(sender.CurrentOrientation());
 	_main->OnWindowSizeChanged();
 }
 
-void App::OnDisplayContentsInvalidated(DisplayInformation const&, IInspectable const&)
-{
+void App::OnDisplayContentsInvalidated(DisplayInformation const&, IInspectable const&) {
 	GetDeviceResources()->ValidateDevice();
 }
 
@@ -143,18 +132,15 @@ std::shared_ptr<DeviceResources> App::GetDeviceResources() {
 	return _deviceResources;
 }
 
-void App::OnPointerPressed(IInspectable const&, PointerEventArgs const& args)
-{
+void App::OnPointerPressed(IInspectable const&, PointerEventArgs const& args) {
 	Neon_UpdateMouseDown(true);
 }
 
-void App::OnPointerReleased(IInspectable const&, PointerEventArgs const& args)
-{
+void App::OnPointerReleased(IInspectable const&, PointerEventArgs const& args) {
 	Neon_UpdateMouseDown(false);
 }
 
-void App::OnPointerMoved(IInspectable const&, PointerEventArgs const& args)
-{
+void App::OnPointerMoved(IInspectable const&, PointerEventArgs const& args) {
 	auto bounds = CoreWindow::GetForCurrentThread().Bounds();
 	float x = (args.CurrentPoint().RawPosition().X / bounds.Width) * 2.0 - 1.0;
 	float y = -((args.CurrentPoint().RawPosition().Y / bounds.Height) * 2.0 - 1.0);
@@ -162,8 +148,7 @@ void App::OnPointerMoved(IInspectable const&, PointerEventArgs const& args)
 	Neon_UpdateCursorPosition(x, y);
 }
 
-void App::OnKeyUp(IInspectable const&, winrt::Windows::UI::Core::KeyEventArgs const& event)
-{
+void App::OnKeyUp(IInspectable const&, winrt::Windows::UI::Core::KeyEventArgs const& event) {
 	switch (event.VirtualKey())
 	{
 	case VirtualKey::W:
@@ -187,8 +172,7 @@ void App::OnKeyUp(IInspectable const&, winrt::Windows::UI::Core::KeyEventArgs co
 	OnInputDirChanged();
 }
 
-void App::OnKeyDown(IInspectable const&, winrt::Windows::UI::Core::KeyEventArgs const& event)
-{
+void App::OnKeyDown(IInspectable const&, winrt::Windows::UI::Core::KeyEventArgs const& event) {
 	switch (event.VirtualKey())
 	{
 	case VirtualKey::Escape:
@@ -240,8 +224,7 @@ void App::OnKeyDown(IInspectable const&, winrt::Windows::UI::Core::KeyEventArgs 
 	OnInputDirChanged();
 }
 
-void App::OnInputDirChanged()
-{
+void App::OnInputDirChanged() {
 	float x = 0;
 	float y = 0;
 

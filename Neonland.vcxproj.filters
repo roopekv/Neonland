@@ -10,115 +10,144 @@
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
     <Filter Include="Resource Files">
+    </Filter>
+    <Filter Include="Resource Files\png">
+      <Extensions>png</Extensions>
+    </Filter>
+    <Filter Include="Resource Files\wav">
+      <Extensions>wav</Extensions>
+    </Filter>
+    <Filter Include="Resource Files\mp3">
+      <Extensions>mp3</Extensions>
+    </Filter>
+    <Filter Include="Resource Files\obj">
+      <Extensions>obj</Extensions>
+    </Filter>
+    <Filter Include="Resource Files\other">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Shader Files">
+      <UniqueIdentifier>{c9ce1faa-a9d7-423f-9a43-265971d21b37}</UniqueIdentifier>
+      <Extensions>hlsl</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="Neonland\Textures\0.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\1.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\2.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\3.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\4.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\5.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\6.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\7.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\8.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\9.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\blank.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\by.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\enemies_remaining.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\exit_bt.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\game_over.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\ground1.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\ground2.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\ground3.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\hp.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\level1_bt.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\level2_bt.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\level3_bt.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\level_cleared.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\lock.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\neonland.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\num_keys.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\paused.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\quit_bt.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\resume_bt.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\sphere_360_shots.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\sphere_heart.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
     <ImageContentTask Include="Neonland\Textures\wave.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </ImageContentTask>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Neonland\Windows\LitFragmentShader.hlsl" />
-    <FxCompile Include="Neonland\Windows\LitVertexShader.hlsl" />
-    <FxCompile Include="Neonland\Windows\UIFragmentShader.hlsl" />
-    <FxCompile Include="Neonland\Windows\UIVertexShader.hlsl" />
+    <FxCompile Include="Neonland\Windows\LitFragmentShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="Neonland\Windows\LitVertexShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="Neonland\Windows\UIFragmentShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
+    <FxCompile Include="Neonland\Windows\UIVertexShader.hlsl">
+      <Filter>Shader Files</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Neonland\Windows\AudioPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Neonland\Components\Anchor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -214,6 +243,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Neonland\Windows\AudioPlayer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Neonland\Components\Anchor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -337,91 +369,136 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-16.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-24.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-256.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-32.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.altform-lightunplated_targetsize-48.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-16.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-24.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-256.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-32.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.altform-unplated_targetsize-48.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.scale-100.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.scale-125.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.scale-150.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.scale-200.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.scale-400.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.targetsize-16.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.targetsize-24.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.targetsize-256.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.targetsize-32.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\app_icon.targetsize-48.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\SplashScreen.scale-100.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\SplashScreen.scale-125.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\SplashScreen.scale-150.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\SplashScreen.scale-200.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
     <Image Include="Neonland\Windows\Assets\SplashScreen.scale-400.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\png</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="Neonland\Models\crosshair.obj" />
-    <CopyFileToFolders Include="Neonland\Models\cube.obj" />
-    <CopyFileToFolders Include="Neonland\Models\plane.obj" />
-    <CopyFileToFolders Include="Neonland\Models\shard.obj" />
-    <CopyFileToFolders Include="Neonland\Models\sphere.obj" />
-    <CopyFileToFolders Include="Neonland\Models\spread_circle.obj" />
+    <CopyFileToFolders Include="Neonland\Models\crosshair.obj">
+      <Filter>Resource Files\obj</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Models\cube.obj">
+      <Filter>Resource Files\obj</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Models\plane.obj">
+      <Filter>Resource Files\obj</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Models\shard.obj">
+      <Filter>Resource Files\obj</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Models\sphere.obj">
+      <Filter>Resource Files\obj</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Models\spread_circle.obj">
+      <Filter>Resource Files\obj</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Audios\power_up.wav">
+      <Filter>Resource Files\wav</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Audios\click.wav">
+      <Filter>Resource Files\wav</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Audios\collect_hp.wav">
+      <Filter>Resource Files\wav</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Audios\explosion.wav">
+      <Filter>Resource Files\wav</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Audios\game_over.wav">
+      <Filter>Resource Files\wav</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Audios\laser1.wav">
+      <Filter>Resource Files\wav</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Audios\laser2.wav">
+      <Filter>Resource Files\wav</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Audios\laser3.wav">
+      <Filter>Resource Files\wav</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Audios\level_cleared.wav">
+      <Filter>Resource Files\wav</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Audios\lose_hp.wav">
+      <Filter>Resource Files\wav</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Neonland\Audios\neon_beat.mp3">
+      <Filter>Resource Files\mp3</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

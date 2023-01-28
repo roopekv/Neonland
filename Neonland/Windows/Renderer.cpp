@@ -2,6 +2,8 @@
 
 #include "Renderer.hpp"
 
+#include "AudioPlayer.hpp"
+
 #include "../Neonland.h"
 #include "../Engine/MathUtils.hpp"
 
@@ -20,14 +22,12 @@ Renderer::Renderer(const std::shared_ptr<DeviceResources>& deviceResources) :
 	_mappedInstanceBuffer(nullptr),
 	_loadingComplete{ false },
 	_deviceResources(deviceResources),
-	_CBV_SRV_UAV_ViewDescriptorSize(_deviceResources->GetD3DDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV))
-{
+	_CBV_SRV_UAV_ViewDescriptorSize(_deviceResources->GetD3DDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)) {
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 }
 
-Renderer::~Renderer()
-{
+Renderer::~Renderer() {
 	_globalUniformsBuffer->Unmap(0, nullptr);
 	_instanceBuffer->Unmap(0, nullptr);
 	_mappedGlobalUniformsBuffer = nullptr;
@@ -35,8 +35,7 @@ Renderer::~Renderer()
 }
 
 void Renderer::LoadMesh(MeshType type, ID3D12Resource* vertexUploadBuffer, ID3D12Resource* indexUploadBuffer) {
-
-	static const std::map<MeshType, std::wstring> meshIdxToName = {
+	static const std::unordered_map<MeshType, std::wstring> meshIdxToName = {
 		{PLANE_MESH, L"plane"},
 		{CROSSHAIR_MESH, L"crosshair"},
 		{SPREAD_MESH, L"spread_circle"},
@@ -126,7 +125,6 @@ void Renderer::LoadMesh(MeshType type, ID3D12Resource* vertexUploadBuffer, ID3D1
 }
 
 void Renderer::LoadTexture(TextureType type, ID3D12Resource* uploadBuffer) {
-
 	static const std::unordered_map<TextureType, std::wstring> textureIdxToName = {
 		{NO_TEX, L"blank"},
 		{ENEMIES_REMAINING_TEX, L"enemies_remaining"},
@@ -231,8 +229,7 @@ void Renderer::LoadTexture(TextureType type, ID3D12Resource* uploadBuffer) {
 	Neon_UpdateTextureSize(type, texSize);
 }
 
-void Renderer::CreateDeviceDependentResources()
-{
+void Renderer::CreateDeviceDependentResources() {
 	auto device = _deviceResources->GetD3DDevice();
 
 	CD3DX12_DESCRIPTOR_RANGE uniformsRange(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0, 0, 0);
@@ -414,14 +411,12 @@ void Renderer::CreateDeviceDependentResources()
 	Neon_Start();
 }
 
-void Renderer::CreateWindowSizeDependentResources()
-{
+void Renderer::CreateWindowSizeDependentResources() {
 	D3D12_VIEWPORT viewport = _deviceResources->GetScreenViewport();
 	_scissorRect = { 0, 0, static_cast<int32_t>(viewport.Width), static_cast<int32_t>(viewport.Height) };
 }
 
-bool Renderer::Render()
-{
+bool Renderer::Render() {
 	if (!_loadingComplete)
 	{
 		return false;
@@ -431,6 +426,13 @@ bool Renderer::Render()
 	auto outputSize = _deviceResources->GetOutputSize();
 	float aspectRatio = outputSize.Width / outputSize.Height;
 	FrameData frameData = Neon_Render(aspectRatio);
+
+	auto& audioPlayer = AudioPlayer::Instance();
+	for (size_t i = 0; i < frameData.audioCount; i++)
+	{
+		auto type = static_cast<AudioType>(frameData.audios[i]);
+		audioPlayer.Play(type);
+	}
 
 	uint8_t* currentGlobalUniforms = _mappedGlobalUniformsBuffer + (_deviceResources->GetCurrentFrameIndex() * AlignedGlobalUnformsBufferSize);
 	memcpy(currentGlobalUniforms, &frameData.globalUniforms, sizeof(frameData.globalUniforms));

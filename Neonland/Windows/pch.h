@@ -21,6 +21,11 @@
 #include <DirectXMath.h>
 #include <wincodec.h>
 
+#include <xaudio2.h>
+#include <mfidl.h>
+#include <mfapi.h>
+#include <mfreadwrite.h>
+
 #include "d3dx12/d3dx12.h"
 
 #include "WaveFrontReader.h"
@@ -34,6 +39,6 @@
 #include <memory>
 #include <vector>
 #include <array>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <fstream>
