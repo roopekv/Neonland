@@ -11,6 +11,7 @@ using namespace winrt::Windows::ApplicationModel::Core;
 using namespace winrt::Windows::Graphics::Display;
 using namespace winrt::Windows::UI::Core;
 using namespace winrt::Windows::UI::Input;
+using namespace winrt::Windows::UI::ViewManagement;
 using namespace winrt::Windows::System;
 
 App::App()
@@ -53,6 +54,8 @@ void App::SetWindow(CoreWindow const& window)
 
 	window.KeyDown({ this, &App::OnKeyDown });
 	window.KeyUp({ this, &App::OnKeyUp });
+
+	window.PointerCursor(nullptr);
 }
 
 void App::Load(winrt::hstring const&)
@@ -88,6 +91,7 @@ void App::OnActivated(CoreApplicationView const&, IActivatedEventArgs const&)
 {
 	CoreWindow window = CoreWindow::GetForCurrentThread();
 	window.Activate();
+	window.PointerCursor(nullptr);
 }
 
 void App::OnWindowSizeChanged(CoreWindow const&, WindowSizeChangedEventArgs const& args)
@@ -149,7 +153,6 @@ void App::OnPointerReleased(IInspectable const&, PointerEventArgs const& args)
 	Neon_UpdateMouseDown(false);
 }
 
-
 void App::OnPointerMoved(IInspectable const&, PointerEventArgs const& args)
 {
 	auto bounds = CoreWindow::GetForCurrentThread().Bounds();
@@ -199,6 +202,18 @@ void App::OnKeyDown(IInspectable const&, winrt::Windows::UI::Core::KeyEventArgs 
 		break;
 	case VirtualKey::Number3:
 		Neon_UpdateNumberKeyPressed(3);
+		break;
+	case VirtualKey::F11:
+		auto view = ApplicationView::GetForCurrentView();
+		if (view.IsFullScreenMode()) 
+		{
+			view.ExitFullScreenMode();
+			ApplicationView::PreferredLaunchWindowingMode(ApplicationViewWindowingMode::Auto);
+		}
+		else if (view.TryEnterFullScreenMode())
+		{
+			ApplicationView::PreferredLaunchWindowingMode(ApplicationViewWindowingMode::FullScreen);
+		}
 		break;
 	}
 
