@@ -64,7 +64,7 @@ void Renderer::LoadMesh(MeshType type, ID3D12Resource* vertexUploadBuffer, ID3D1
 		&defaultHeapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&vertexBufferDesc,
-		D3D12_RESOURCE_STATE_COPY_DEST,
+		D3D12_RESOURCE_STATE_COMMON,
 		nullptr,
 		IID_PPV_ARGS(_vertexBuffers[type].put())));
 
@@ -93,7 +93,7 @@ void Renderer::LoadMesh(MeshType type, ID3D12Resource* vertexUploadBuffer, ID3D1
 		&defaultHeapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&indexBufferDesc,
-		D3D12_RESOURCE_STATE_COPY_DEST,
+		D3D12_RESOURCE_STATE_COMMON,
 		nullptr,
 		IID_PPV_ARGS(_indexBuffers[type].put())));
 
@@ -305,7 +305,27 @@ void Renderer::CreateDeviceDependentResources()
 	litState.PS = CD3DX12_SHADER_BYTECODE(litFragmentShader.data(), litFragmentShader.size());
 	litState.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 
-	litState.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+	auto blendDesc = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+
+	D3D12_RENDER_TARGET_BLEND_DESC renderTargetBlendDesc = {};
+	renderTargetBlendDesc.BlendEnable = true;
+	renderTargetBlendDesc.LogicOpEnable = false;
+	renderTargetBlendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
+	renderTargetBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	renderTargetBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	renderTargetBlendDesc.SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
+
+	renderTargetBlendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	renderTargetBlendDesc.DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;
+
+	renderTargetBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+	renderTargetBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+
+	blendDesc.RenderTarget[0] = renderTargetBlendDesc;
+
+	litState.BlendState = blendDesc;
+
 	litState.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	litState.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 	litState.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
@@ -468,7 +488,7 @@ bool Renderer::Render()
 
 		if (shaderIdx != prevShaderIdx) 
 		{
-			//_commandList->SetPipelineState(_pipelineStates[shaderIdx].get());
+			_commandList->SetPipelineState(_pipelineStates[shaderIdx].get());
 			prevShaderIdx = shaderIdx;
 		}
 

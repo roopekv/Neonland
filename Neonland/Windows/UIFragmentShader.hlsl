@@ -12,9 +12,9 @@ float4 main(UIFragmentShaderInput input) : SV_TARGET
 {
     float4 baseColor = t1.Sample(s1, input.texCoord) * input.tint;
 
-    //if (baseColor.a < 0.25f) {
-    //    discard;
-    //}
+    if (baseColor.a < 0.25f) {
+        discard;
+    }
 
     return baseColor;
 }

@@ -322,9 +322,6 @@
     <ClInclude Include="Neonland\Windows\App.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Neonland\Windows\d3dx12.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Neonland\Windows\DeviceResources.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
