@@ -24,7 +24,7 @@ NeonScene::NeonScene(size_t maxInstanceCount, double timestep)
 
 void NeonScene::Start() {
     {
-        auto saveFile = std::ifstream("neon_save.save");
+        auto saveFile = std::ifstream(saveFilePath + L"neon_save.save");
         
         if (saveFile) {
             saveFile >> _unlockLevel;
@@ -149,7 +149,7 @@ void NeonScene::SetUnlockLevel(int lvl) {
     
     if (lvl != _unlockLevel) {
         _unlockLevel = lvl;
-        auto saveFile = std::ofstream("neon_save.save");
+        auto saveFile = std::ofstream(saveFilePath + L"neon_save.save");
         
         if (saveFile) {
             saveFile << _unlockLevel;

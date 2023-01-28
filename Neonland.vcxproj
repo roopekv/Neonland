@@ -146,6 +146,18 @@
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpp20</LanguageStandard>
     </ClCompile>
+    <ImageContentTask>
+      <Compress Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">BC7_UNORM_SRGB</Compress>
+    </ImageContentTask>
+    <ImageContentTask>
+      <Compress Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">BC7_UNORM_SRGB</Compress>
+    </ImageContentTask>
+    <ImageContentTask>
+      <Compress Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">BC7_UNORM_SRGB</Compress>
+    </ImageContentTask>
+    <ImageContentTask>
+      <Compress Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">BC7_UNORM_SRGB</Compress>
+    </ImageContentTask>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
     <ClCompile>
@@ -159,6 +171,18 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <ImageContentTask>
+      <Compress Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">BC7_UNORM_SRGB</Compress>
+    </ImageContentTask>
+    <ImageContentTask>
+      <Compress Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">BC7_UNORM_SRGB</Compress>
+    </ImageContentTask>
+    <ImageContentTask>
+      <Compress Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">BC7_UNORM_SRGB</Compress>
+    </ImageContentTask>
+    <ImageContentTask>
+      <Compress Condition="'$(Configuration)|$(Platform)'=='Release|x64'">BC7_UNORM_SRGB</Compress>
+    </ImageContentTask>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Neonland\Windows\AudioPlayer.hpp" />

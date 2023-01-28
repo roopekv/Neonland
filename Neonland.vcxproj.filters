@@ -31,6 +31,15 @@
       <UniqueIdentifier>{c9ce1faa-a9d7-423f-9a43-265971d21b37}</UniqueIdentifier>
       <Extensions>hlsl</Extensions>
     </Filter>
+    <Filter Include="Neonland">
+      <UniqueIdentifier>{52c00f87-4c29-41b7-b378-27eb491f3399}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Neonland\Windows">
+      <UniqueIdentifier>{ce37c23e-fb1e-452c-8852-ed57bae4c5d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Neonland\Windows\Assets">
+      <UniqueIdentifier>{18bccfe6-6997-4928-ae8d-24307c8c081d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="Neonland\Textures\0.png">

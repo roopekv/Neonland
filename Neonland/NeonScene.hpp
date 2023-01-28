@@ -38,6 +38,8 @@ public:
     float2 directionalInput = {0, 0};
     
     int weaponIdx = 0;
+
+    std::wstring saveFilePath = L"";
     
     NeonScene(size_t maxInstanceCount, double timestep);
     

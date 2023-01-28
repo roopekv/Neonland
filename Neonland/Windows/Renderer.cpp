@@ -408,6 +408,10 @@ void Renderer::CreateDeviceDependentResources() {
 	_deviceResources->WaitForGpu();
 
 	_loadingComplete = true;
+
+	std::wstring savePath(winrt::Windows::Storage::ApplicationData::Current().LocalFolder().Path());
+	savePath += L"\\";
+	Neon_SetSaveFilePath(savePath.c_str(), savePath.size());
 	Neon_Start();
 }
 

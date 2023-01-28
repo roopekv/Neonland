@@ -12,6 +12,12 @@ void Neon_Start() {
     scene.Start();
 }
 
+#ifdef _WIN64
+void Neon_SetSaveFilePath(const wchar_t* path, size_t len) {
+    scene.saveFilePath = std::wstring(path, len);
+}
+#endif
+
 FrameData Neon_Render(float aspectRatio) {
     scene.Update(aspectRatio);
     

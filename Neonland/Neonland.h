@@ -11,6 +11,10 @@ extern "C" {
 #include <stdbool.h>
 #endif
 
+#ifdef _WIN64
+void Neon_SetSaveFilePath(const wchar_t* path, size_t len);
+#endif
+
 void Neon_UpdateCursorPosition(float x, float y);
 void Neon_UpdateDirectionalInput(float x, float y);
 void Neon_UpdateMouseDown(bool down);
