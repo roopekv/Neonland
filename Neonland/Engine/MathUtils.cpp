@@ -1,6 +1,5 @@
 #include "MathUtils.hpp"
 
-
 float4x4 ProjectionMatrix(float verticalFoVInDegrees,
 	float aspectRatio,
 	float near,
@@ -432,18 +431,19 @@ float4& operator/=(float4& lhs, float rhs) {
 
 // float4x4
 
-float4x4 operator*(const float4x4& lhs, const float4x4 rhs) {
+float4x4 operator*(const float4x4& lhs, const float4x4& rhs) {
 	XMMATRIX lhs_mat(XMLoadFloat4x4(&lhs));
 	XMMATRIX rhs_mat(XMLoadFloat4x4(&rhs));
 	float4x4 result;
-	XMStoreFloat4x4(&result, lhs_mat * rhs_mat);
+	XMStoreFloat4x4(&result, rhs_mat * lhs_mat);
 	return result;
 }
 
-float4 operator*(const float4x4& lhs, const float4 rhs) {
+float4 operator*(const float4x4& lhs, const float4& rhs) {
 	XMMATRIX lhs_mat(XMLoadFloat4x4(&lhs));
 	XMVECTOR rhs_vec(XMLoadFloat4(&rhs));
 	float4 result;
+
 	XMStoreFloat4(&result, XMVector4Transform(rhs_vec, lhs_mat));
 	return result;
 }

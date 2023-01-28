@@ -50,8 +50,8 @@ float4& operator*=(float4& lhs, float rhs);
 float4 operator/(const float4& lhs, float rhs);
 float4& operator/=(float4& lhs, float rhs);
 
-float4x4 operator*(const float4x4& lhs, const float4x4 rhs);
-float4 operator*(const float4x4& lhs, const float4 rhs);
+float4x4 operator*(const float4x4& lhs, const float4x4& rhs);
+float4 operator*(const float4x4& lhs, const float4& rhs);
 
 #elif __APPLE__
 #include <simd/simd.h>
@@ -65,9 +65,6 @@ using float4x4 = simd::float4x4;
 #include <numbers>
 #include <cmath>
 #include <ostream>
-
-
-
 
 constexpr float DegToRad = std::numbers::pi_v<float> / 180;
 constexpr float RadToDeg = 180 / std::numbers::pi_v<float>;

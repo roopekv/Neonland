@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "App.hpp"
 
+#include <iostream>
+
 #include "../Neonland.h"
 
 using namespace winrt::Windows::ApplicationModel;
@@ -9,10 +11,15 @@ using namespace winrt::Windows::ApplicationModel::Core;
 using namespace winrt::Windows::Graphics::Display;
 using namespace winrt::Windows::UI::Core;
 using namespace winrt::Windows::UI::Input;
+using namespace winrt::Windows::System;
 
 App::App()
 	: _windowClosed{ false }
-	, _windowVisible{ true } {}
+	, _windowVisible{ true }
+	, forwardHeld{ false }
+	, backHeld{ false }
+	, rightHeld{ false }
+	, leftHeld{ false } {}
 
 IFrameworkView App::CreateView() {
 	return *this;
@@ -39,6 +46,13 @@ void App::SetWindow(CoreWindow const& window)
 	currentDisplayInformation.DpiChanged({ this, &App::OnDpiChanged });
 	currentDisplayInformation.OrientationChanged({ this, &App::OnOrientationChanged });
 	DisplayInformation::DisplayContentsInvalidated({ this, &App::OnDisplayContentsInvalidated });
+
+	window.PointerPressed({ this, &App::OnPointerPressed });
+	window.PointerReleased({ this, &App::OnPointerReleased });
+	window.PointerMoved({ this, &App::OnPointerMoved });
+
+	window.KeyDown({ this, &App::OnKeyDown });
+	window.KeyUp({ this, &App::OnKeyUp });
 }
 
 void App::Load(winrt::hstring const&)
@@ -127,10 +141,110 @@ std::shared_ptr<DeviceResources> App::GetDeviceResources() {
 
 void App::OnPointerPressed(IInspectable const&, PointerEventArgs const& args)
 {
-
+	Neon_UpdateMouseDown(true);
 }
+
+void App::OnPointerReleased(IInspectable const&, PointerEventArgs const& args)
+{
+	Neon_UpdateMouseDown(false);
+}
+
 
 void App::OnPointerMoved(IInspectable const&, PointerEventArgs const& args)
 {
+	auto bounds = CoreWindow::GetForCurrentThread().Bounds();
+	float x = (args.CurrentPoint().RawPosition().X / bounds.Width) * 2.0 - 1.0;
+	float y = -((args.CurrentPoint().RawPosition().Y / bounds.Height) * 2.0 - 1.0);
 
+	Neon_UpdateCursorPosition(x, y);
+}
+
+void App::OnKeyUp(IInspectable const&, winrt::Windows::UI::Core::KeyEventArgs const& event)
+{
+	switch (event.VirtualKey())
+	{
+	case VirtualKey::W:
+	case VirtualKey::Up:
+		forwardHeld = false;
+		break;
+	case VirtualKey::S:
+	case VirtualKey::Down:
+		backHeld = false;
+		break;
+	case VirtualKey::A:
+	case VirtualKey::Left:
+		leftHeld = false;
+		break;
+	case VirtualKey::D:
+	case VirtualKey::Right:
+		rightHeld = false;
+		break;
+	}
+
+	OnInputDirChanged();
+}
+
+void App::OnKeyDown(IInspectable const&, winrt::Windows::UI::Core::KeyEventArgs const& event)
+{
+	switch (event.VirtualKey())
+	{
+	case VirtualKey::Escape:
+		Neon_EscapePressed();
+		break;
+	case VirtualKey::Number1:
+		Neon_UpdateNumberKeyPressed(1);
+		break;
+	case VirtualKey::Number2:
+		Neon_UpdateNumberKeyPressed(2);
+		break;
+	case VirtualKey::Number3:
+		Neon_UpdateNumberKeyPressed(3);
+		break;
+	}
+
+	switch (event.VirtualKey())
+	{
+	case VirtualKey::W:
+	case VirtualKey::Up:
+		forwardHeld = true;
+		break;
+	case VirtualKey::S:
+	case VirtualKey::Down:
+		backHeld = true;
+		break;
+	case VirtualKey::A:
+	case VirtualKey::Left:
+		leftHeld = true;
+		break;
+	case VirtualKey::D:
+	case VirtualKey::Right:
+		rightHeld = true;
+		break;
+	}
+
+	OnInputDirChanged();
+}
+
+void App::OnInputDirChanged()
+{
+	float x = 0;
+	float y = 0;
+
+	if (forwardHeld) {
+		y += 1;
+	}
+
+	if (backHeld) {
+		y -= 1;
+	}
+
+	if (rightHeld) {
+		x += 1;
+	}
+
+	if (leftHeld) {
+		x -= 1;
+	}
+
+	Neon_UpdateDirectionalInput(x, y);
 }

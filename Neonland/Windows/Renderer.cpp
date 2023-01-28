@@ -304,6 +304,7 @@ void Renderer::CreateDeviceDependentResources()
 	litState.VS = CD3DX12_SHADER_BYTECODE(litVertexShader.data(), litVertexShader.size());
 	litState.PS = CD3DX12_SHADER_BYTECODE(litFragmentShader.data(), litFragmentShader.size());
 	litState.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+
 	litState.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	litState.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	litState.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
@@ -467,7 +468,7 @@ bool Renderer::Render()
 
 		if (shaderIdx != prevShaderIdx) 
 		{
-			_commandList->SetPipelineState(_pipelineStates[shaderIdx].get());
+			//_commandList->SetPipelineState(_pipelineStates[shaderIdx].get());
 			prevShaderIdx = shaderIdx;
 		}
 
@@ -489,8 +490,7 @@ bool Renderer::Render()
 		startOffset += instanceCount;
 	}
 
-	CD3DX12_RESOURCE_BARRIER presentResourceBarrier =
-		CD3DX12_RESOURCE_BARRIER::Transition(_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+	auto presentResourceBarrier = CD3DX12_RESOURCE_BARRIER::Transition(_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	_commandList->ResourceBarrier(1, &presentResourceBarrier);
 
 	winrt::check_hresult(_commandList->Close());

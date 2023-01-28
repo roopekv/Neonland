@@ -17,10 +17,10 @@ Camera::Camera(float3 pos, float3 rot, float3 color, float near, float far, floa
 float3 Camera::ScreenPointToWorld(float2 screenPoint, float depth) {
     float4x4 proj = GetProjectionMatrix();
     float4x4 view = GetViewMatrix();
-    
+
     float4 worldSpaceDepth = {0, 0, depth, 1};
     
-    float4 screenSpaceDepth = proj * view * worldSpaceDepth;
+    float4 screenSpaceDepth = proj * (view * worldSpaceDepth);
     screenSpaceDepth /= screenSpaceDepth.w;
     
     float4x4 inverse = InverseMatrix(proj * view);

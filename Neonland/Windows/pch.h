@@ -1,7 +1,7 @@
 #pragma once
 
 #define NOMINMAX
-#include <windows.h>
+#include <Windows.h>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.ApplicationModel.Core.h>
@@ -32,4 +32,5 @@
 
 #if defined(DEBUG) || defined(_DEBUG)
 #include "d3d12sdklayers.h"
+#include <iostream>
 #endif

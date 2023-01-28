@@ -820,9 +820,11 @@ void NeonScene::RenderUI() {
     
     
     if (mouseClicked) {
+        std::cout << mousePos << std::endl;
         for (auto& bt : *_scene.GetPool<Button>()) {
             if (bt.highlighted) {
                 bt.onClick();
+                std::cout << "WUT" << std::endl;
                 _audios.push_back(CLICK_AUDIO);
                 break;
             }

@@ -22,12 +22,13 @@ struct UIFragmentShaderInput
 
 UIFragmentShaderInput main(UIVertexShaderInput input)
 {
-	UIFragmentShaderInput output;
 	float4 pos = float4(input.position, 1);
 	pos = mul(pos, input.instanceTf);
 	pos = mul(pos, viewMatrix);
 	pos = mul(pos, projMatrix);
 	pos.z = 0.1f;
+
+	UIFragmentShaderInput output;
 	output.position = pos;
 	output.texCoord = input.texCoord;
 	output.tint = input.instanceColor;

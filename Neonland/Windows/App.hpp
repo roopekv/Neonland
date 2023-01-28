@@ -26,8 +26,13 @@ protected:
     void OnDisplayContentsInvalidated(winrt::Windows::Graphics::Display::DisplayInformation const&, IInspectable const&);
 
     void OnPointerPressed(IInspectable const&, winrt::Windows::UI::Core::PointerEventArgs const& args);
+    void OnPointerReleased(IInspectable const&, winrt::Windows::UI::Core::PointerEventArgs const& args);
     void OnPointerMoved(IInspectable const&, winrt::Windows::UI::Core::PointerEventArgs const& args);
 
+    void OnKeyDown(IInspectable const&, winrt::Windows::UI::Core::KeyEventArgs const&);
+    void OnKeyUp(IInspectable const&, winrt::Windows::UI::Core::KeyEventArgs const&);
+
+    void OnInputDirChanged();
 private:
     std::shared_ptr<DeviceResources> GetDeviceResources();
 
@@ -36,4 +41,9 @@ private:
 
     bool _windowClosed;
     bool _windowVisible;
+
+    bool forwardHeld;
+    bool backHeld;
+    bool rightHeld;
+    bool leftHeld;
 };
