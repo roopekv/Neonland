@@ -160,11 +160,11 @@ void Renderer::LoadTexture(TextureType type, ID3D12Resource* uploadBuffer) {
 		{NINE_TEX, L"9"},
 	};
 
-	std::wstring filename = textureIdxToName.at(type) + L".dds";
+	std::wstring filename = textureIdxToName.at(type) + L".png";
 
 	TexMetadata metadata;
 	ScratchImage img;
-	LoadFromDDSFile(filename.c_str(), DDS_FLAGS_NONE, &metadata, img);
+	LoadFromWICFile(filename.c_str(), WIC_FLAGS_IGNORE_SRGB, &metadata, img);
 
 	D3D12_RESOURCE_DESC texResourceDesc = {};
 	texResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;

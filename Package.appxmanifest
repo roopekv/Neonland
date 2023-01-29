@@ -18,8 +18,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Neonland.App">
-      <uap:VisualElements DisplayName="Neonland" 
-        Square150x150Logo="Assets\Square150x150Logo.png" BackgroundColor="transparent" Description="Neonland" Square44x44Logo="Neonland\Windows\Assets\app_icon.png">
+      <uap:VisualElements DisplayName="Neonland" BackgroundColor="transparent" Description="Neonland app" Square44x44Logo="Neonland\Windows\Assets\app_icon.png" Square150x150Logo="Assets\Square150x150Logo.png">
         <uap:SplashScreen Image="Neonland\Windows\Assets\SplashScreen.png" a:Optional="true" xmlns:a="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"  BackgroundColor="black"/>
         <uap:DefaultTile ShortName="Neonland"/>
       </uap:VisualElements>
