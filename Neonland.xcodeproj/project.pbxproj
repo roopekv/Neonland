@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F04B9842C57729200487BAA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2F04B9832C57729200487BAA /* README.md */; };
 		7A03E6492974882800B3EEC6 /* NumberField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A03E6472974882700B3EEC6 /* NumberField.cpp */; };
 		7A03E64B2974A7EF00B3EEC6 /* SceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A03E64A2974A7EF00B3EEC6 /* SceneView.swift */; };
 		7A0F89482952223D00A999F2 /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F89472952223D00A999F2 /* MenuBar.swift */; };
@@ -93,6 +94,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F04B9832C57729200487BAA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		7A03E6472974882700B3EEC6 /* NumberField.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NumberField.cpp; sourceTree = "<group>"; };
 		7A03E6482974882800B3EEC6 /* NumberField.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = NumberField.hpp; sourceTree = "<group>"; };
 		7A03E64A2974A7EF00B3EEC6 /* SceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneView.swift; sourceTree = "<group>"; };
@@ -470,6 +472,7 @@
 		7AE607E52950F1B300C66EA5 = {
 			isa = PBXGroup;
 			children = (
+				2F04B9832C57729200487BAA /* README.md */,
 				7A94520829548A06004CFF4D /* Neonland */,
 				7AE607EF2950F1B300C66EA5 /* Products */,
 			);
@@ -587,6 +590,7 @@
 				7AB5CA1A297D8EBC008743BA /* by.png in Resources */,
 				7A7A5CB72977DE88008F2175 /* wave.png in Resources */,
 				7ADF6A56297CD0D500F04733 /* laser3.wav in Resources */,
+				2F04B9842C57729200487BAA /* README.md in Resources */,
 				7A204F242976B5B900A91707 /* ground3.png in Resources */,
 				7A204F262976B5B900A91707 /* ground1.png in Resources */,
 				7AE607F62950F1B400C66EA5 /* Assets.xcassets in Resources */,
@@ -761,10 +765,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Neonland/macOS/Neonland.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TVYCJMMQF7;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Neonland;
@@ -780,6 +785,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.arcadeworlds.Neonland;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Neonland/macOS/Neonland-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -794,10 +800,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Neonland/macOS/Neonland.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TVYCJMMQF7;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Neonland;
@@ -813,6 +820,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.arcadeworlds.Neonland;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Neonland/macOS/Neonland-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
