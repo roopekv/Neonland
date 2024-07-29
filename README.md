@@ -12,3 +12,5 @@ The game uses native APIs on both Windows and macOS.
 | macOS      | AppKit              | Metal       | AVFoundation                 |
 
 The game is built in a data-driven way, allowing the systems to efficiently query and manipulate the data (entities and components). It's by no means perfect (collision detection could have used some spatial partitioning etc. etc.), but I learned a lot while making it, and have continued to learn ever since.
+
+![gameplay](./Assets/gameplay.gif)
