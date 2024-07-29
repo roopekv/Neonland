@@ -20,6 +20,9 @@ protected:
     std::vector<Index> entityIdToIndex;
     std::vector<Entity::Id> indexToEntityId;
     
+    bool removeLocked;
+    std::vector<Entity::Id> removeLockedCache;
+    
     const ComponentType componentType;
     
     IPool(ComponentType type);
@@ -28,5 +31,10 @@ protected:
     
     virtual void RemoveComponent(Entity::Id entityId) = 0;
     
+    auto IsRemoveLocked() const -> bool;
+    void LockRemove();
+    void UnlockRemove();
+    
     friend class Scene;
+    friend class IGroup;
 };

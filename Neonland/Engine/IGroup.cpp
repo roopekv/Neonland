@@ -69,3 +69,15 @@ void IGroup::RemoveEntities(const std::vector<Entity>& sortedEntities) {
 auto IGroup::GetEntities() const -> const std::vector<Entity>& {
     return groupEntities;
 }
+
+auto IGroup::IsRemoveLocked(const IPool& pool) const -> bool {
+    return pool.IsRemoveLocked();
+}
+
+void IGroup::LockRemove(IPool& pool) {
+    pool.LockRemove();
+}
+
+void IGroup::UnlockRemove(IPool& pool) {
+    pool.UnlockRemove();
+}

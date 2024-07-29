@@ -34,27 +34,16 @@ public:
     void Sort();
 private:
     std::vector<T> components;
-    bool removeLocked;
-    std::vector<Entity::Id> removeLockedCache;
     
     void RemoveComponent(Entity::Id entityId) override final;
     void AddComponent(Entity::Id entityId, T&& component);
     
-    auto IsRemoveLocked() -> bool;
-    
-    void LockRemove();
-    void UnlockRemove();
-    
     friend class Scene;
-    
-    template<Component... Args> requires (sizeof...(Args) > 0) && AllUnique<Args...>
-    friend class Group;
 };
 
 template<Component T>
 Pool<T>::Pool()
-: removeLocked{false}
-, IPool(T::componentType) {}
+: IPool(T::componentType) {}
 
 template<Component T>
 auto Pool<T>::operator[](size_t index) -> T& {
@@ -144,27 +133,6 @@ void Pool<T>::RemoveComponent(Entity::Id entityId) {
 template<Component T>
 auto Pool<T>::GetComponent(Entity::Id entityId) -> T& {
     return components[entityIdToIndex[entityId]];
-}
-
-template<Component T>
-auto Pool<T>::IsRemoveLocked() -> bool {
-    return removeLocked;
-}
-
-template<Component T>
-void Pool<T>::LockRemove() {
-    removeLocked = true;
-}
-
-template<Component T>
-void Pool<T>::UnlockRemove() {
-    removeLocked = false;
-    if (!removeLockedCache.empty()) {
-        for (auto entityId : removeLockedCache) {
-            RemoveComponent(entityId);
-        }
-        removeLockedCache.clear();
-    }
 }
 
 template<Component T>

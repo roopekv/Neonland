@@ -4,6 +4,7 @@
 #include <array>
 #include <memory>
 
+#include "IPool.hpp"
 #include "ComponentMask.hpp"
 #include "Entity.hpp"
 
@@ -22,6 +23,9 @@ public:
     auto Size() -> size_t;
 protected:
     std::vector<Entity> groupEntities;
+    auto IsRemoveLocked(const IPool& pool) const -> bool;
+    void LockRemove(IPool& pool);
+    void UnlockRemove(IPool& pool);
 private:
     void AddEntity(Entity entity);
     void AddEntities(const std::vector<Entity>& sortedEntities);

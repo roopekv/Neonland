@@ -145,12 +145,11 @@ auto Group<Args...>::GetPool() -> std::shared_ptr<Pool<Type>> {
 template<Component... Args> requires (sizeof...(Args) > 0) && AllUnique<Args...>
 template<Component Type, Component... Types>
 auto Group<Args...>::LockPools(std::array<bool, sizeof...(Args)> lockStatesBeforeLock) -> std::array<bool, sizeof...(Args)> {
-    lockStatesBeforeLock[sizeof...(Args) - sizeof...(Types) - 1] = GetPool<Type>()->IsRemoveLocked();
-    
     auto poolPtr = GetPool<Type>();
+    lockStatesBeforeLock[sizeof...(Args) - sizeof...(Types) - 1] = IsRemoveLocked(*poolPtr);
     
-    if (!poolPtr->IsRemoveLocked()) {
-        poolPtr->LockRemove();
+    if (!IsRemoveLocked(*poolPtr)) {
+        LockRemove(*poolPtr);
     }
     
     if constexpr (sizeof...(Types) > 0) {
@@ -167,8 +166,8 @@ void Group<Args...>::UnlockPools(std::array<bool, sizeof...(Args)> lockStatesBef
     
     auto poolPtr = GetPool<Type>();
     
-    if (!wasAlreadyLocked && poolPtr->IsRemoveLocked()) {
-        GetPool<Type>()->UnlockRemove();
+    if (!wasAlreadyLocked && IsRemoveLocked(*poolPtr)) {
+        UnlockRemove(*poolPtr);
     }
     
     if constexpr (sizeof...(Types) > 0) {
