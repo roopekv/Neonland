@@ -2,7 +2,7 @@
 
 Neonland is a top-down shooter game for Windows and macOS where your goal is to survive waves of enemies by defeating them with an arsenal of neon-colored weapons.
 
-This game is a school project that I made for a course during my first year majoring in game applications at Metropolis UAS. It's programmed in C++, excluding the macOS renderer which is written in Swift, interfacing with the C++ codebase via C interoperability.
+This game is a school project that I made for a course during my first year majoring in game applications at Metropolia UAS. It's programmed in C++, excluding the macOS renderer which is written in Swift, interfacing with the C++ codebase via C interoperability.
 
 The game uses native APIs on both Windows and macOS.
 
